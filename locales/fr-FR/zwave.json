@@ -1,0 +1,34 @@
+{
+    "zwave": {
+        "broker": "Broker",
+        "topic": {
+            "label": "Sujet",
+            "value": "zwave/"
+        },
+        "name": "Nom",
+        "push": "Push"
+    },
+    "zwave-in": {
+        "nodeid": "NodeID",
+        "name": "Nom",
+        "advanced": {
+            "title": "Avancé",
+            "broker": "Broker"
+        }
+    },
+    "zwave-out": {
+        "name": "Nom",
+        "method": {
+            "label": "Méthode",
+            "setlevel": "setLevel",
+            "switchon": "switchON",
+            "switchoff": "switchOFF",
+            "setvalue": "setValue"
+        },
+        "nodeid": "NodeID",
+        "level": "Level",
+        "class": "Class",
+        "index": "Index",
+        "value": "Value"
+    }
+}
