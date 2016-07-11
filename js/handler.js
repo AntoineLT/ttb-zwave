@@ -2,7 +2,7 @@ var check = require('./check.js');
 
 var nodes =[];
 
-exports.driverReady = function(node, homeid) {
+function driverReady(node, homeid) {
     node.log('Driver ready');
     node.log('Scanning homeid=0x'+homeid.toString(16)+'...');
     node.status({
@@ -10,18 +10,18 @@ exports.driverReady = function(node, homeid) {
         shape:'dot',
         text:'node-red:common.status.connecting'
     });
-};
+}
 
-exports.driverFailed = function(node) {
+function driverFailed(node) {
     node.warn('Failed to start Z-wave driver');
     node.status({
         fill:'yellow',
         shape:'dot',
         text:'node-red:common.status.error'
     });
-};
+}
 
-exports.nodeAdded = function(nodeid) {
+function nodeAdded(nodeid) {
     nodes[nodeid] = {
         manufacturer : '',
         manufacturerid : '',
@@ -34,9 +34,9 @@ exports.nodeAdded = function(nodeid) {
         classes : {},
         ready : false
     };
-};
+}
 
-exports.nodeReady = function(node, nodeid, nodeinfo) {
+function nodeReady(node, nodeid, nodeinfo) {
     // TODO: Finish implementation of this handler
     nodes[nodeid].manufacturer = nodeinfo.manufacturer;
     nodes[nodeid].manufacturerid = nodeinfo.manufacturerid;
@@ -57,14 +57,14 @@ exports.nodeReady = function(node, nodeid, nodeinfo) {
         //    productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product;
 
     }
-};
+}
 
-exports.valueAdded = function(node, mqtt, nodeid, comclass, value) {
+function valueAdded(node, mqtt, nodeid, comclass, value) {
     // TODO: Finish implementation of this handler
     if(nodeid !== 1 && value.label !== ""
         && check.isNotInFlow(nodeid, comclass, value, null)){
         if(check.comclassToShow(comclass)) {
-            console.log('Value added');
+            //console.log('Value added');
         }
     }
 
@@ -79,9 +79,9 @@ exports.valueAdded = function(node, mqtt, nodeid, comclass, value) {
     msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index + '/';
     msg.payload = value.value;
     if(typeof mqtt != 'undefined') mqtt.publish(msg);
-};
+}
 
-exports.valueChanged = function(node, mqtt, nodeid, comclass, value) {
+function valueChanged(node, mqtt, nodeid, comclass, value) {
     nodes[nodeid].classes[comclass][value.index] = value;
 
     var msg = {};
@@ -90,16 +90,16 @@ exports.valueChanged = function(node, mqtt, nodeid, comclass, value) {
     msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index + '/';
     msg.payload = value.value;
     if(typeof mqtt != 'undefined') mqtt.publish(msg);
-};
+}
 
-exports.valueRemoved = function(nodeid, comclass, index) {
+function valueRemoved(nodeid, comclass, index) {
     if (nodes[nodeid].classes[comclass] &&
         nodes[nodeid].classes[comclass][index]){
         delete nodes[nodeid].classes[comclass][index];
     }
-};
+}
 
-exports.notification = function(node, nodeid, notif) {
+function notification(node, nodeid, notif) {
     switch (notif) {
         case 0:
             node.log('node'+nodeid+': message complete');
@@ -126,13 +126,25 @@ exports.notification = function(node, nodeid, notif) {
             node.log('node'+nodeid+': unhandled notification');
             break;
     }
-};
+}
 
-exports.scanComplete = function(node) {
+function scanComplete(node) {
     node.log('Z-Wave network scan complete!');
     node.status({
         fill:'green',
         shape:'dot',
         text:'node-red:common.status.connected'
     });
+}
+
+module.exports = {
+    'driverReady'   : driverReady,
+    'driverFailed'  : driverFailed,
+    'nodeAdded'     : nodeAdded,
+    'nodeReady'     : nodeReady,
+    'valueAdded'    : valueAdded,
+    'valueChanged'  : valueChanged,
+    'valueRemoved'  : valueRemoved,
+    'notification'  : notification,
+    'scanComplete'  : scanComplete
 };

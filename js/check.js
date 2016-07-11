@@ -3,7 +3,7 @@
 var fs = require('fs');
 
 // Function to check if the instance is already in flows file
-exports.isNotInFlow = function(nodeid, comclass, value, product) {
+function isNotInFlow(nodeid, comclass, value, product) {
     var test = true,
         node = '',
         flows = JSON.parse(fs.readFileSync('root/userdir/flows.json', 'utf8'));
@@ -20,10 +20,10 @@ exports.isNotInFlow = function(nodeid, comclass, value, product) {
     }
 
     return test;
-};
+}
 
 // Function to avoid some unused instance during the self-generation
-exports.comclassToShow = function(comclass) {
+function comclassToShow(comclass) {
     var test = false;
 
     switch(comclass) {
@@ -41,4 +41,9 @@ exports.comclassToShow = function(comclass) {
     }
 
     return test;
+}
+
+module.exports = {
+    'isNotInFlow': isNotInFlow,
+    'comclassToShow': comclassToShow
 };

@@ -13,7 +13,7 @@ module.exports = function(RED) {
     var zwave = null,
         mqtt  = null,
         zwaveConnected = false,
-        mqttConnected = false;
+        mqttConnected  = false;
 
     function zwaveController(config) {
         RED.nodes.createNode(this, config);
@@ -49,7 +49,6 @@ module.exports = function(RED) {
                     ConsoleOutput: false,
                     SuppressValueRefresh: true
                 });
-                zwave.removeAllListeners();
             }
             zwave.lastY = 40;
 
@@ -91,12 +90,14 @@ module.exports = function(RED) {
 
             var zwaveController="/dev/ttyACM0"; // Z-Stick Gen5
             //var zwaveController="/dev/ttyUSB0"; // Z-Stick S2
+
             if(!zwaveConnected){
                 node.status({
                     fill:'blue',
                     shape:'dot',
                     text:'node-red:common.status.connecting'
                 });
+
                 zwave.connect(zwaveController);
                 zwaveConnected = true;
             } else {
@@ -108,14 +109,14 @@ module.exports = function(RED) {
             }
 
             this.on('close', function() {
-                node.log('ZWave node closure!');
-                if (zwave) {
-                    zwave.disconnect(zwaveController);
-                    zwave = null;
-                    zwaveConnected = false;
-                }
+                //if (zwave) {
+                //    zwave.disconnect(zwaveController);
+                //    zwave = null;
+                //    zwaveConnected = false;
+                //}
                 if (mqtt && mqttConnected) {
                 	mqtt.disconnect();
+                    mqtt = null;
                     mqttConnected = false;
                 }
             });
@@ -170,8 +171,8 @@ module.exports = function(RED) {
                     node.send(msg);
                 }, this.id);
                 // TODO : signaler la correction dans mqtt.js pour le status des mqttIn
-                if (this.brokerConn.connected) {
-                    node.status({fill:"green",shape:"dot",text:"node-red:common.status.connected"});
+                if (this.brokerConn.connecting) {
+                    node.status({fill:"green",shape:"dot",text:"node-red:common.status.connecting"});
                 }
             }
             else {
