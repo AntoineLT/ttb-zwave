@@ -97,7 +97,6 @@ module.exports = function(RED) {
                     shape:'dot',
                     text:'node-red:common.status.connecting'
                 });
-
                 zwave.connect(zwaveController);
                 zwaveConnected = true;
             } else {
