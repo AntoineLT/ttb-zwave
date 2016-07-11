@@ -53,7 +53,7 @@ module.exports = function(RED) {
             zwave.lastY = 40;
 
             zwave.on('driver ready', function(homeid) {
-                handler.driverReady(node, homeid);
+                handler.driverReady(node, RED, homeid);
             });
 
             zwave.on('driver failed', function() {
@@ -69,7 +69,7 @@ module.exports = function(RED) {
             });
 
             zwave.on('value added', function(nodeid, comclass, value) {
-                handler.valueAdded(node, mqtt, nodeid, comclass, value);
+                handler.valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value);
             });
 
             zwave.on('value changed', function(nodeid, comclass, value) {
@@ -121,7 +121,7 @@ module.exports = function(RED) {
             });
         }
     }
-    RED.nodes.registerType("zwave-controller", zwaveController);
+    RED.nodes.registerType("zwave", zwaveController);
 
     function MQTTInNode(n) {
         RED.nodes.createNode(this,n);
@@ -187,5 +187,5 @@ module.exports = function(RED) {
             this.error(RED._("mqtt.errors.missing-config"));
         }
     }
-    RED.nodes.registerType("zwavein", MQTTInNode);
+    RED.nodes.registerType("zwave-in", MQTTInNode);
 };

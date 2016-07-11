@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="zwave-controller">
+<script type="text/x-red" data-template-name="zwave">
 	<div class="form-row">
 		<label for="node-input-broker"><i class="fa fa-globe"></i> <span data-i18n="zwave.broker"></span></label>
 		<input type="text" id="node-input-broker">
@@ -13,7 +13,7 @@
 	</div>
 </script>
 
-<script type="text/x-red" data-template-name="zwavein">
+<script type="text/x-red" data-template-name="zwave-in">
     <div class="form-row">
         <label for="node-input-nodeid"><i class="fa fa-tasks"></i> <span data-i18n="zwave-in.nodeid"></span></label>
         <input type="text" id="node-input-nodeid" data-i18n="[placeholder]zwave-in.nodeid">
@@ -43,7 +43,7 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('zwave-controller',{
+    RED.nodes.registerType('zwave',{
         category: 'Automation',
         color:"#ffffff",
         defaults: {
@@ -54,13 +54,14 @@
         inputs:0,
         outputs:0,
         icon: "zwave.png",
+        paletteLabel: "ZWave",
         align: "right",
         label: function() {
-            return this.name||"Z-Wave Controller";
+            return this.name||"ZWave";
         }
     });
 
-    RED.nodes.registerType('zwavein',{
+    RED.nodes.registerType('zwave-in',{
         category: 'hardware',
         color:"#ffffff",
         defaults: {

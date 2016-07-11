@@ -2,7 +2,7 @@ var check = require('./check.js');
 
 var nodes =[];
 
-function driverReady(node, homeid) {
+function driverReady(node, RED, homeid) {
     node.log('Driver ready');
     node.log('Scanning homeid=0x'+homeid.toString(16)+'...');
     node.status({
@@ -10,6 +10,14 @@ function driverReady(node, homeid) {
         shape:'dot',
         text:'node-red:common.status.connecting'
     });
+    var missing = check.isNotInFlow('zwave', null, null, null);
+    if(missing) {
+        RED.nodes.addNodeToClients({
+            "type": "tab",
+            "id": "zwave",
+            "label": "Z-wave"
+        });
+    }
 }
 
 function driverFailed(node) {
@@ -53,18 +61,58 @@ function nodeReady(node, nodeid, nodeinfo) {
         +((nodeinfo.product) ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype));
 
     if(nodeinfo.manufacturer && nodeinfo.product) {
-        //var productInfo = nodeinfo.product.replace(/ /g, ''),
-        //    productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product;
+        var productInfo  = nodeinfo.product.replace(/ /g, ''),
+            productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product;
 
+        if(check.isNotInFlow(nodeid, null, null, productInfo)) {
+            switch(nodeinfo.type) {
+                case 'Binary Switch':
+                    switch(productTotal) {
+
+                    }
+                    break;
+
+                case 'Light Dimmer Switch':
+                    switch(productTotal) {
+
+                    }
+                    break;
+
+                case 'Remote Control Multi Purpose':
+                    switch(productTotal) {
+
+                    }
+                    break;
+
+                case 'On/Off Power Switch':
+                    switch(productTotal) {
+
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 }
 
-function valueAdded(node, mqtt, nodeid, comclass, value) {
-    // TODO: Finish implementation of this handler
+function valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value) {
     if(nodeid !== 1 && value.label !== ""
         && check.isNotInFlow(nodeid, comclass, value, null)){
         if(check.comclassToShow(comclass)) {
-            //console.log('Value added');
+            RED.nodes.addNodeToClients({
+                "id": "zwave-in-"+nodeid+"-"+comclass+":"+value.index,
+                "type": "zwave-in",
+                "name": "Node"+nodeid+" : "+value.label,
+                "topic": node.topic +  nodeid + "/" + comclass + "/" + value.index + "/",
+                "nodeid": nodeid,
+                "broker": node.broker,
+                "x": 200,
+                "y": zwave.lastY,
+                "z": "zwave"
+            });
+            zwave.lastY+=60;
         }
     }
 
