@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file:$PROJECT_DIR$/../../../../../..//$PROJECT_DIR$/.idea/ttb-zwave.iml" filepath="$PROJECT_DIR$/.idea/ttb-zwave.iml" />
-      <module fileurl="file:$PROJECT_DIR$/../../../../../..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave/.idea/ttb-zwave.iml" filepath="ALTSA/..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave/.idea/ttb-zwave.iml" />
-    </modules>
-  </component>
-</project>
