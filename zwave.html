@@ -42,6 +42,68 @@
     </div>
 </script>
 
+<script type="text/x-red" data-template-name="zwave-out">
+    <div class="form-row">
+        <label for="node-input-method"><i class="fa fa-tasks"></i> <span data-i18n="zwave-out.method.label"></span></label>
+        <select type="text" id="node-input-method" style="width:72%;">
+            <option value="setlevel" selected data-i18n="[html]zwave-out.method.setlevel"></option>
+            <option value="switchon" data-i18n="[html]zwave-out.method.switchon"></option>
+            <option value="switchoff" data-i18n="[html]zwave-out.method.switchoff"></option>
+            <option value="setvalue" data-i18n="[html]zwave-out.method.setvalue"></option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="zwave-out.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]zwave-out.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-nodeid"><i class="fa fa-tasks"></i> <span data-i18n="zwave-in.nodeid"></span></label>
+        <input type="text" id="node-input-nodeid" data-i18n="[placeholder]zwave-in.nodeid">
+    </div>
+
+    <div class="form-row setlevel">
+        <label for="node-input-level"><i class="fa fa-tag"></i> <span data-i18n="zwave-out.level"></span></label>
+        <input type="text" id="node-input-level" data-i18n="[placeholder]zwave-out.level">
+    </div>
+    <div class="form-row setvalue">
+        <label for="node-input-class"><i class="fa fa-tag"></i> <span data-i18n="zwave-out.class"></span></label>
+        <input type="text" id="node-input-class" data-i18n="[placeholder]zwave-out.class">
+    </div>
+    <div class="form-row setvalue">
+        <label for="node-input-index"><i class="fa fa-tag"></i> <span data-i18n="zwave-out.index"></span></label>
+        <input type="text" id="node-input-index" data-i18n="[placeholder]zwave-out.index">
+    </div>
+    <div class="form-row setvalue">
+        <label for="node-input-value"><i class="fa fa-tag"></i> <span data-i18n="zwave-out.value"></span></label>
+        <input type="text" id="node-input-value" data-i18n="[placeholder]zwave-out.value">
+    </div>
+</script>
+
+<script type="text/x-red" data-template-name="zwave-light-dimmer-switch">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="zwave.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]zwave.name">
+    </div>
+</script>
+
+<script type="text/x-red" data-template-name="zwave-binary-switch">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="zwave.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]zwave.name">
+    </div>
+</script>
+
+<script type="text/x-red" data-template-name="zwave-remote-control-multi-purpose">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="zwave.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]zwave.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-push"><i class="fa fa-bullseye"></i> <span data-i18n="zwave.push"></span></label>
+        <input type="checkbox" id="node-input-push">
+    </div>
+</script>
+
 <script type="text/javascript">
     RED.nodes.registerType('zwave',{
         category: 'Automation',
@@ -91,6 +153,116 @@
                     arrow.addClass("ui-icon-triangle-1-e");
                 }
             });
+        }
+    });
+
+    RED.nodes.registerType('zwave-out',{
+        category: 'hardware',
+        color:"#ffffff",
+        defaults: {
+            name: {value:""},
+            method: {value:"setlevel", required:true},
+            nodeid: {value: "", required: true},
+            level: {value: ""},
+            class: {value: ""},
+            index: {value: ""},
+            value: {value: ""}
+        },
+        inputs:1,
+        outputs:0,
+        icon: "zwave.png",
+        paletteLabel: "ZWave Output Node",
+        label: function() {
+            return this.name||"Z-Wave Out";
+        },
+        oneditprepare: function() {
+            $(".setvalue").hide();
+
+            $("#node-input-method").change(function(){
+                switch($("#node-input-method").val()){
+                    case "setlevel":
+                        $(".setvalue").hide();
+                        $(".setlevel").show();
+                        break;
+                    case "switchon":
+                        $(".setvalue").hide();
+                        $(".setlevel").hide();
+                        break;
+                    case "switchoff":
+                        $(".setvalue").hide();
+                        $(".setlevel").hide();
+                        break;
+                    case "setvalue":
+                        $(".setvalue").show();
+                        $(".setlevel").hide();
+                        break;
+                }
+            });
+        }
+    });
+
+    RED.nodes.registerType('zwave-light-dimmer-switch',{
+        category: 'system',
+        color:"#ffffff",
+        defaults: {
+            name: {value:""},
+            nodeid: {value: ""},
+            mark: {value: null}
+        },
+        inputs:1,
+        outputs:0,
+        icon: function() {
+            return this.mark||"zwave.png";
+        },
+        label: function() {
+            return this.name||"Light Dimmer Switch";
+        }
+    });
+
+    RED.nodes.registerType('zwave-binary-switch',{
+        category: 'system',
+        color:"#ffffff",
+        defaults: {
+            name: {value:""},
+            nodeid: {value: ""},
+            mark: {value: null}
+        },
+        inputs:1,
+        outputs:0,
+        icon: function() {
+            return this.mark||"zwave.png";
+        },
+        label: function() {
+            return this.name||"Binary Switch";
+        }
+    });
+
+    RED.nodes.registerType('zwave-remote-control-multi-purpose',{
+        category: 'system',
+        color:"#ffffff",
+        defaults: {
+            name: {value:""},
+            nodeid: {value: ""},
+            push: {value: false},
+            mark: {value: null}
+        },
+        inputs:0,
+        outputs:1,
+        icon: function() {
+            return this.mark||"zwave.png";
+        },
+        label: function() {
+            return this.name||"Remote Control Multi Purpose";
+        },
+        oneditprepare: function() {
+            if(this.push === true) {
+                $("#node-input-push").prop("checked", true);
+            } else {
+                $("#node-input-push").prop("checked", false);
+            }
+        },
+        oneditsave: function() {
+            this.push = $("#node-input-push").prop("checked");
         }
     });
 </script>

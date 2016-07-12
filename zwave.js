@@ -8,7 +8,10 @@ module.exports = function(RED) {
         openZwave = require('openzwave-shared'),
         mqttCP    = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var handler = require('./js/handler.js');
+    var handler = require('./js/handler.js'),
+        outNode = require('./js/outNode.js'),
+        switchFunc  = require('./js/devices/switch.js'),
+        remoteFunc  = require('./js/devices/remote.js');
 
     var zwave = null,
         mqtt  = null,
@@ -65,7 +68,7 @@ module.exports = function(RED) {
             });
 
             zwave.on('node ready', function(nodeid, nodeinfo) {
-                handler.nodeReady(node, nodeid, nodeinfo);
+                handler.nodeReady(node, RED, zwave, nodeid, nodeinfo);
             });
 
             zwave.on('value added', function(nodeid, comclass, value) {
@@ -108,9 +111,9 @@ module.exports = function(RED) {
             }
 
             this.on('close', function() {
-                //if (zwave) {
+                //if (zwaveConnected) {
                 //    zwave.disconnect(zwaveController);
-                //    zwave = null;
+                //    //zwave = null;
                 //    zwaveConnected = false;
                 //}
                 if (mqtt && mqttConnected) {
@@ -188,4 +191,54 @@ module.exports = function(RED) {
         }
     }
     RED.nodes.registerType("zwave-in", MQTTInNode);
+
+    function zwaveOutNode(config) {
+        RED.nodes.createNode(this,config);
+        this.method = config.method;
+        this.nodeid = config.nodeid;
+        this.level  = config.level;
+        this.class  = config.class;
+        this.index  = config.index;
+        this.value  = config.value;
+        var node = this;
+
+        this.on('input', function(msg) {
+            outNode.onInput(node, zwave, msg);
+        });
+    }
+    RED.nodes.registerType("zwave-out", zwaveOutNode);
+
+    function lightDimmerSwitch(config) {
+        RED.nodes.createNode(this,config);
+        this.nodeid = config.nodeid;
+        var node = this;
+
+        this.on('input', function(msg) {
+            switchFunc.lightDimmerSwitch(node, zwave, msg);
+        });
+    }
+    RED.nodes.registerType("zwave-light-dimmer-switch", lightDimmerSwitch);
+
+    function binarySwitch(config) {
+        RED.nodes.createNode(this,config);
+        this.nodeid = config.nodeid;
+        var node = this;
+
+        this.on('input', function(msg) {
+            switchFunc.binarySwitch(node, zwave, msg);
+        });
+    }
+    RED.nodes.registerType("zwave-binary-switch", binarySwitch);
+
+    function remoteControlMultiPurpose(config) {
+        RED.nodes.createNode(this,config);
+        this.nodeid = config.nodeid;
+        this.push   = config.push;
+        var node  = this;
+
+        zwave.on('scene event', function(nodeid, sceneid) {
+            remoteFunc.softRemote(node, nodeid, sceneid);
+        });
+    }
+    RED.nodes.registerType("zwave-remote-control-multi-purpose", remoteControlMultiPurpose);
 };

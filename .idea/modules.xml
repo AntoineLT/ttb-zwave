@@ -3,8 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file:$PROJECT_DIR$/../../../../../..//$PROJECT_DIR$/.idea/ttb-zwave.iml" filepath="$PROJECT_DIR$/.idea/ttb-zwave.iml" />
-      <module fileurl="file:$PROJECT_DIR$/../../../../../..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave/.idea/ttb-zwave-test.iml" filepath="ALTSA/..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave/.idea/ttb-zwave-test.iml" />
-      <module fileurl="file:$PROJECT_DIR$/../../../../../..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave-test/.idea/ttb-zwave-test.iml" filepath="ALTSA/..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave-test/.idea/ttb-zwave-test.iml" />
+      <module fileurl="file:$PROJECT_DIR$/../../../../../..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave/.idea/ttb-zwave.iml" filepath="ALTSA/..////ALTSA/TheThingBox/root/userdir/node_modules/ttb-zwave/.idea/ttb-zwave.iml" />
     </modules>
   </component>
 </project>
