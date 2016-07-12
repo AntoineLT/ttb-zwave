@@ -112,7 +112,7 @@ module.exports = function(RED) {
 
             this.on('close', function() {
                 if (zwave && zwaveConnected) {
-                    zwave.disconnect();
+                    zwave.disconnect(zwaveController);
                     zwaveConnected = false;
                 }
                 if (mqtt && mqttConnected) {
