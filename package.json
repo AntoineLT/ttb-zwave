@@ -1,6 +1,6 @@
 {
   "name": "ttb-zwave-test",
-  "version": "1.2.0a",
+  "version": "1.2.0b",
   "description": "A Zwave Node-RED node made for TheThingBox and TimeSquAir.",
   "node-red": {
     "nodes": {
