@@ -10,7 +10,7 @@
   "installation-duration": 360,
   "dependencies": {
     "is-utf8": "^0.2.1",
-    "openzwave-shared": "git://github.com/AntoineLT/node-openzwave-shared.git#test"
+    "openzwave-shared": "git://github.com/AntoineLT/node-openzwave-shared.git"
   },
   "keywords": [
     "thingbox",
