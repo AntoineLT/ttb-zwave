@@ -1,6 +1,6 @@
 {
   "name": "ttb-zwave",
-  "version": "1.2.0b",
+  "version": "1.2.1",
   "description": "A Zwave Node-RED node made for TheThingBox and TimeSquAir.",
   "node-red": {
     "nodes": {
@@ -20,7 +20,13 @@
     "ZWave"
   ],
   "author": {
-    "name": "http://www.digitalairways.com/"
+    "name": "thethingbox",
+    "email": "thethingbox@gmail.com",
+    "url": "http://thethingbox.io/"
   },
-  "license": "http://www.wtfpl.net"
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/TheThingBox/ttb-zwave.git"
+  },
+  "license": "WTFPL"
 }
