@@ -172,8 +172,8 @@ module.exports = function(RED) {
                     // --- Node specific code - end
                     node.send(msg);
                 }, this.id);
-                if (this.brokerConn.connecting) {
-                    node.status({fill:"blue",shape:"dot",text:"node-red:common.status.connecting"});
+                if (this.brokerConn.connected) {
+                    node.status({fill:"green",shape:"dot",text:"node-red:common.status.connected"});
                 }
             }
             else {
