@@ -76,7 +76,7 @@ function nodeReady(node, RED, zwave, nodeid, nodeinfo) {
                                 "name": nodeid+": "+productTotal,
                                 "nodeid": nodeid,
                                 "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g,'')+".png",
-                                "x": 200,
+                                "x": 300,
                                 "y": zwave.lastY,
                                 "z": "zwave"
                             });
@@ -98,7 +98,7 @@ function nodeReady(node, RED, zwave, nodeid, nodeinfo) {
                                 "name": nodeid+": "+productTotal,
                                 "nodeid": nodeid,
                                 "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g,'')+".png",
-                                "x": 200,
+                                "x": 300,
                                 "y": zwave.lastY,
                                 "z": "zwave"
                             });
@@ -120,7 +120,7 @@ function nodeReady(node, RED, zwave, nodeid, nodeinfo) {
                                 "name": nodeid+": "+nodeinfo.manufacturer+", SoftRemote",
                                 "nodeid": nodeid,
                                 "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g,'')+".png",
-                                "x": 200,
+                                "x": 300,
                                 "y": zwave.lastY,
                                 "z": "zwave"
                             });
@@ -141,7 +141,7 @@ function nodeReady(node, RED, zwave, nodeid, nodeinfo) {
                                 "name": nodeid+": "+productTotal,
                                 "nodeid": nodeid,
                                 "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g,'')+".png",
-                                "x": 200,
+                                "x": 300,
                                 "y": zwave.lastY,
                                 "z": "zwave"
                             });
@@ -168,7 +168,7 @@ function valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value) {
                 "topic": node.topic +  nodeid + "/" + comclass + "/" + value.index + "/",
                 "nodeid": nodeid,
                 "broker": node.broker,
-                "x": 200,
+                "x": 300,
                 "y": zwave.lastY,
                 "z": "zwave"
             });
