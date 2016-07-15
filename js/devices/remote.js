@@ -1,9 +1,18 @@
 'use strict';
 
 var timer = undefined,
-    count = 0;
+    count = 0,
+    topic = 'zwave/';
 
-function softRemote(node, nodeID, sceneID){
+var flows = require('../flows').read();
+
+for(var i = 0; i < flows.length; i++) {
+    if(flows[i].type === 'zwave') {
+        topic = flows[i].topic;
+    }
+}
+
+function softRemote(node, mqtt, nodeID, sceneID){
     if (node.nodeid === nodeID) {
         var msg = {};
         msg.payload = sceneID;
@@ -66,6 +75,13 @@ function softRemote(node, nodeID, sceneID){
                 node.send(msg);
                 break;
         }
+
+        var msgMQTT = {};
+        msgMQTT.qos = 1;
+        msgMQTT.retain = false;
+        msgMQTT.topic = topic +  nodeID + '/sceneID/';
+        msgMQTT.payload = msg.payload;
+        if(typeof mqtt != 'undefined') mqtt.publish(msgMQTT);
     }
 }
 

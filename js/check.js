@@ -1,12 +1,11 @@
 'use strict';
 
-var fs = require('fs');
+var flows = require('./flows').read();
 
 // Function to check if the instance is already in flows file
 function isNotInFlow(nodeid, comclass, value, product) {
     var test = true,
-        node = '',
-        flows = JSON.parse(fs.readFileSync('root/userdir/flows.json', 'utf8'));
+        node = '';
 
     if(product === null) {
         (comclass !== null && value !== null) ? node = "zwave-in-"+nodeid+"-"+comclass+":"+value.index : node = nodeid;
