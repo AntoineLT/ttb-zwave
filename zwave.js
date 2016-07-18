@@ -6,12 +6,18 @@ module.exports = function(RED) {
     var path      = require('path'),
         isUtf8    = require('is-utf8'),
         openZwave = require('openzwave-shared'),
+        //event     = require("events").EventEmitter,
         mqttCP    = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var handler = require('./js/handler.js'),
-        outNode = require('./js/outNode.js'),
-        switchFunc  = require('./js/devices/switch.js'),
-        remoteFunc  = require('./js/devices/remote.js');
+    var handler   = require('./js/handler'),
+        outNode   = require('./js/outNode'),
+        //autoFlows = require('./js/autoFlows'),
+        switchFunc  = require('./js/devices/switch'),
+        remoteFunc  = require('./js/devices/remote');
+
+    //var emitter = new event();
+
+    //autoFlows.init();
 
     var zwave = null,
         mqtt  = null,
@@ -35,15 +41,20 @@ module.exports = function(RED) {
                     node.brokerConfig.broker,
                     node.brokerConfig.port
                 );
-                mqtt.on("connectionlost", function() {
-                    node.warn("Connection to MQTT lost");
+                mqtt.on('connectionlost', function() {
+                    node.warn('Connection to MQTT lost');
                 });
-                mqtt.on("connect", function() {
-                    node.log("Connection to MQTT established");
+                mqtt.on('connect', function() {
+                    node.log('Connection to MQTT established');
                 });
                 mqtt.connect();
                 mqttConnected = true;
             }
+
+            //mqtt.on('new value', function() {
+            //    console.log('test');
+            //    //emitter.emit('command');
+            //});
 
             if(!zwave) {
                 zwave = new openZwave({
@@ -215,6 +226,10 @@ module.exports = function(RED) {
         this.on('input', function(msg) {
             switchFunc.lightDimmerSwitch(node, zwave, msg);
         });
+        //
+        //emitter.on('command', function() {
+        //
+        //});
     }
     RED.nodes.registerType("zwave-light-dimmer-switch", lightDimmerSwitch);
 
@@ -226,6 +241,10 @@ module.exports = function(RED) {
         this.on('input', function(msg) {
             switchFunc.binarySwitch(node, zwave, msg);
         });
+        //
+        //emitter.on('command', function() {
+        //
+        //});
     }
     RED.nodes.registerType("zwave-binary-switch", binarySwitch);
 
@@ -236,7 +255,7 @@ module.exports = function(RED) {
         var node  = this;
 
         zwave.on('scene event', function(nodeid, sceneid) {
-            remoteFunc.softRemote(node, nodeid, sceneid);
+            remoteFunc.softRemote(node, mqtt, nodeid, sceneid);
         });
     }
     RED.nodes.registerType("zwave-remote-control-multi-purpose", remoteControlMultiPurpose);
