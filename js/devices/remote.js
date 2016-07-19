@@ -80,8 +80,10 @@ function softRemote(node, mqtt, nodeID, sceneID){
         msgMQTT.qos = 1;
         msgMQTT.retain = false;
         msgMQTT.topic = topic +  nodeID + '/out/';
-        msgMQTT.payload = msg.payload;
-        msgMQTT.intent = msg.intent;
+        msgMQTT.payload = {
+            'payload': msg.payload,
+            'intent': msg.intent
+        };
         if(typeof mqtt != 'undefined') mqtt.publish(msgMQTT);
     }
 }
