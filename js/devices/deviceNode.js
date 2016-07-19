@@ -4,22 +4,23 @@ var flows = require('../flows');
 
 function withClient(RED, zwave, nodeid, nodeinfo) {
     var productInfo  = nodeinfo.product.replace(/ /g, ''),
-        productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product;
+        productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product,
+        node = {
+            "id": nodeid + "-" + productInfo,
+            "name": nodeid + ": " + productTotal,
+            "nodeid": nodeid,
+            "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
+            "x": 300,
+            "y": zwave.lastY,
+            "z": "zwave"
+        };
 
     switch (nodeinfo.type) {
         case 'Binary Switch':
             switch (productTotal) {
                 case "FIBARO System, FGWPE Wall Plug":
-                    RED.nodes.addNodeToClients({
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-binary-switch",
-                        "name": nodeid + ": " + productTotal,
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave"
-                    });
+                    node.type = "zwave-binary-switch";
+                    RED.nodes.addNodeToClients(node);
                     zwave.lastY += 60;
                     break;
 
@@ -32,16 +33,8 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             switch (productTotal) {
                 case "Zipato, RGBW LED Bulb":
                 case "Aeotec, LED Bulb":
-                    RED.nodes.addNodeToClients({
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-light-dimmer-switch",
-                        "name": nodeid + ": " + productTotal,
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave"
-                    });
+                    node.type = "zwave-light-dimmer-switch";
+                    RED.nodes.addNodeToClients(node);
                     zwave.lastY += 60;
                     break;
 
@@ -54,16 +47,8 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             switch (productTotal) {
                 case "NodOn, CRC-3-6-0x Soft Remote":
                     zwave.setConfigParam(nodeid, 3, 1, 1);
-                    RED.nodes.addNodeToClients({
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-remote-control-multi-purpose",
-                        "name": nodeid + ": " + nodeinfo.manufacturer + ", SoftRemote",
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave"
-                    });
+                    node.type = "zwave-remote-control-multi-purpose";
+                    RED.nodes.addNodeToClients(node);
                     zwave.lastY += 60;
                     break;
 
@@ -75,16 +60,8 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
         case 'On/Off Power Switch':
             switch (productTotal) {
                 case "NodOn, ASP-3-1-00 Smart Plug":
-                    RED.nodes.addNodeToClients({
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-binary-switch",
-                        "name": nodeid + ": " + productTotal,
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave"
-                    });
+                    node.type = "zwave-binary-switch";
+                    RED.nodes.addNodeToClients(node);
                     zwave.lastY += 60;
                     break;
             }
@@ -98,25 +75,24 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
 function withoutClient(zwave, nodeid, nodeinfo) {
     var productInfo  = nodeinfo.product.replace(/ /g, ''),
         productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product,
-        node = null;
+        node = {
+            "id": nodeid + "-" + productInfo,
+            "name": nodeid + ": " + productTotal,
+            "nodeid": nodeid,
+            "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
+            "x": 300,
+            "y": zwave.lastY,
+            "z": "zwave",
+            "extra": {
+                "ui": true
+            }
+        };
 
     switch (nodeinfo.type) {
         case 'Binary Switch':
             switch (productTotal) {
                 case "FIBARO System, FGWPE Wall Plug":
-                    node = {
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-binary-switch",
-                        "name": nodeid + ": " + productTotal,
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave",
-                        "extra": {
-                            "ui": true
-                        }
-                    };
+                    node.type = "zwave-binary-switch";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY += 60;
                     break;
@@ -130,19 +106,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
             switch (productTotal) {
                 case "Zipato, RGBW LED Bulb":
                 case "Aeotec, LED Bulb":
-                    node = {
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-light-dimmer-switch",
-                        "name": nodeid + ": " + productTotal,
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave",
-                        "extra": {
-                            "ui": true
-                        }
-                    };
+                    node.type = "zwave-light-dimmer-switch";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY += 60;
                     break;
@@ -156,19 +120,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
             switch (productTotal) {
                 case "NodOn, CRC-3-6-0x Soft Remote":
                     zwave.setConfigParam(nodeid, 3, 1, 1);
-                    node = {
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-remote-control-multi-purpose",
-                        "name": nodeid + ": " + nodeinfo.manufacturer + ", SoftRemote",
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave",
-                        "extra": {
-                            "ui": true
-                        }
-                    };
+                    node.type = "zwave-remote-control-multi-purpose";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY += 60;
                     break;
@@ -181,19 +133,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
         case 'On/Off Power Switch':
             switch (productTotal) {
                 case "NodOn, ASP-3-1-00 Smart Plug":
-                    node = {
-                        "id": nodeid + "-" + productInfo,
-                        "type": "zwave-binary-switch",
-                        "name": nodeid + ": " + productTotal,
-                        "nodeid": nodeid,
-                        "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-                        "x": 300,
-                        "y": zwave.lastY,
-                        "z": "zwave",
-                        "extra": {
-                            "ui": true
-                        }
-                    };
+                    node.type = "zwave-binary-switch";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY += 60;
                     break;
