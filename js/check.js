@@ -1,6 +1,6 @@
 'use strict';
 
-var flows = require('./flows').read();
+var flows = require('./flows').readFlows();
 
 // Function to check if the instance is already in flows file
 function isNotInFlow(nodeid, comclass, value, product) {
@@ -15,7 +15,7 @@ function isNotInFlow(nodeid, comclass, value, product) {
 
     for(var i = 0; i < flows.length; i++) {
         test = !(flows[i].id === node);
-        if(test == false) break;
+        if(test === false) break;
     }
 
     return test;

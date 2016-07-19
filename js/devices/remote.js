@@ -4,7 +4,7 @@ var timer = undefined,
     count = 0,
     topic = 'zwave/';
 
-var flows = require('../flows').read();
+var flows = require('../flows').readFlows();
 
 for(var i = 0; i < flows.length; i++) {
     if(flows[i].type === 'zwave') {
@@ -79,8 +79,9 @@ function softRemote(node, mqtt, nodeID, sceneID){
         var msgMQTT = {};
         msgMQTT.qos = 1;
         msgMQTT.retain = false;
-        msgMQTT.topic = topic +  nodeID + '/sceneID/';
+        msgMQTT.topic = topic +  nodeID + '/out/';
         msgMQTT.payload = msg.payload;
+        msgMQTT.intent = msg.intent;
         if(typeof mqtt != 'undefined') mqtt.publish(msgMQTT);
     }
 }
