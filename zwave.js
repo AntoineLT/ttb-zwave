@@ -57,7 +57,7 @@ module.exports = function(RED) {
                     SuppressValueRefresh: true
                 });
             }
-            zwave.lastY = 40;
+            zwave.lastY = [];
 
             zwave.on('driver ready', function(homeid) {
                 handler.driverReady(node, RED, homeid);

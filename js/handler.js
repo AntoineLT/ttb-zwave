@@ -76,6 +76,7 @@ function nodeReady(node, RED, zwave, noClient, nodeid, nodeinfo) {
 }
 
 function valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value) {
+    if(!zwave.lastY[nodeid-2]) zwave.lastY[nodeid-2] = 40;
     if(nodeid !== 1 && value.label !== ""
         && check.isNotInFlow(nodeid, comclass, value, null)){
         if(check.comclassToShow(comclass)) {
@@ -86,11 +87,11 @@ function valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value) {
                 "topic": node.topic +  nodeid + "/" + comclass + "/" + value.index + "/",
                 "nodeid": nodeid,
                 "broker": node.broker,
-                "x": 300,
-                "y": zwave.lastY,
+                "x": 250+((nodeid-2)*300),
+                "y": zwave.lastY[nodeid-2],
                 "z": "zwave"
             });
-            zwave.lastY+=60;
+            zwave.lastY[nodeid-2]+=60;
         }
     }
 

@@ -3,6 +3,7 @@
 var flows = require('../flows');
 
 function withClient(RED, zwave, nodeid, nodeinfo) {
+    if(!zwave.lastY[nodeid-2]) zwave.lastY[nodeid-2] = 40;
     var productInfo  = nodeinfo.product.replace(/ /g, ''),
         productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product,
         node = {
@@ -10,8 +11,8 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             "name": nodeid + ": " + productTotal,
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-            "x": 300,
-            "y": zwave.lastY,
+            "x": 250+((nodeid-2)*300),
+            "y": zwave.lastY[nodeid-2],
             "z": "zwave"
         };
 
@@ -21,7 +22,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
                 case "FIBARO System, FGWPE Wall Plug":
                     node.type = "zwave-binary-switch";
                     RED.nodes.addNodeToClients(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
 
                 default:
@@ -35,7 +36,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
                 case "Aeotec, LED Bulb":
                     node.type = "zwave-light-dimmer-switch";
                     RED.nodes.addNodeToClients(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
 
                 default:
@@ -49,7 +50,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
                     zwave.setConfigParam(nodeid, 3, 1, 1);
                     node.type = "zwave-remote-control-multi-purpose";
                     RED.nodes.addNodeToClients(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
 
                 default:
@@ -62,7 +63,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
                 case "NodOn, ASP-3-1-00 Smart Plug":
                     node.type = "zwave-binary-switch";
                     RED.nodes.addNodeToClients(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
             }
             break;
@@ -73,6 +74,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
 }
 
 function withoutClient(zwave, nodeid, nodeinfo) {
+    if(!zwave.lastY[nodeid-2]) zwave.lastY[nodeid-2] = 40;
     var productInfo  = nodeinfo.product.replace(/ /g, ''),
         productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product,
         node = {
@@ -80,8 +82,8 @@ function withoutClient(zwave, nodeid, nodeinfo) {
             "name": nodeid + ": " + productTotal,
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-            "x": 300,
-            "y": zwave.lastY,
+            "x": 250+((nodeid-2)*300),
+            "y": zwave.lastY[nodeid-2],
             "z": "zwave",
             "extra": {
                 "ui": true
@@ -94,7 +96,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
                 case "FIBARO System, FGWPE Wall Plug":
                     node.type = "zwave-binary-switch";
                     flows.addNodeToServerFlows(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
 
                 default:
@@ -108,7 +110,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
                 case "Aeotec, LED Bulb":
                     node.type = "zwave-light-dimmer-switch";
                     flows.addNodeToServerFlows(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
 
                 default:
@@ -122,7 +124,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
                     zwave.setConfigParam(nodeid, 3, 1, 1);
                     node.type = "zwave-remote-control-multi-purpose";
                     flows.addNodeToServerFlows(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
 
                 default:
@@ -135,7 +137,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
                 case "NodOn, ASP-3-1-00 Smart Plug":
                     node.type = "zwave-binary-switch";
                     flows.addNodeToServerFlows(node);
-                    zwave.lastY += 60;
+                    zwave.lastY[nodeid-2] += 60;
                     break;
             }
             break;
