@@ -26,7 +26,7 @@ function subscription(RED, node, zwave) {
             }
             if(typeof msg !== 'object') {
                 msg = {
-                    payload: msg
+                    payload: msg || payload
                 };
             }
             switchFunc.binarySwitch(node, zwave, msg);
