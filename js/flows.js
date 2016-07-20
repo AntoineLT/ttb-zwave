@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs'),
+    exec = require('child_process').exec,
     flowsLocation = '/root/userdir/flows.json';
 
 function readFlows() {
@@ -8,7 +9,12 @@ function readFlows() {
 }
 
 function writeFlows(flowsLocation, result) {
-    fs.writeFileSync(flowsLocation, result);
+    fs.writeFile(flowsLocation, result, function (err) {
+        if (err) console.error('writeFile error: '+err);
+        exec('service thethingbox restart', function(error, stdout, stderr) {
+            if (error) console.error('exec error: '+error);
+        })
+    });
 }
 
 function addNodeToServerFlows(node) {
