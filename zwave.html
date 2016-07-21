@@ -106,7 +106,7 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('zwave',{
-        category: 'Automation',
+        category: 'automation',
         color:"#ffffff",
         defaults: {
             name: {value:""},
@@ -170,6 +170,7 @@
         },
         inputs:1,
         outputs:0,
+        align: 'right',
         icon: "zwave.png",
         paletteLabel: "ZWave Output Node",
         label: function() {
@@ -211,6 +212,7 @@
         },
         inputs:1,
         outputs:0,
+        align: 'right',
         icon: function() {
             return this.mark||"zwave.png";
         },
@@ -229,6 +231,7 @@
         },
         inputs:1,
         outputs:0,
+        align: 'right',
         icon: function() {
             return this.mark||"zwave.png";
         },
