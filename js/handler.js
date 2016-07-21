@@ -47,7 +47,7 @@ function nodeAdded(nodeid) {
     };
 }
 
-function nodeReady(node, RED, zwave, noClient, nodeid, nodeinfo) {
+function nodeReady(node, RED, zwave, client, nodeid, nodeinfo) {
     nodes[nodeid].manufacturer = nodeinfo.manufacturer;
     nodes[nodeid].manufacturerid = nodeinfo.manufacturerid;
     nodes[nodeid].product = nodeinfo.product;
@@ -66,10 +66,10 @@ function nodeReady(node, RED, zwave, noClient, nodeid, nodeinfo) {
         var productInfo  = nodeinfo.product.replace(/ /g, '');
 
         if(check.isNotInFlow(nodeid, null, null, productInfo)) {
-            if(noClient) {
-                deviceNode.withoutClient(zwave, nodeid, nodeinfo);
-            } else {
+            if(client) {
                 deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
+            } else {
+                deviceNode.withoutClient(zwave, nodeid, nodeinfo);
             }
         }
     }

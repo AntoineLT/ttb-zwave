@@ -19,9 +19,9 @@ module.exports = function(RED) {
         mqtt  = null,
         zwaveConnected = false,
         mqttConnected  = false,
-        noClient       = true;
+        client         = false;
 
-    if(noClient) autoFlows.init();
+    if(!client) autoFlows.init();
 
     function zwaveController(config) {
         RED.nodes.createNode(this, config);
@@ -73,7 +73,7 @@ module.exports = function(RED) {
             });
 
             zwave.on('node ready', function(nodeid, nodeinfo) {
-                handler.nodeReady(node, RED, zwave, noClient, nodeid, nodeinfo);
+                handler.nodeReady(node, RED, zwave, client, nodeid, nodeinfo);
             });
 
             zwave.on('value added', function(nodeid, comclass, value) {
