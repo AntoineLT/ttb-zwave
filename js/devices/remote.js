@@ -13,7 +13,12 @@ for(var i = 0; i < flows.length; i++) {
     }
 }
 
-function softRemote(node, mqtt, nodeID, sceneID){
+function softRemote(node, nodeID, sceneID){
+    var msgMQTT = {};
+    msgMQTT.qos = 1;
+    msgMQTT.retain = false;
+    msgMQTT.topic = topic +  nodeID + '/out';
+
     if (node.nodeid === nodeID) {
         var msg = {};
         msg.payload = sceneID;
@@ -39,7 +44,15 @@ function softRemote(node, mqtt, nodeID, sceneID){
                     count++;
                     if(count>=20) break;
                     msg.intent = 2; // more
-                    timer = setTimeout(function(){node.send(msg); softRemote(nodeID, sceneID);}, 1000);
+                    msgMQTT.payload = {
+                        'payload': msg.payload,
+                        'intent': msg.intent
+                    };
+                    timer = setTimeout(function(){
+                        if(typeof node.mqtt != 'undefined')  node.mqtt.publish(msgMQTT);
+                        node.send(msg);
+                        softRemote(node, nodeID, sceneID);
+                    }, 1000);
                 } else {
                     node.send(msg);
                 }
@@ -66,7 +79,15 @@ function softRemote(node, mqtt, nodeID, sceneID){
                     count++;
                     if(count>=20) break;
                     msg.intent = 3; // less
-                    timer = setTimeout(function(){node.send(msg); softRemote(nodeID, sceneID);}, 1000);
+                    msgMQTT.payload = {
+                        'payload': msg.payload,
+                        'intent': msg.intent
+                    };
+                    timer = setTimeout(function(){
+                        if(typeof node.mqtt != 'undefined') node.mqtt.publish(msgMQTT);
+                        node.send(msg);
+                        softRemote(node, nodeID, sceneID);
+                    }, 1000);
                 } else {
                     node.send(msg);
                 }
@@ -77,15 +98,11 @@ function softRemote(node, mqtt, nodeID, sceneID){
                 break;
         }
 
-        var msgMQTT = {};
-        msgMQTT.qos = 1;
-        msgMQTT.retain = false;
-        msgMQTT.topic = topic +  nodeID + '/out';
         msgMQTT.payload = {
             'payload': msg.payload,
             'intent': msg.intent
         };
-        if(typeof mqtt != 'undefined') mqtt.publish(msgMQTT);
+        if(typeof node.mqtt != 'undefined')  node.mqtt.publish(msgMQTT);
     }
 }
 

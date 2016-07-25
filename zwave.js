@@ -216,12 +216,13 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
         this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in';
-        this.broker = RED.nodes.getNode('zwave-node').broker || 'MQTT.Localhost';
+        this.topicOut = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/38/0/';
+        this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
 
         if (node.brokerConn) {
-            connMQTT.subscription(RED, node, zwave);
+            connMQTT.subscription(RED, node, zwave, mqtt);
         } else {
             this.error(RED._("mqtt.errors.missing-config"));
         }
@@ -236,12 +237,13 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
         this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in';
-        this.broker = RED.nodes.getNode('zwave-node').broker || 'MQTT.Localhost';
+        this.topicOut = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/37/0/';
+        this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
 
         if (node.brokerConn) {
-            connMQTT.subscription(RED, node, zwave);
+            connMQTT.subscription(RED, node, zwave, mqtt);
         } else {
             this.error(RED._("mqtt.errors.missing-config"));
         }
@@ -256,10 +258,16 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
         this.push   = config.push;
+        this.broker = config.broker;
+        this.brokerConfig = RED.nodes.getNode(this.broker);
         var node  = this;
+        node.mqtt = mqttCP.get(
+            node.brokerConfig.broker,
+            node.brokerConfig.port
+        );
 
         zwave.on('scene event', function(nodeid, sceneid) {
-            remoteFunc.softRemote(node, mqtt, nodeid, sceneid);
+            remoteFunc.softRemote(node, nodeid, sceneid);
         });
     }
     RED.nodes.registerType("zwave-remote-control-multi-purpose", remoteControlMultiPurpose);

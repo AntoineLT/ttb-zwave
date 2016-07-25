@@ -9,6 +9,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
         node = {
             "id": nodeid + "-" + productInfo,
             "name": nodeid + ": " + productTotal,
+            "broker": "MQTT.Localhost",
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
             "x": 250+((nodeid-2)*300),
@@ -33,7 +34,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
         case 'Light Dimmer Switch':
             switch (productTotal) {
                 case "Zipato, RGBW LED Bulb":
-                case "Aeotec, LED Bulb":
+                case "Aeotec, ZW098 LED Bulb":
                     node.type = "zwave-light-dimmer-switch";
                     RED.nodes.addNodeToClients(node);
                     zwave.lastY[nodeid-2] += 60;
@@ -80,6 +81,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
         node = {
             "id": nodeid + "-" + productInfo,
             "name": nodeid + ": " + productTotal,
+            "broker": "MQTT.Localhost",
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
             "x": 250+((nodeid-2)*300),
@@ -107,7 +109,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
         case 'Light Dimmer Switch':
             switch (productTotal) {
                 case "Zipato, RGBW LED Bulb":
-                case "Aeotec, LED Bulb":
+                case "Aeotec, ZW098 LED Bulb":
                     node.type = "zwave-light-dimmer-switch";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY[nodeid-2] += 60;

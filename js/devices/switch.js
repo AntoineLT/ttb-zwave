@@ -1,5 +1,7 @@
 'use strict';
 
+var handler = require('../handler');
+
 function binarySwitch(node, zwave, msg) {
     if (msg.intent || msg.intent == 0) {
         switch(msg.intent) {
@@ -15,9 +17,11 @@ function binarySwitch(node, zwave, msg) {
 }
 
 function lightDimmerSwitch(node, zwave, msg) {
-    var currentValue = nodes[node.nodeid].classes[38][0].value;
-    if (msg.intent || msg.intent == 0) {
-        switch(msg.intent) {
+    var currentValue = handler.nodes[node.nodeid].classes[38][0].value;
+    var intent = (msg.intent || msg.intent == 0)?msg.intent: msg.payload.intent;
+    var intensity = parseInt((msg.intensity || msg.intensity === 0)?msg.intensity: msg.payload.intensity);
+    if (intent || intent == 0) {
+        switch(intent) {
             case 0: // close
                 zwave.setValue(node.nodeid, 38, 1, 0, 0);
                 break;
@@ -42,10 +46,9 @@ function lightDimmerSwitch(node, zwave, msg) {
                 break;
         }
     }
-    if(msg.intensity || msg.intensity === 0) {
-        msg.intensity = parseInt(msg.intensity);
-        if(msg.intensity === 100) msg.intensity = 99;
-        zwave.setValue(node.nodeid, 38, 1, 0, msg.intensity);
+    if(intensity || intensity === 0) {
+        if(intensity === 100) intensity = 99;
+        zwave.setValue(node.nodeid, 38, 1, 0, intensity);
     }
     if(msg.color) zwave.setValue(node.nodeid, 51, 1, 0, msg.color+"0000");
 }

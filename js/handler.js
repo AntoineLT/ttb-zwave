@@ -165,6 +165,7 @@ function scanComplete(node) {
 }
 
 module.exports = {
+    'nodes'         : nodes,
     'driverReady'   : driverReady,
     'driverFailed'  : driverFailed,
     'nodeAdded'     : nodeAdded,
