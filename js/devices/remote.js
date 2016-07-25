@@ -9,6 +9,7 @@ var flows = require('../flows').readFlows();
 for(var i = 0; i < flows.length; i++) {
     if(flows[i].type === 'zwave') {
         topic = flows[i].topic;
+        break;
     }
 }
 
@@ -79,7 +80,7 @@ function softRemote(node, mqtt, nodeID, sceneID){
         var msgMQTT = {};
         msgMQTT.qos = 1;
         msgMQTT.retain = false;
-        msgMQTT.topic = topic +  nodeID + '/out/';
+        msgMQTT.topic = topic +  nodeID + '/out';
         msgMQTT.payload = {
             'payload': msg.payload,
             'intent': msg.intent

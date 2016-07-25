@@ -215,14 +215,13 @@ module.exports = function(RED) {
     function lightDimmerSwitch(config) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
-        this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in/';
+        this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in';
         this.broker = RED.nodes.getNode('zwave-node').broker || 'MQTT.Localhost';
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
 
         if (node.brokerConn) {
             connMQTT.subscription(RED, node, zwave);
-            node.status({});
         } else {
             this.error(RED._("mqtt.errors.missing-config"));
         }
@@ -236,14 +235,13 @@ module.exports = function(RED) {
     function binarySwitch(config) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
-        this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in/';
+        this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in';
         this.broker = RED.nodes.getNode('zwave-node').broker || 'MQTT.Localhost';
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
 
         if (node.brokerConn) {
             connMQTT.subscription(RED, node, zwave);
-            node.status({});
         } else {
             this.error(RED._("mqtt.errors.missing-config"));
         }

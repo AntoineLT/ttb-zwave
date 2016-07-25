@@ -4,19 +4,9 @@ var isUtf8 = require('is-utf8'),
     switchFunc = require('./devices/switch');
 
 function subscription(RED, node, zwave) {
-    //node.status({fill:"red",shape:"ring",text:"node-red:common.status.disconnected"});
     if (node.topic) {
         node.brokerConn.register(node);
         node.brokerConn.subscribe(node.topic,2,function(topic,payload,packet) {
-            /* Original MQTTin code
-             if (isUtf8(payload)) { payload = payload.toString(); }
-             var msg = {topic:topic,payload:payload, qos: packet.qos, retain: packet.retain};
-             if ((node.brokerConn.broker === "localhost")||(node.brokerConn.broker === "127.0.0.1")) {
-             msg._topic = topic;
-             }
-             */
-
-            // --- Node specific code - begin
             var msg;
             if (isUtf8(payload)) { payload = payload.toString(); }
             try {
@@ -29,13 +19,19 @@ function subscription(RED, node, zwave) {
                     payload: msg || payload
                 };
             }
-            switchFunc.binarySwitch(node, zwave, msg);
-            // --- Node specific code - end
-            //node.send(msg);
+            switch(node.type) {
+                case "zwave-binary-switch":
+                    switchFunc.binarySwitch(node, zwave, msg);
+                    break;
+
+                case "zwave-light-dimmer-switch":
+                    switchFunc.lightDimmerSwitch(node, zwave, msg);
+                    break;
+
+                default:
+                    break;
+            }
         }, node.id);
-        //if (node.brokerConn.connected) {
-        //    node.status({fill:"green",shape:"dot",text:"node-red:common.status.connected"});
-        //}
     }
     else {
         node.error(RED._("mqtt.errors.not-defined"));
