@@ -49,7 +49,7 @@ function softRemote(node, nodeID, sceneID){
                         'intent': msg.intent
                     };
                     timer = setTimeout(function(){
-                        if(typeof node.mqtt != 'undefined')  node.mqtt.publish(msgMQTT);
+                        if(node.mqtt != null)  node.mqtt.publish(msgMQTT);
                         node.send(msg);
                         softRemote(node, nodeID, sceneID);
                     }, 1000);
@@ -84,7 +84,7 @@ function softRemote(node, nodeID, sceneID){
                         'intent': msg.intent
                     };
                     timer = setTimeout(function(){
-                        if(typeof node.mqtt != 'undefined') node.mqtt.publish(msgMQTT);
+                        if(node.mqtt != null) node.mqtt.publish(msgMQTT);
                         node.send(msg);
                         softRemote(node, nodeID, sceneID);
                     }, 1000);
@@ -102,7 +102,7 @@ function softRemote(node, nodeID, sceneID){
             'payload': msg.payload,
             'intent': msg.intent
         };
-        if(typeof node.mqtt != 'undefined')  node.mqtt.publish(msgMQTT);
+        if(node.mqtt != null)  node.mqtt.publish(msgMQTT);
     }
 }
 

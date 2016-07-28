@@ -107,7 +107,7 @@ function valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value) {
     msg.retain = false;
     msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index + '/';
     msg.payload = value.value;
-    if(typeof mqtt != 'undefined') mqtt.publish(msg);
+    if( mqtt != null) mqtt.publish(msg);
 }
 
 function valueChanged(node, mqtt, nodeid, comclass, value) {
@@ -118,7 +118,7 @@ function valueChanged(node, mqtt, nodeid, comclass, value) {
     msg.retain = false;
     msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index + '/';
     msg.payload = value.value;
-    if(typeof mqtt != 'undefined') mqtt.publish(msg);
+    if(mqtt != null) mqtt.publish(msg);
 }
 
 function valueRemoved(nodeid, comclass, index) {
