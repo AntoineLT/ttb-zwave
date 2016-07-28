@@ -47,7 +47,7 @@ function nodeAdded(nodeid) {
     };
 }
 
-function nodeReady(node, RED, zwave, client, nodeid, nodeinfo) {
+function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].manufacturer = nodeinfo.manufacturer;
     nodes[nodeid].manufacturerid = nodeinfo.manufacturerid;
     nodes[nodeid].product = nodeinfo.product;
@@ -69,7 +69,9 @@ function nodeReady(node, RED, zwave, client, nodeid, nodeinfo) {
             if(client) {
                 deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
             } else {
-                deviceNode.withoutClient(zwave, nodeid, nodeinfo);
+                deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
+                // Internal creation without any additional flows
+                //deviceNode.withoutClient(zwave, nodeid, nodeinfo);
             }
         }
     }

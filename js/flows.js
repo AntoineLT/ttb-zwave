@@ -37,8 +37,22 @@ function addNodeToServerFlows(node) {
     }
 }
 
+function checkZwaveNodeTopic() {
+    var content = readFlows(),
+        contentL = content.length;
+
+    for(var i = 0; i < contentL; i++) {
+        if(content[i].id === "zwave-node" && content[i].type === "zwave") {
+            var topic = content[i].topic;
+            break;
+        }
+    }
+    return topic || undefined;
+}
+
 module.exports = {
     'readFlows': readFlows,
     'writeFlows': writeFlows,
-    'addNodeToServerFlows': addNodeToServerFlows
+    'addNodeToServerFlows': addNodeToServerFlows,
+    'checkZwaveNodeTopic': checkZwaveNodeTopic
 };

@@ -8,18 +8,27 @@ module.exports = function(RED) {
         openZwave = require('openzwave-shared'),
         mqttCP    = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var handler   = require('./js/handler'),
+    var flows     = require('./js/flows'),
+        handler   = require('./js/handler'),
         outNode   = require('./js/outNode'),
-        autoFlows = require('./js/autoFlows'),
         connMQTT  = require('./js/connMQTT'),
+        autoFlows = require('./js/autoFlows'),
         switchFunc  = require('./js/devices/switch'),
         remoteFunc  = require('./js/devices/remote');
 
-    var zwave = null,
-        mqtt  = null,
+    var mqtt  = null,
         zwaveConnected = false,
         mqttConnected  = false,
         client         = false;
+
+    var zwave = new openZwave({
+        SaveConfiguration: false,
+        Logging: false,
+        ConsoleOutput: false,
+        SuppressValueRefresh: true
+    });
+
+    var zwaveTopic = flows.checkZwaveNodeTopic();
 
     if(!client) autoFlows.init();
 
@@ -50,14 +59,6 @@ module.exports = function(RED) {
                 mqttConnected = true;
             }
 
-            if(!zwave) {
-                zwave = new openZwave({
-                    SaveConfiguration: false,
-                    Logging: false,
-                    ConsoleOutput: false,
-                    SuppressValueRefresh: true
-                });
-            }
             zwave.lastY = [];
 
             zwave.on('driver ready', function(homeid) {
@@ -73,7 +74,7 @@ module.exports = function(RED) {
             });
 
             zwave.on('node ready', function(nodeid, nodeinfo) {
-                handler.nodeReady(node, RED, zwave, client, nodeid, nodeinfo);
+                handler.nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo);
             });
 
             zwave.on('value added', function(nodeid, comclass, value) {
@@ -215,8 +216,8 @@ module.exports = function(RED) {
     function lightDimmerSwitch(config) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
-        this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in';
-        this.topicOut = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/38/0/';
+        this.topic = zwaveTopic +  this.nodeid + '/in';
+        this.topicOut = zwaveTopic +  this.nodeid + '/38/0/';
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
@@ -236,8 +237,8 @@ module.exports = function(RED) {
     function binarySwitch(config) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
-        this.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/in';
-        this.topicOut = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  this.nodeid + '/37/0/';
+        this.topic = zwaveTopic +  this.nodeid + '/in';
+        this.topicOut = zwaveTopic +  this.nodeid + '/37/0/';
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;

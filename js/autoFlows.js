@@ -15,7 +15,7 @@ var zwaveTab = {
         "type": "zwave",
         "z": "zwave",
         "name": "",
-        "topic": "zwave/",
+        "topic": "coldfacts/zwave/",
         "broker": "MQTT.Localhost",
         "x": 70,
         "y": 40,

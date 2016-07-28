@@ -15,8 +15,8 @@ for(var i = 0; i < flows.length; i++) {
 
 function softRemote(node, nodeID, sceneID){
     var msgMQTT = {};
-    msgMQTT.qos = 1;
-    msgMQTT.retain = false;
+    msgMQTT.qos = 0;
+    msgMQTT.retain = true;
     msgMQTT.topic = topic +  nodeID + '/out';
 
     if (node.nodeid === nodeID) {

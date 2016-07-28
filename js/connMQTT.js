@@ -1,11 +1,13 @@
 'use strict';
 
-var isUtf8 = require('is-utf8'),
+var isUtf8     = require('is-utf8'),
+    flows      = require('./flows'),
     switchFunc = require('./devices/switch');
 
 var msg;
 
 function subscription(RED, node, zwave, mqtt) {
+    var zwaveTopic = flows.checkZwaveNodeTopic();
     if (node.topic) {
         node.brokerConn.register(node);
         node.brokerConn.subscribe(node.topic,2,function(topic,payload,packet) {
@@ -46,10 +48,10 @@ function subscription(RED, node, zwave, mqtt) {
                 };
             }
             node.send(msg);
-            msg.qos = 1;
-            msg.retain = false;
-            msg.topic = (RED.nodes.getNode('zwave-node').topic || 'zwave/') +  node.nodeid + '/out';
-            if(typeof mqtt != 'undefined') mqtt.publish(msg);
+            msg.qos = 0;
+            msg.retain = true;
+            msg.topic = zwaveTopic +  node.nodeid + '/out';
+            if(mqtt !== null) mqtt.publish(msg);
         }, node.id);
     }
     else {
