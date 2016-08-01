@@ -80,7 +80,6 @@ function withoutClient(zwave, nodeid, nodeinfo) {
         productTotal = nodeinfo.manufacturer + ', ' + nodeinfo.product,
         node = {
             "id": nodeid + "-" + productInfo,
-            "name": nodeid + ": " + productTotal,
             "broker": "MQTT.Localhost",
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
@@ -91,12 +90,14 @@ function withoutClient(zwave, nodeid, nodeinfo) {
                 "ui": true
             }
         };
+    console.log(nodeinfo);
 
     switch (nodeinfo.type) {
         case 'Binary Switch':
             switch (productTotal) {
                 case "FIBARO System, FGWPE Wall Plug":
                     node.type = "zwave-binary-switch";
+                    node.name = "Wall Plug";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY[nodeid-2] += 60;
                     break;
@@ -111,6 +112,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
                 case "Zipato, RGBW LED Bulb":
                 case "Aeotec, ZW098 LED Bulb":
                     node.type = "zwave-light-dimmer-switch";
+                    node.name = "LED Bulb";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY[nodeid-2] += 60;
                     break;
@@ -125,6 +127,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
                 case "NodOn, CRC-3-6-0x Soft Remote":
                     zwave.setConfigParam(nodeid, 3, 1, 1);
                     node.type = "zwave-remote-control-multi-purpose";
+                    node.name = "Remote";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY[nodeid-2] += 60;
                     break;
@@ -138,6 +141,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
             switch (productTotal) {
                 case "NodOn, ASP-3-1-00 Smart Plug":
                     node.type = "zwave-binary-switch";
+                    node.name = "Smart Plug";
                     flows.addNodeToServerFlows(node);
                     zwave.lastY[nodeid-2] += 60;
                     break;

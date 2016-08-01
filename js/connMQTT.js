@@ -6,7 +6,7 @@ var isUtf8     = require('is-utf8'),
 
 var msg;
 
-function subscription(RED, node, zwave, mqtt) {
+function subscription(RED, node, zwave) {
     var zwaveTopic = flows.checkZwaveNodeTopic();
     if (node.topic) {
         node.brokerConn.register(node);
@@ -51,7 +51,7 @@ function subscription(RED, node, zwave, mqtt) {
             msg.qos = 0;
             msg.retain = true;
             msg.topic = zwaveTopic +  node.nodeid + '/out';
-            if(mqtt !== null) mqtt.publish(msg);
+            if(node.mqtt !== null) node.mqtt.publish(msg);
         }, node.id);
     }
     else {

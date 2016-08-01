@@ -221,9 +221,13 @@ module.exports = function(RED) {
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
+        node.mqtt = mqttCP.get(
+            node.brokerConn.broker,
+            node.brokerConn.port
+        );
 
         if (node.brokerConn) {
-            connMQTT.subscription(RED, node, zwave, mqtt);
+            connMQTT.subscription(RED, node, zwave);
         } else {
             this.error(RED._("mqtt.errors.missing-config"));
         }
@@ -242,9 +246,13 @@ module.exports = function(RED) {
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
+        node.mqtt = mqttCP.get(
+            node.brokerConn.broker,
+            node.brokerConn.port
+        );
 
         if (node.brokerConn) {
-            connMQTT.subscription(RED, node, zwave, mqtt);
+            connMQTT.subscription(RED, node, zwave);
         } else {
             this.error(RED._("mqtt.errors.missing-config"));
         }
