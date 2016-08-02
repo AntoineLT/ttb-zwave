@@ -9,11 +9,9 @@ function readFlows() {
 }
 
 function writeFlows(flowsLocation, result) {
-    fs.writeFile(flowsLocation, result, function (err) {
-        if (err) console.error('writeFile error: '+err);
-        exec('service thethingbox restart', function(error, stdout, stderr) {
-            if (error) console.error('exec error: '+error);
-        })
+    fs.writeFileSync(flowsLocation, result);
+    exec('service thethingbox restart', function(error, stdout, stderr) {
+        if (error) console.error('exec error: '+error);
     });
 }
 

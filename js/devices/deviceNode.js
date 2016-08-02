@@ -210,7 +210,7 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
             break;
     }
     msg.qos = 0;
-    msg.retain = true;
+    msg.retain = false;
     msg.topic = "newdevice/zwave";
     if(mqtt !== null && msg.payload.typeNode) mqtt.publish(msg);
 

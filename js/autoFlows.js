@@ -16,7 +16,7 @@ var zwaveTab = {
         "z": "zwave",
         "name": "",
         "topic": "coldfacts/zwave/",
-        "broker": "MQTT.Localhost",
+        "broker": "MQTT.HomeKeeper",
         "x": 70,
         "y": 40,
         "wires": []
