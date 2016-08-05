@@ -77,23 +77,25 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     }
 }
 
-function valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value) {
-    if(!zwave.lastY[nodeid-2]) zwave.lastY[nodeid-2] = 40;
-    if(nodeid !== 1 && value.label !== ""
-        && check.isNotInFlow(nodeid, comclass, value, null)){
-        if(check.comclassToShow(comclass)) {
-            RED.nodes.addNodeToClients({
-                "id": "zwave-in-"+nodeid+"-"+comclass+":"+value.index,
-                "type": "zwave-in",
-                "name": "Node"+nodeid+" : "+value.label,
-                "topic": node.topic +  nodeid + "/" + comclass + "/" + value.index + "/",
-                "nodeid": nodeid,
-                "broker": node.broker,
-                "x": 250+((nodeid-2)*300),
-                "y": zwave.lastY[nodeid-2],
-                "z": "zwave"
-            });
-            zwave.lastY[nodeid-2]+=60;
+function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
+    if(client) {
+        if (!zwave.lastY[nodeid - 2]) zwave.lastY[nodeid - 2] = 40;
+        if (nodeid !== 1 && value.label !== ""
+            && check.isNotInFlow(nodeid, comclass, value, null)) {
+            if (check.comclassToShow(comclass)) {
+                RED.nodes.addNodeToClients({
+                    "id": "zwave-in-" + nodeid + "-" + comclass + ":" + value.index,
+                    "type": "zwave-in",
+                    "name": "Node" + nodeid + " : " + value.label,
+                    "topic": node.topic + nodeid + "/" + comclass + "/" + value.index + "/",
+                    "nodeid": nodeid,
+                    "broker": node.broker,
+                    "x": 250 + ((nodeid - 2) * 300),
+                    "y": zwave.lastY[nodeid - 2],
+                    "z": "zwave"
+                });
+                zwave.lastY[nodeid - 2] += 60;
+            }
         }
     }
 

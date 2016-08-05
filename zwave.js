@@ -78,7 +78,7 @@ module.exports = function(RED) {
             });
 
             zwave.on('value added', function(nodeid, comclass, value) {
-                handler.valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value);
+                handler.valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value);
             });
 
             zwave.on('value changed', function(nodeid, comclass, value) {
