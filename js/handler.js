@@ -69,7 +69,7 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
             if(client) {
                 deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
             } else {
-                deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
+                //deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
                 // Internal creation without any additional flows
                 //deviceNode.withoutClient(zwave, nodeid, nodeinfo);
             }
