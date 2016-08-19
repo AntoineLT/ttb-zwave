@@ -123,7 +123,7 @@ module.exports = function(RED) {
                     //zwaveConnected = false;
                 }
                 if (mqtt && mqttConnected) {
-                	mqtt.disconnect();
+                    mqtt.disconnect();
                     mqtt = null;
                     mqttConnected = false;
                 }
@@ -262,6 +262,27 @@ module.exports = function(RED) {
         });
     }
     RED.nodes.registerType("zwave-binary-switch", binarySwitch);
+
+    function motionSensor(config) {
+        RED.nodes.createNode(this,config);
+        this.nodeid = config.nodeid;
+        this.topic = zwaveTopic +  this.nodeid + '/in';
+        this.topicOut = zwaveTopic +  this.nodeid + '/48/0/';
+        this.broker = config.broker;
+        this.brokerConn = RED.nodes.getNode(this.broker);
+        var node = this;
+        node.mqtt = mqttCP.get(
+            node.brokerConn.broker,
+            node.brokerConn.port
+        );
+
+        if (node.brokerConn) {
+            connMQTT.subscription(RED, node, zwave);
+        } else {
+            this.error(RED._("mqtt.errors.missing-config"));
+        }
+    }
+    RED.nodes.registerType("zwave-motion-sensor", motionSensor);
 
     function remoteControlMultiPurpose(config) {
         RED.nodes.createNode(this,config);

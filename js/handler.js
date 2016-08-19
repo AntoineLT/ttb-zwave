@@ -58,6 +58,10 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].loc = nodeinfo.loc;
     nodes[nodeid].ready = true;
 
+    if(nodeinfo.product === "CRC-3-6-0x Soft Remote") {
+        zwave.setConfigParam(nodeid, 3, 1, 1);
+    }
+
     node.log('node ready '+nodeid+': '
         +((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '
         +((nodeinfo.product) ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype));
