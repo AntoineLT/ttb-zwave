@@ -37,7 +37,7 @@ function lightDimmerSwitch(node, zwave, msg) {
                 zwave.setValue(node.nodeid, 38, 1, 0, 0);
             }
         } else {
-            var intent = (typeof msg.payload !== 'object' && msg.intent || msg.intent == 0) ? msg.intent : msg.payload.intent;
+            var intent = (typeof msg.payload !== 'object' && (msg.intent || msg.intent == 0)) ? msg.intent : msg.payload.intent;
             var intensity = parseInt((typeof msg.payload !== 'object') ? msg.intensity : msg.payload.intensity);
             if (intent || intent == 0) {
                 switch (intent) {

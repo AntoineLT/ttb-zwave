@@ -13,6 +13,9 @@ for(var i = 0; i < flows.length; i++) {
     }
 }
 
+// node : Node-RED node (object)
+// nodeID :  ID in ZWave network (int : example 2)
+// sceneID : ID  pushed button (int : example 20)
 function softRemote(node, nodeID, sceneID){
     var msgMQTT = {};
     msgMQTT.qos = 0;

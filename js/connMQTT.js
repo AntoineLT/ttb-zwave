@@ -44,14 +44,18 @@ function subscription(RED, node, zwave) {
             }
             if(typeof msg !== 'object') {
                 msg = {
-                    payload: msg || payload
+                    payload: msg || payload,
+                    intent: ((msg || payload) === true)?1:0
                 };
             }
             node.send(msg);
-            msg.qos = 0;
-            msg.retain = true;
-            msg.topic = zwaveTopic +  node.nodeid + '/out';
-            if(node.mqtt !== null) node.mqtt.publish(msg);
+            var msgMQTT = {
+                'payload': msg,
+                'qos': 0,
+                'retain': true,
+                'topic': zwaveTopic +  node.nodeid + '/out'
+            };
+            if(node.mqtt !== null) node.mqtt.publish(msgMQTT);
         }, node.id);
     }
     else {

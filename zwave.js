@@ -12,7 +12,7 @@ module.exports = function(RED) {
         handler   = require('./js/handler'),
         outNode   = require('./js/outNode'),
         connMQTT  = require('./js/connMQTT'),
-        autoFlows = require('./js/autoFlows'),
+        // autoFlows = require('./js/autoFlows'),
         switchFunc  = require('./js/devices/switch'),
         remoteFunc  = require('./js/devices/remote');
 
@@ -30,7 +30,7 @@ module.exports = function(RED) {
 
     var zwaveTopic = flows.checkZwaveNodeTopic();
 
-    if(!client) autoFlows.init();
+    // if(!client) autoFlows.init();
 
     function zwaveController(config) {
         RED.nodes.createNode(this, config);
@@ -77,10 +77,12 @@ module.exports = function(RED) {
                 handler.nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo);
             });
 
+            // first time device detected
             zwave.on('value added', function(nodeid, comclass, value) {
                 handler.valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value);
             });
 
+            // changed device's state
             zwave.on('value changed', function(nodeid, comclass, value) {
                 handler.valueChanged(node, mqtt, nodeid, comclass, value);
             });
@@ -217,7 +219,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
         this.topic = zwaveTopic +  this.nodeid + '/in';
-        this.topicOut = zwaveTopic +  this.nodeid + '/38/0/';
+        this.topicOut = zwaveTopic +  this.nodeid + '/38/0';
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
@@ -242,7 +244,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
         this.topic = zwaveTopic +  this.nodeid + '/in';
-        this.topicOut = zwaveTopic +  this.nodeid + '/37/0/';
+        this.topicOut = zwaveTopic +  this.nodeid + '/37/0';
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
@@ -267,7 +269,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
         this.topic = zwaveTopic +  this.nodeid + '/in';
-        this.topicOut = zwaveTopic +  this.nodeid + '/48/0/';
+        this.topicOut = zwaveTopic +  this.nodeid + '/48/0';
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;

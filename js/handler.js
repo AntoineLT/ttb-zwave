@@ -13,14 +13,14 @@ function driverReady(node, RED, homeid) {
         shape:'dot',
         text:'node-red:common.status.connecting'
     });
-    var missing = check.isNotInFlow('zwave', null, null, null);
-    if(missing) {
-        RED.nodes.addNodeToClients({
-            "type": "tab",
-            "id": "zwave",
-            "label": "Z-wave"
-        });
-    }
+    // var missing = check.isNotInFlow('zwave', null, null, null);
+    // if(missing) {
+    //     RED.nodes.addNodeToClients({
+    //         "type": "tab",
+    //         "id": "zwave",
+    //         "label": "Z-wave"
+    //     });
+    // }
 }
 
 function driverFailed(node) {
@@ -81,6 +81,15 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     }
 }
 
+/*
+node : node object from Node-RED (object)
+RED : RED global object (object)
+zwave : openzwave object (object)
+mqtt : mqtt client (object)
+nodeid : device id in ZWave network (int)
+comclass : Zwave command class (int)
+value : callback result of listener (object)
+*/
 function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
     if(client) {
         if (!zwave.lastY[nodeid - 2]) zwave.lastY[nodeid - 2] = 40;
@@ -111,7 +120,7 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
     var msg = {};
     msg.qos = 1;
     msg.retain = false;
-    msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index + '/';
+    msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index;
     msg.payload = value.value;
     if( mqtt != null) mqtt.publish(msg);
 }
@@ -122,7 +131,7 @@ function valueChanged(node, mqtt, nodeid, comclass, value) {
     var msg = {};
     msg.qos = 1;
     msg.retain = false;
-    msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index + '/';
+    msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index;
     msg.payload = value.value;
     if(mqtt != null) mqtt.publish(msg);
 }
