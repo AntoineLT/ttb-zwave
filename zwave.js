@@ -12,9 +12,7 @@ module.exports = function(RED) {
         handler   = require('./js/handler'),
         outNode   = require('./js/outNode'),
         connMQTT  = require('./js/connMQTT'),
-        // autoFlows = require('./js/autoFlows'),
-        switchFunc  = require('./js/devices/switch'),
-        remoteFunc  = require('./js/devices/remote');
+        switchFunc  = require('./js/devices/switch');
 
     var mqtt  = null,
         zwaveConnected = false,
@@ -29,8 +27,6 @@ module.exports = function(RED) {
     });
 
     var zwaveTopic = flows.checkZwaveNodeTopic();
-
-    // if(!client) autoFlows.init();
 
     function zwaveController(config) {
         RED.nodes.createNode(this, config);
@@ -62,7 +58,7 @@ module.exports = function(RED) {
             zwave.lastY = [];
 
             zwave.on('driver ready', function(homeid) {
-                handler.driverReady(node, RED, homeid);
+                handler.driverReady(node, RED, client, homeid);
             });
 
             zwave.on('driver failed', function() {
@@ -91,6 +87,10 @@ module.exports = function(RED) {
                 handler.valueRemoved(nodeid, comclass, index);
             });
 
+            zwave.on('scene event', function(nodeid, sceneid) {
+                handler.sceneEvent(node, mqtt, nodeid, sceneid);
+            });
+
             zwave.on('notification', function(nodeid, notif) {
                 handler.notification(node, nodeid, notif);
             });
@@ -99,8 +99,8 @@ module.exports = function(RED) {
                 handler.scanComplete(node);
             });
 
-            var zwaveController="/dev/ttyACM0"; // Z-Stick Gen5
-            //var zwaveController="/dev/ttyUSB0"; // Z-Stick S2
+            var zwaveUSB="/dev/ttyACM0"; // Z-Stick Gen5
+            //var zwaveUSB="/dev/ttyUSB0"; // Z-Stick S2
 
             if(!zwaveConnected){
                 node.status({
@@ -108,12 +108,12 @@ module.exports = function(RED) {
                     shape:'dot',
                     text:'node-red:common.status.connecting'
                 });
-                zwave.connect(zwaveController);
+                zwave.connect(zwaveUSB);
                 zwaveConnected = true;
             } else {
                 node.status({
                     fill:'green',
-                    shape:'dot',
+                    shape:'ring',
                     text:'node-red:common.status.connected'
                 });
             }
@@ -121,7 +121,7 @@ module.exports = function(RED) {
             this.on('close', function() {
                 if (zwave && zwaveConnected) {
                     zwave.removeAllListeners();
-                    //zwave.disconnect(zwaveController);
+                    //zwave.disconnect(zwaveUSB);
                     //zwaveConnected = false;
                 }
                 if (mqtt && mqttConnected) {
@@ -290,17 +290,20 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.nodeid = config.nodeid;
         this.push   = config.push;
+        this.topic = zwaveTopic +  this.nodeid + '/scene';
         this.broker = config.broker;
-        this.brokerConfig = RED.nodes.getNode(this.broker);
+        this.brokerConn = RED.nodes.getNode(this.broker);
         var node  = this;
         node.mqtt = mqttCP.get(
-            node.brokerConfig.broker,
-            node.brokerConfig.port
+            node.brokerConn.broker,
+            node.brokerConn.port
         );
 
-        zwave.on('scene event', function(nodeid, sceneid) {
-            remoteFunc.softRemote(node, nodeid, sceneid);
-        });
+        if (node.brokerConn) {
+            connMQTT.subscription(RED, node, zwave);
+        } else {
+            this.error(RED._("mqtt.errors.missing-config"));
+        }
     }
     RED.nodes.registerType("zwave-remote-control-multi-purpose", remoteControlMultiPurpose);
 };

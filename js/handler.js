@@ -5,7 +5,7 @@ var check      = require('./check.js'),
 
 var nodes =[];
 
-function driverReady(node, RED, homeid) {
+function driverReady(node, RED, client, homeid) {
     node.log('Driver ready');
     node.log('Scanning homeid=0x'+homeid.toString(16)+'...');
     node.status({
@@ -13,21 +13,23 @@ function driverReady(node, RED, homeid) {
         shape:'dot',
         text:'node-red:common.status.connecting'
     });
-    // var missing = check.isNotInFlow('zwave', null, null, null);
-    // if(missing) {
-    //     RED.nodes.addNodeToClients({
-    //         "type": "tab",
-    //         "id": "zwave",
-    //         "label": "Z-wave"
-    //     });
-    // }
+    if(client) {
+        var missing = check.isNotInFlow('zwave', null, null, null);
+        if(missing) {
+            RED.nodes.addNodeToClients({
+                "type": "tab",
+                "id": "zwave",
+                "label": "Z-wave"
+            });
+        }
+    }
 }
 
 function driverFailed(node) {
     node.warn('Failed to start Z-wave driver');
     node.status({
         fill:'yellow',
-        shape:'dot',
+        shape:'ring',
         text:'node-red:common.status.error'
     });
 }
@@ -59,7 +61,7 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].ready = true;
 
     if(nodeinfo.product === "CRC-3-6-0x Soft Remote") {
-        zwave.setConfigParam(nodeid, 3, 1, 1);
+		zwave.setConfigParam(nodeid, 3, 1, 1);
     }
 
     node.log('node ready '+nodeid+': '
@@ -73,24 +75,23 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
             if(client) {
                 deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
             } else {
-                //deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
+                // deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
                 // Internal creation without any additional flows
-                //deviceNode.withoutClient(zwave, nodeid, nodeinfo);
+                // deviceNode.withoutClient(zwave, nodeid, nodeinfo);
             }
         }
     }
 }
 
-/*
-node : node object from Node-RED (object)
-RED : RED global object (object)
-zwave : openzwave object (object)
-mqtt : mqtt client (object)
-nodeid : device id in ZWave network (int)
-comclass : Zwave command class (int)
-value : callback result of listener (object)
-*/
 function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
+    // node : node object from Node-RED (object)
+    // RED : RED global object (object)
+    // zwave : openzwave object (object)
+    // mqtt : mqtt client (object)
+    // nodeid : device id in ZWave network (int)
+    // comclass : Zwave command class (int)
+    // value : callback result of listener (object)
+    
     if(client) {
         if (!zwave.lastY[nodeid - 2]) zwave.lastY[nodeid - 2] = 40;
         if (nodeid !== 1 && value.label !== ""
@@ -117,22 +118,24 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
     }
     nodes[nodeid].classes[comclass][value.index] = value;
 
-    var msg = {};
-    msg.qos = 1;
-    msg.retain = false;
-    msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index;
-    msg.payload = value.value;
+    var msg = {
+        'qos': 1,
+        'retain': false,
+        'topic': node.topic +  nodeid + '/' + comclass + '/' + value.index,
+        'payload': value.value
+    };
     if( mqtt != null) mqtt.publish(msg);
 }
 
 function valueChanged(node, mqtt, nodeid, comclass, value) {
     nodes[nodeid].classes[comclass][value.index] = value;
 
-    var msg = {};
-    msg.qos = 1;
-    msg.retain = false;
-    msg.topic = node.topic +  nodeid + '/' + comclass + '/' + value.index;
-    msg.payload = value.value;
+    var msg = {
+        'qos': 1,
+        'retain': false,
+        'topic': node.topic +  nodeid + '/' + comclass + '/' + value.index,
+        'payload': value.value
+    };
     if(mqtt != null) mqtt.publish(msg);
 }
 
@@ -141,6 +144,18 @@ function valueRemoved(nodeid, comclass, index) {
         nodes[nodeid].classes[comclass][index]){
         delete nodes[nodeid].classes[comclass][index];
     }
+}
+
+function sceneEvent(node, mqtt, nodeid, sceneid) {
+    nodes[nodeid].scene = sceneid;
+
+    var msg = {
+        'qos': 1,
+        'retain': false,
+        'topic': node.topic +  nodeid + '/scene',
+        'payload': sceneid
+    };
+    if(mqtt != null) mqtt.publish(msg);
 }
 
 function notification(node, nodeid, notif) {
@@ -176,7 +191,7 @@ function scanComplete(node) {
     node.log('Z-Wave network scan complete!');
     node.status({
         fill:'green',
-        shape:'dot',
+        shape:'ring',
         text:'node-red:common.status.connected'
     });
 }
@@ -190,6 +205,7 @@ module.exports = {
     'valueAdded'    : valueAdded,
     'valueChanged'  : valueChanged,
     'valueRemoved'  : valueRemoved,
+    'sceneEvent'    : sceneEvent,
     'notification'  : notification,
     'scanComplete'  : scanComplete
 };

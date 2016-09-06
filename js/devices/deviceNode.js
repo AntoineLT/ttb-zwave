@@ -206,6 +206,14 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
             }
             break;
 
+        case 'Routing Binary Sensor':
+            switch(productTotal) {
+                case "FIBARO System, FGMS001 Motion Sensor":
+                    msg.payload.typeNode = "zwave-motion-sensor";
+                    break;
+            }
+            break;
+
         default:
             break;
     }
