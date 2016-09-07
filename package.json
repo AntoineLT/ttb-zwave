@@ -4,7 +4,13 @@
   "description": "A Zwave Node-RED node made for TheThingBox and TimeSquAir.",
   "node-red": {
     "nodes": {
-      "zwave": "zwave.js"
+      "zwave": "zwave.js",
+      "zwave-in": "zwave-in.js",
+      "zwave-out": "zwave-out.js",
+      "zwave-binary-switch":"zwave-binary-switch.js",
+      "zwave-light-dimmer-switch": "zwave-light-dimmer-switch.js",
+      "zwave-motion-sensor": "zwave-motion-sensor.js",
+      "zwave-remote-control-multi-purpose": "zwave-remote-control-multi-purpose.js"
     }
   },
   "installation-duration": 360,
