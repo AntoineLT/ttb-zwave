@@ -8,13 +8,12 @@ module.exports = function(RED) {
 
     var flows = require('./js/flows'),
         handler = require('./js/handler'),
-        outNode = require('./js/outNode'),
-        connMQTT = require('./js/connMQTT');
+        outNode = require('./js/outNode');
 
     var mqtt = null,
         zwaveConnected = false,
         mqttConnected = false,
-        client = true;
+        client = false;
 
     var zwave = require('./js/openZWave').zwave;
 

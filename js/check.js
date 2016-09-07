@@ -8,7 +8,7 @@ function isNotInFlow(nodeid, comclass, value, product) {
         node = '';
 
     if(product === null) {
-        (comclass !== null && value !== null) ? node = "zwave-in-"+nodeid+"-"+comclass+":"+value.index : node = nodeid;
+        node = (comclass !== null && value !== null) ? "zwave-in-"+nodeid+"-"+comclass+":"+value.index : nodeid;
     } else {
         node = nodeid + '-' + product;
     }
@@ -21,7 +21,7 @@ function isNotInFlow(nodeid, comclass, value, product) {
     return test;
 }
 
-// Function to avoid some unused instance during the self-generation
+// Function to avoid some unused ZWave command-class during the self-generation
 function comclassToShow(comclass) {
     var test = false;
 

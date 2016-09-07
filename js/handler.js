@@ -1,7 +1,7 @@
 'use strict';
 
 var check      = require('./check.js'),
-    deviceNode = require('./devices/deviceNode');
+    deviceNode = require('./deviceNode');
 
 var nodes =[];
 
@@ -16,6 +16,7 @@ function driverReady(node, RED, client, homeid) {
     if(client) {
         var missing = check.isNotInFlow('zwave', null, null, null);
         if(missing === true) {
+            console.log(Object.keys(RED.comms));
             RED.nodes.addNodeToClients({
                 "type": "tab",
                 "id": "zwave",
@@ -60,9 +61,9 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].loc = nodeinfo.loc;
     nodes[nodeid].ready = true;
 
-    if(nodeinfo.product === "CRC-3-6-0x Soft Remote") {
-		zwave.setConfigParam(nodeid, 3, 1, 1);
-    }
+    //if(nodeinfo.product === "CRC-3-6-0x Soft Remote") {
+		//zwave.setConfigParam(nodeid, 3, 1, 1);
+    //}
 
     node.log('node ready '+nodeid+': '
         +((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '
@@ -75,7 +76,7 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
             if(client) {
                 deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
             } else {
-                // deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
+                 deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
                 // Internal creation without any additional flows
                 // deviceNode.withoutClient(zwave, nodeid, nodeinfo);
             }
