@@ -105,7 +105,6 @@ function softRemote(node, sceneID) {
 
         case "21":
         case "41":
-            console.log("clear");
             clearTimeout(timer);
             count = 0;
             break;
@@ -122,7 +121,6 @@ function softRemote(node, sceneID) {
                 timer = setTimeout(function () {
                     if (node.mqtt != null)  node.mqtt.publish(msgMQTT);
                     node.send(msg);
-                    console.log("plus");
                     softRemote(node, sceneID);
                 }, 1000);
             }
