@@ -3,19 +3,18 @@ module.exports = function(RED) {
 
     var homeDir = process.env.NODE_RED_HOME;
 
-    var path = require('path'),
-        mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
+    var path    = require('path'),
+        mqttCP  = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var flows = require('./js/flows'),
+    var flows   = require('./js/flows'),
         handler = require('./js/handler'),
-        outNode = require('./js/outNode');
+        outNode = require('./js/outNode'),
+        zwave   = require('./js/openZWave').zwave;
 
-    var mqtt = null,
+    var mqtt   = null,
+        client = false,
         zwaveConnected = false,
-        mqttConnected = false,
-        client = false;
-
-    var zwave = require('./js/openZWave').zwave;
+        mqttConnected  = false;
 
     function zwaveController(config) {
         RED.nodes.createNode(this, config);
@@ -86,6 +85,7 @@ module.exports = function(RED) {
 
             zwave.on('scan complete', function () {
                 handler.scanComplete(node);
+                subscription(RED, node, zwave);
             });
 
             var zwaveUSB = "/dev/ttyACM0"; // Z-Stick Gen5
@@ -124,3 +124,37 @@ module.exports = function(RED) {
 
     RED.nodes.registerType("zwave", zwaveController);
 };
+
+function subscription(RED, node, zwave) {
+    var isUtf8     = require('is-utf8');
+
+    var msg,
+        NFCTopic = "smartcard/msgread/#";
+    if (node.topic) {
+        node.brokerConfig.register(node);
+        node.brokerConfig.subscribe(NFCTopic,2,function(topic,payload,packet) {
+            if (isUtf8(payload)) { payload = payload.toString(); }
+            try {
+                msg = JSON.parse(payload);
+            } catch (e) {
+                msg = payload;
+            }
+            console.log(typeof msg);
+            console.log(msg);
+
+            if(msg === "AVOID") {
+                zwave.addNode();
+            }
+
+        }, node.id);
+    }
+    else {
+        node.error(RED._("mqtt.errors.not-defined"));
+    }
+    node.on('close', function(done) {
+        if (node.brokerConfig) {
+            node.brokerConfig.unsubscribe(node.topic,node.id);
+            node.brokerConfig.deregister(node,done);
+        }
+    });
+}

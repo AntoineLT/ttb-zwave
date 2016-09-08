@@ -64,20 +64,20 @@ function subscription(RED, node) {
     });
 }
 
-function softRemote(node, sceneID) {
-    var timer = undefined,
-        count = 0,
-        topic = 'zwave/';
+var timer = undefined,
+    count = 0,
+    topic = 'zwave/';
 
-    var flows = require('./js/flows').readFlows();
+var flows = require('./js/flows').readFlows();
 
-    for(var i = 0; i < flows.length; i++) {
-        if (flows[i].type === 'zwave') {
-            topic = flows[i].topic;
-            break;
-        }
+for(var i = 0; i < flows.length; i++) {
+    if (flows[i].type === 'zwave') {
+        topic = flows[i].topic;
+        break;
     }
+}
 
+function softRemote(node, sceneID) {
     var msgMQTT = {
             qos: 0,
             retain: true,
@@ -103,6 +103,13 @@ function softRemote(node, sceneID) {
             msg.intent = 3; // less
             break;
 
+        case "21":
+        case "41":
+            console.log("clear");
+            clearTimeout(timer);
+            count = 0;
+            break;
+
         case "22":
             if (node.push === true) {
                 count++;
@@ -115,6 +122,7 @@ function softRemote(node, sceneID) {
                 timer = setTimeout(function () {
                     if (node.mqtt != null)  node.mqtt.publish(msgMQTT);
                     node.send(msg);
+                    console.log("plus");
                     softRemote(node, sceneID);
                 }, 1000);
             }
@@ -135,12 +143,6 @@ function softRemote(node, sceneID) {
                     softRemote(node, sceneID);
                 }, 1000);
             }
-            break;
-
-        case "21":
-        case "41":
-            clearTimeout(timer);
-            count = 0;
             break;
 
         default:
