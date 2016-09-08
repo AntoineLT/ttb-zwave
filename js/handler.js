@@ -128,14 +128,17 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
 }
 
 function valueChanged(node, mqtt, nodeid, comclass, value) {
-    nodes[nodeid].classes[comclass][value.index] = value;
+    if(nodes[nodeid].classes[comclass][value.index].value !== undefined
+        && value.value !== nodes[nodeid].classes[comclass][value.index].value) {
+        nodes[nodeid].classes[comclass][value.index] = value;
 
-    if(mqtt != null) mqtt.publish({
-        'qos': 1,
-        'retain': false,
-        'topic': node.topic +  nodeid + '/' + comclass + '/' + value.index,
-        'payload': value.value
-    });
+        if (mqtt != null) mqtt.publish({
+            'qos': 1,
+            'retain': false,
+            'topic': node.topic + nodeid + '/' + comclass + '/' + value.index,
+            'payload': value.value
+        });
+    }
 }
 
 function valueRemoved(nodeid, comclass, index) {
