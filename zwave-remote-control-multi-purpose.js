@@ -9,13 +9,12 @@ module.exports = function(RED) {
     var flows     = require('./js/flows'),
         zwave     = require('./js/openZWave').zwave;
 
-    var zwaveTopic = flows.checkZwaveNodeTopic();
-
     function remoteControlMultiPurpose(config) {
         RED.nodes.createNode(this, config);
+        var zwaveTopic = flows.checkZwaveNodeTopic();
         this.nodeid = config.nodeid;
         this.push = config.push;
-        this.topic = zwaveTopic + this.nodeid + '/scene';
+        this.topic = zwaveTopic + '/' + this.nodeid + '/scene';
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;
@@ -65,19 +64,10 @@ function subscription(RED, node) {
 }
 
 var timer = undefined,
-    count = 0,
-    topic = 'zwave/';
-
-var flows = require('./js/flows').readFlows();
-
-for(var i = 0; i < flows.length; i++) {
-    if (flows[i].type === 'zwave') {
-        topic = flows[i].topic;
-        break;
-    }
-}
+    count = 0;
 
 function softRemote(node, sceneID) {
+    var topic = require('./js/flows').checkZwaveNodeTopic();
     var msgMQTT = {
             qos: 0,
             retain: true,

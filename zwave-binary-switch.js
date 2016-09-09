@@ -9,13 +9,12 @@ module.exports = function(RED) {
     var flows = require('./js/flows'),
         zwave    = require('./js/openZWave').zwave;
 
-    var zwaveTopic = flows.checkZwaveNodeTopic();
-
     function binarySwitch(config) {
         RED.nodes.createNode(this, config);
+        var zwaveTopic = flows.checkZwaveNodeTopic();
         this.nodeid = config.nodeid;
-        this.topic = zwaveTopic + this.nodeid + '/in';
-        this.topicOut = zwaveTopic + this.nodeid + '/37/0';
+        this.topic = zwaveTopic + '/' + this.nodeid + '/in';
+        this.topicOut = zwaveTopic + '/' + this.nodeid + '/37/0';
         this.broker = config.broker;
         this.brokerConn = RED.nodes.getNode(this.broker);
         var node = this;

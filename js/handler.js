@@ -16,7 +16,6 @@ function driverReady(node, RED, client, homeid) {
     if(client) {
         var missing = check.isNotInFlow('zwave', null, null, null);
         if(missing === true) {
-            console.log(Object.keys(RED.comms));
             RED.nodes.addNodeToClients({
                 "type": "tab",
                 "id": "zwave",
@@ -62,7 +61,7 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].ready = true;
 
     //if(nodeinfo.product === "CRC-3-6-0x Soft Remote") {
-		//zwave.setConfigParam(nodeid, 3, 1, 1);
+        //zwave.setConfigParam(nodeid, 3, 1, 1);
     //}
 
     node.log('node ready '+nodeid+': '
@@ -122,7 +121,7 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
     if( mqtt != null) mqtt.publish({
         'qos': 1,
         'retain': false,
-        'topic': node.topic +  nodeid + '/' + comclass + '/' + value.index,
+        'topic': node.topic + '/' +  nodeid + '/' + comclass + '/' + value.index,
         'payload': value.value
     });
 }
@@ -135,7 +134,7 @@ function valueChanged(node, mqtt, nodeid, comclass, value) {
         if (mqtt != null) mqtt.publish({
             'qos': 1,
             'retain': false,
-            'topic': node.topic + nodeid + '/' + comclass + '/' + value.index,
+            'topic': node.topic + '/' + nodeid + '/' + comclass + '/' + value.index,
             'payload': value.value
         });
     }
@@ -154,7 +153,7 @@ function sceneEvent(node, mqtt, nodeid, sceneid) {
     if(mqtt != null) mqtt.publish({
         'qos': 1,
         'retain': false,
-        'topic': node.topic +  nodeid + '/scene',
+        'topic': node.topic + '/' +  nodeid + '/scene',
         'payload': sceneid
     });
 }
