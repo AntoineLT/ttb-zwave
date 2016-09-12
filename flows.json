@@ -321,7 +321,8 @@
             [
                 "c80b683a.6117e8",
                 "605f985.eb94168",
-                "3fe63fb9.d8986"
+                "3fe63fb9.d8986",
+                "11b692cc.00c46d"
             ]
         ]
     },
@@ -612,5 +613,22 @@
         "x": 92.5,
         "y": 210,
         "wires": []
+    },
+	{
+        "id": "11b692cc.00c46d",
+        "type": "notifyUI",
+        "z": "nodeGenerator-id",
+        "name": "",
+        "notification": "New device added! Refresh to see it.",
+        "notificationType": "success",
+        "fix": false,
+        "defaultTout": true,
+        "timeout": "",
+        "timeoutUnits": "",
+        "x": 1460,
+        "y": 500,
+        "wires": [
+            []
+        ]
     }
 ]
