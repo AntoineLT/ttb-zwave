@@ -9,32 +9,37 @@ module.exports = function(RED) {
     var flows = require('./js/flows'),
         zwave    = require('./js/openZWave').zwave;
 
-    function binarySwitch(config) {
-        RED.nodes.createNode(this, config);
-        var zwaveTopic = flows.checkZwaveNodeTopic();
-        this.nodeid = config.nodeid;
-        this.topic = zwaveTopic + '/' + this.nodeid + '/in';
-        this.topicOut = zwaveTopic + '/' + this.nodeid + '/37/0';
-        this.broker = config.broker;
-        this.brokerConn = RED.nodes.getNode(this.broker);
-        var node = this;
-        node.mqtt = mqttCP.get(
-            node.brokerConn.broker,
-            node.brokerConn.port
-        );
+	function binarySwitch(config) {
+		
+		RED.nodes.createNode(this, config);
 
-        if (node.brokerConn) {
-            subscription(RED, node, zwave);
-        } else {
-            this.error(RED._("mqtt.errors.missing-config"));
-        }
+		this.brokerConn = RED.nodes.getNode(config.broker);
+		if (this.brokerConn === undefined && this.brokerConn === null) {
+			this.error(RED._("mqtt.errors.missing-config"));
+			return;
+		}
 
-        this.on('input', function (msg) {
-            binarySwitchFunc(node, zwave, msg);
-        });
-    }
+		var zwaveTopic = flows.checkZwaveNodeTopic();
+		this.nodeid = config.nodeid;
+		this.topic = zwaveTopic + '/' + this.nodeid + '/in';
+		this.topicOut = zwaveTopic + '/' + this.nodeid + '/37/0';
+		this.broker = config.broker;
 
-    RED.nodes.registerType("zwave-binary-switch", binarySwitch);
+		this.mqtt = mqttCP.get(
+			this.brokerConn.broker,
+			this.brokerConn.port
+		);
+
+		subscription(RED, this, zwave);
+
+		var node = this;
+
+		this.on('input', function (msg) {
+			binarySwitchFunc(node, zwave, msg);
+		});
+	}
+
+	RED.nodes.registerType("zwave-binary-switch", binarySwitch);
 };
 
 function subscription(RED, node, zwave) {

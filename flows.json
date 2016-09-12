@@ -1,0 +1,617 @@
+[
+    {
+        "id": "ttb-zwave-tab",
+        "type": "tab",
+        "label": "ttb-zwave",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json"
+    },
+    {
+        "id": "nodeGenerator-id",
+        "type": "subflow",
+        "name": "nodeGenerator",
+        "info": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "7ea5429e.1b7dbc"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json"
+    },
+    {
+        "id": "d98002a4.f4fcf",
+        "type": "nodefactory",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "x": 340,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b7f763a1.6887b",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "client or server?",
+        "func": "return [msg, null]; // if no client\n//return [null, msg]; // if client",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 340,
+        "y": 180,
+        "wires": [
+            [
+                "898f2f64.aa17b"
+            ],
+            [
+                "d98002a4.f4fcf"
+            ]
+        ]
+    },
+    {
+        "id": "4adc3d48.af9d54",
+        "type": "commentdown",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Create on client",
+        "info": " ",
+        "langs": [
+            {
+                "key": "en-US",
+                "title": "Create on client",
+                "body": " ",
+                "isDefault": true
+            }
+        ],
+        "x": 340,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "6ba2a535.c1b4fc",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "NodeFactory Parameters",
+        "func": "if(Array.isArray(msg.payload)) {\n    for(var i = 0; i < msg.payload.length; i++) {\n        msg.payload[i].type = msg.typeNode;\n        msg.payload[i].broker = \"MQTT.Localhost\";\n        msg.payload[i].x = 200;\n        msg.payload[i].y = 100;\n        msg.payload[i].extra.ui = true;\n        msg.node = msg.payload;\n    }\n} else {\n    msg.payload.type = msg.typeNode;\n    if(msg.typeNode.includes(\"subflow\") === false) msg.payload.broker = \"MQTT.Localhost\";\n    msg.payload.x = 200;\n    msg.payload.y = 100;\n    msg.payload.extra.ui = true;\n    msg.node = msg.payload;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370,
+        "y": 120,
+        "wires": [
+            [
+                "b7f763a1.6887b"
+            ]
+        ]
+    },
+    {
+        "id": "7ea5429e.1b7dbc",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Assert",
+        "func": "if(Array.isArray(msg.payload)){\n    if(msg.payload[0].name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload[0].extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    msg.tab = msg.payload;\n    return [null,msg];\n} else {\n    if(msg.payload.name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload.extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    return [null,msg];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "83a7f826.949e38"
+            ],
+            [
+                "6ba2a535.c1b4fc",
+                "83a7f826.949e38"
+            ]
+        ]
+    },
+    {
+        "id": "83a7f826.949e38",
+        "type": "debug",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "active": true,
+        "console": false,
+        "complete": "payload",
+        "x": 330,
+        "y": 79,
+        "wires": []
+    },
+    {
+        "id": "31383fab.4ba37",
+        "type": "commentdown",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Error",
+        "info": " ",
+        "x": 310,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "898f2f64.aa17b",
+        "type": "http request",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "GET flows",
+        "method": "GET",
+        "ret": "obj",
+        "url": "/flows",
+        "x": 550,
+        "y": 160,
+        "wires": [
+            [
+                "1c8937f8.07e658"
+            ]
+        ]
+    },
+    {
+        "id": "1c8937f8.07e658",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "find Tab ID",
+        "func": "for(var i = 0; i < msg.payload.length; i++) {\n    if(msg.payload[i].type === \"tab\" && msg.payload[i].origin === undefined) {\n        msg.idTab = msg.payload[i].id;\n        break;\n    }\n}\nif(i < msg.payload.length) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 550,
+        "y": 200,
+        "wires": [
+            [
+                "50d93e85.5bb4a"
+            ]
+        ]
+    },
+    {
+        "id": "e9ecd32f.5d1e6",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "format URL",
+        "func": "msg.url = \"http://\"+msg.payload+\".local/flow/\"+msg.idTab;\nmsg.method = \"GET\";\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 550,
+        "y": 280,
+        "wires": [
+            [
+                "cb17e5f8.b05a48"
+            ]
+        ]
+    },
+    {
+        "id": "cb17e5f8.b05a48",
+        "type": "http request",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "GET flow",
+        "method": "use",
+        "ret": "obj",
+        "url": "",
+        "x": 720,
+        "y": 280,
+        "wires": [
+            [
+                "53e482d6.574e5c"
+            ]
+        ]
+    },
+    {
+        "id": "53e482d6.574e5c",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "JSON nodes",
+        "func": "msg.result = msg.payload;\nmsg.payload = msg.payload.nodes;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 730,
+        "y": 320,
+        "wires": [
+            [
+                "d3160495.378af8"
+            ]
+        ]
+    },
+    {
+        "id": "50d93e85.5bb4a",
+        "type": "boxname",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "x": 540,
+        "y": 240,
+        "wires": [
+            [
+                "e9ecd32f.5d1e6"
+            ]
+        ]
+    },
+    {
+        "id": "ed7d840b.909018",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "addNodeToServerFlows",
+        "func": "var node = msg.node;\nnode.z = msg.payload.id;\n\nvar content = msg.payload,\n    contentL = content.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    content.push(node);\n} else {\n    for(var i = 0; i < contentL; i++) {\n        if(content[i].id === node.id && content[i].type === node.type)\n            break;\n    }\n    if(i === contentL) content.push(node);\n}\nif(contentL < content.length) {\n    //msg.payload = JSON.stringify(msg.payload, null, 4);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1010,
+        "y": 380,
+        "wires": [
+            [
+                "dc422d9e.2163f"
+            ]
+        ]
+    },
+    {
+        "id": "d3160495.378af8",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "JSON or JSON's Array",
+        "func": "if(Array.isArray(msg.node)) {\n    return [msg,null];\n} else {\n    return [null,msg];\n}\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 760,
+        "y": 360,
+        "wires": [
+            [
+                "60daeab8.98a994"
+            ],
+            [
+                "ed7d840b.909018"
+            ]
+        ]
+    },
+    {
+        "id": "60daeab8.98a994",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "addNodeToServerFlows Array",
+        "func": "var node = msg.node;\n\nvar content  = msg.payload,\n    contentL = content.length;\n\nfor(var i = 0; i < node.length; i++) {\n    node[i].z = msg.payload[0].id;\n    \n    if(!node[i].id) {\n        node[i].id = (1+Math.random()*4294967295).toString(16);\n        content.push(node[i]);\n    } else {\n        for(var j = 0; j < contentL; j++) {\n            if(content[j].id === node[i].id && content[j].type === node[i].type)\n                break;\n        }\n        if(j === contentL) content.push(node[i]);\n    }\n}\nif(contentL < content.length) {\n    //msg.payload = JSON.stringify(msg.payload, null, 4);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1030,
+        "y": 340,
+        "wires": [
+            [
+                "dc422d9e.2163f"
+            ]
+        ]
+    },
+    {
+        "id": "dc422d9e.2163f",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "format HTTP",
+        "func": "if(msg.idSource !== undefined) {\n    var index = msg.techno + \"-service\";\n    if(msg.techno === \"presence\") {\n        switch(msg.idSource){\n            case \"045D7A7AA62780\":\n                for(var i = 0; i < msg.payload.length; i++) {\n                    if(msg.payload[i].id === \"044E7A7AA62780\" \n                        && msg.payload[i].wires[0].indexOf(index)===-1) {\n                        msg.payload[i].wires[0].push(index);\n                        break;\n                    }\n                }\n                break;\n                \n            case \"044E7A7AA62780\":\n                for(var i = 0; i < msg.payload.length; i++) {\n                    if(msg.payload[i].id === \"045D7A7AA62780\" \n                        && msg.payload[i].wires[0].indexOf(index)===-1) {\n                        msg.payload[i].wires[0].push(index);\n                        break;\n                    }\n                }\n                break;\n                \n            default:\n                break;\n        }\n    }\n    for(var j = 0; j < msg.payload.length; j++) {\n        if(msg.payload[j].id === msg.idSource \n            && msg.payload[j].wires[0].indexOf(index)===-1) {\n            msg.payload[j].wires[0].push(index);\n            break;\n        }\n    }\n    if(msg.idSource && j < msg.payload.length) {\n        msg.method = \"PUT\";\n        msg.headers = {\n            \"Content-Type\":\"application/json\"\n        };\n        msg.payload = msg.result;\n        return msg;\n    }\n}\nmsg.method = \"PUT\";\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n};\nmsg.payload = msg.result;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1230,
+        "y": 360,
+        "wires": [
+            [
+                "99c21dff.c36cc"
+            ]
+        ]
+    },
+    {
+        "id": "99c21dff.c36cc",
+        "type": "http request",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "PUT flow",
+        "method": "use",
+        "ret": "txt",
+        "url": "",
+        "x": 1220,
+        "y": 400,
+        "wires": [
+            [
+                "c80b683a.6117e8",
+                "605f985.eb94168",
+                "3fe63fb9.d8986"
+            ]
+        ]
+    },
+    {
+        "id": "c80b683a.6117e8",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "empty msg",
+        "func": "msg = {};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1430,
+        "y": 380,
+        "wires": [
+            [
+                "ab0a4ab3.13bfb8"
+            ]
+        ]
+    },
+    {
+        "id": "605f985.eb94168",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "MSG format",
+        "func": "if(msg._topic.includes(\"service\")) {\n    switch(msg.techno) {\n        case \"weather\":\n            msg.techno = \"La météo\";\n            break;\n            \n        case \"europe1\":\n            msg.techno = \"Europe 1\";\n            break;\n            \n        case \"presence\":\n            msg.techno = \"Votre service de présence\";\n            break;\n            \n        case \"alert\":\n            msg.techno = \"Votre service d'alerte\";\n            break;\n            \n        case \"hotline\":\n            msg.techno = \"La hotline Digital Airways\";\n            break;\n            \n        case \"withings\":\n            msg.techno = \"Votre balance\";\n            break;\n            \n        case \"flic\":\n            msg.techno = \"Votre bouton\";\n            break;\n            \n        default:\n            break;\n    }\n} else if(msg._topic.includes(\"device\")) {\n    switch(msg.service.type) {\n        case \"zwave-light-dimmer-switch\":\n            msg.techno = \"Votre ampoule LED\";\n            break;\n            \n        case \"zwave-remote-control-multi-purpose\":\n            msg.techno = \"Votre télécommande\";\n            break;\n            \n        case \"zwave-motion-sensor\":\n            msg.techno = \"Votre détecteur de présence\";\n            break;\n            \n        default:\n            break;\n    }\n}\nmsg.payload = msg.techno+\" est maintenant fonctionnelle.\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1430,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3fe63fb9.d8986",
+        "type": "mqtt out",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "topic": "hk/valid",
+        "qos": "",
+        "retain": "false",
+        "broker": "MQTT.Localhost",
+        "x": 1420,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "ab0a4ab3.13bfb8",
+        "type": "http request",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "GET flowFilter",
+        "method": "GET",
+        "ret": "txt",
+        "url": "/flowFilter",
+        "x": 1440,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c5f35220.df01e",
+        "type": "mqtt in",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "topic": "newdevice/zwave",
+        "qos": "2",
+        "broker": "MQTT.Localhost",
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "951e2953.623e58"
+            ]
+        ]
+    },
+    {
+        "id": "951e2953.623e58",
+        "type": "json",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "57b9de1e.a7279",
+                "fc8e18c9.648bb8"
+            ]
+        ]
+    },
+    {
+        "id": "57b9de1e.a7279",
+        "type": "function",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Assert",
+        "func": "if(msg.payload.senderID===undefined) \n    return [{payload:\"ASSERT: msg.payload.senderID missing\"}, null];\n\nreturn [null,msg];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 270,
+        "y": 300,
+        "wires": [
+            [
+                "f8d88fbf.dd4d8"
+            ],
+            [
+                "123e2be2.876b24"
+            ]
+        ]
+    },
+    {
+        "id": "fc8e18c9.648bb8",
+        "type": "debug",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 410,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "f8d88fbf.dd4d8",
+        "type": "debug",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "active": true,
+        "console": false,
+        "complete": "payload",
+        "x": 570,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "123e2be2.876b24",
+        "type": "function",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Config Informations",
+        "func": "msg.techno   = msg.topic.replace(/newdevice\\//g, \"\");\nmsg.typeNode = msg.payload.typeNode;\nmsg.senderID = msg.payload.senderID;\nmsg.nodeInfo = msg.payload.nodeInfo;\n\nswitch(msg.typeNode) {\n    case \"zwave-binary-switch\":\n        msg.taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        msg.taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n        msg.taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n        msg.taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\nmsg.service = msg.payload;\nmsg.payload = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 340,
+        "wires": [
+            [
+                "2e06d7e2.cdd478"
+            ]
+        ]
+    },
+    {
+        "id": "2e06d7e2.cdd478",
+        "type": "boxip",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "x": 550,
+        "y": 340,
+        "wires": [
+            [
+                "c28b223c.24de8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "c28b223c.24de8",
+        "type": "function",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Specific parameters",
+        "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    name: msg.nodeInfo.product.slice(msg.nodeInfo.product.indexOf(\" \")+1, msg.nodeInfo.product.length),\n    id: msg.senderID + \"-\" + msg.nodeInfo.product.replace(/ /g, ''),\n    nodeid: msg.senderID,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.includes('remote') || msg.typeNode.includes('motion'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 760,
+        "y": 340,
+        "wires": [
+            [
+                "c11ef5bd.f49958"
+            ]
+        ]
+    },
+    {
+        "id": "c11ef5bd.f49958",
+        "type": "function",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Assert",
+        "func": "// ID du node dans Node-RED\nif(msg.payload.id===undefined) \n    return [{payload:\"ASSERT: msg.payload.id missing\"}, null];\n\n// ID du node dans ZWave\nif(msg.payload.nodeid===undefined) \n    return [{payload:\"ASSERT: msg.payload.nodeid missing\"}, null];\n\n// Nom de l'icône du node dans Node-RED\nif(msg.payload.mark===undefined) \n    return [{payload:\"ASSERT: msg.payload.mark missing\"}, null];\n    \nreturn [null,msg];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 950,
+        "y": 340,
+        "wires": [
+            [
+                "27aebc9d.be9994"
+            ],
+            [
+                "396c7e73.332992",
+                "88444580.1fbc18"
+            ]
+        ]
+    },
+    {
+        "id": "27aebc9d.be9994",
+        "type": "debug",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "active": true,
+        "console": false,
+        "complete": "payload",
+        "x": 1130,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "396c7e73.332992",
+        "type": "debug",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1130,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "88444580.1fbc18",
+        "type": "subflow:nodeGenerator-id",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "x": 1140,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "591b8d78.c5f2d4",
+        "type": "commentdown",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Error",
+        "info": " ",
+        "x": 550,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "bad6d6ae.6ea9b8",
+        "type": "commentdown",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Error",
+        "info": " ",
+        "x": 1110,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "8b447e1f.d2ac",
+        "type": "info",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "ttb-zwave",
+        "info": "",
+        "icon": "comment.png",
+        "langs": [
+            {
+                "key": "en-US",
+                "title": "ttb-zwave",
+                "body": "",
+                "isDefault": true
+            }
+        ],
+        "currentLanguage": "en-US",
+        "x": 92.5,
+        "y": 210,
+        "wires": []
+    }
+]

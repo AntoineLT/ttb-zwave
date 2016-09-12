@@ -3,6 +3,7 @@
 var check      = require('./check.js'),
     deviceNode = require('./deviceNode');
 
+//var nisutil = require(process.env.NODE_RED_HOME+"/node_modules/nisutil");
 var nodes =[];
 
 function driverReady(node, RED, client, homeid) {
@@ -50,6 +51,11 @@ function nodeAdded(nodeid) {
 }
 
 function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
+ 	//node.log('node ready: nodeid:'+ nodeid + ", nodeinfo:");
+	//nisutil.dumpPropsHex("nodeinfo:", nodeinfo, 1, false);
+
+ 	node.log('node ready: nodeid:'+ nodeid + ", " + nodeinfo.manufacturer + " " + nodeinfo.product + " (" + nodeinfo.type + ")");
+
     nodes[nodeid].manufacturer = nodeinfo.manufacturer;
     nodes[nodeid].manufacturerid = nodeinfo.manufacturerid;
     nodes[nodeid].product = nodeinfo.product;
@@ -63,11 +69,11 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     //if(nodeinfo.product === "CRC-3-6-0x Soft Remote") {
         //zwave.setConfigParam(nodeid, 3, 1, 1);
     //}
-
+/*
     node.log('node ready '+nodeid+': '
         +((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '
         +((nodeinfo.product) ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype));
-
+*/
     if(nodeinfo.manufacturer && nodeinfo.product) {
         var productInfo  = nodeinfo.product.replace(/ /g, '');
 
@@ -80,6 +86,18 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
                 // deviceNode.withoutClient(zwave, nodeid, nodeinfo);
             }
         }
+		
+	var comclass;
+	for (comclass in nodes[nodeid]['classes']) {
+		switch (comclass) {
+		case 0x25: // COMMAND_CLASS_SWITCH_BINARY 
+		case 0x26: // COMMAND_CLASS_SWITCH_MULTILEVEL 
+			zwave.enablePoll(nodeid, comclass);
+			break;
+		}
+		
+	}
+
     }
 }
 
@@ -91,7 +109,11 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
     // nodeid : device id in ZWave network (int)
     // comclass : Zwave command class (int)
     // value : callback result of listener (object)
+ 	//node.log('value added: nodeid:'+ nodeid + " comclass:" + comclass + ", value:");
+	// nisutil.dumpPropsHex("value:", value, 1, false);
 
+	//node.log('value added: nodeid:'+ nodeid + " comclass:" + comclass + ", value[" + value.index + "]'" + value.label +"' = " + value.value);
+	
     if(client) {
         if (!zwave.lastY[nodeid - 2]) zwave.lastY[nodeid - 2] = 40;
         if (nodeid !== 1 && value.label !== ""
@@ -127,9 +149,15 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
 }
 
 function valueChanged(node, mqtt, nodeid, comclass, value) {
+
     if(nodes[nodeid].classes[comclass][value.index].value !== undefined
         && value.value !== nodes[nodeid].classes[comclass][value.index].value) {
-        nodes[nodeid].classes[comclass][value.index] = value;
+  	//node.log('value changed: nodeid:'+ nodeid + " comclass:" + comclass + ", value:");
+	//nisutil.dumpPropsHex("value:", value, 1, false);
+
+	node.log('value changed: nodeid:'+ nodeid + " comclass:" + comclass + ", value[" + value.index + "]'" + value.label +"' = " + value.value);
+
+       nodes[nodeid].classes[comclass][value.index] = value;
 
         if (mqtt != null) mqtt.publish({
             'qos': 1,
@@ -148,6 +176,8 @@ function valueRemoved(nodeid, comclass, index) {
 }
 
 function sceneEvent(node, mqtt, nodeid, sceneid) {
+	node.log('scene event: nodeid:'+ nodeid + " sceneid:" + sceneid);
+
     nodes[nodeid].scene = sceneid;
 
     if(mqtt != null) mqtt.publish({
@@ -161,28 +191,28 @@ function sceneEvent(node, mqtt, nodeid, sceneid) {
 function notification(node, nodeid, notif) {
     switch (notif) {
         case 0:
-            node.log('node'+nodeid+': message complete');
+            node.log('node '+nodeid+': message complete');
             break;
         case 1:
-            node.log('node'+nodeid+': timeout');
+            node.log('node '+nodeid+': timeout');
             break;
         case 2:
-            node.log('node'+nodeid+': nop');
+            node.log('node '+nodeid+': nop');
             break;
         case 3:
-            node.log('node'+nodeid+': node awake');
+            node.log('node '+nodeid+': node awake');
             break;
         case 4:
-            node.log('node'+nodeid+': node sleep');
+            node.log('node '+nodeid+': node sleep');
             break;
         case 5:
-            node.log('node'+nodeid+': node dead');
+            node.log('node '+nodeid+': node dead');
             break;
         case 6:
-            node.log('node'+nodeid+': node alive');
+            node.log('node '+nodeid+': node alive');
             break;
         default:
-            node.log('node'+nodeid+': unhandled notification');
+            node.log('node '+nodeid+': unhandled notification');
             break;
     }
 }
