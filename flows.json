@@ -322,7 +322,25 @@
                 "c80b683a.6117e8",
                 "605f985.eb94168",
                 "3fe63fb9.d8986",
-                "11b692cc.00c46d"
+                "501b9470.674204"
+            ]
+        ]
+    },
+    {
+        "id": "501b9470.674204",
+        "type": "function",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "Set message",
+        "func": "msg.message = \"Added new device\";\n\nif(msg.nodeInfo !== undefined)\n    msg.message = msg.message + \": \" + msg.nodeInfo.product + \" (\" +msg.nodeInfo.manufacturer + \")\";\n\nmsg.message = msg.message + \" Refresh your browser !\"\nmsg.notification = msg.message;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1611.5,
+        "y": 277,
+        "wires": [
+            [
+                "11b692cc.00c46d",
+                "96bab866.eb5fc"
             ]
         ]
     },
@@ -335,8 +353,8 @@
         "func": "msg = {};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1470,
-        "y": 380,
+        "x": 1580,
+        "y": 382,
         "wires": [
             [
                 "ab0a4ab3.13bfb8"
@@ -352,8 +370,8 @@
         "func": "if(msg._topic.includes(\"service\")) {\n    switch(msg.techno) {\n        case \"weather\":\n            msg.techno = \"La météo\";\n            break;\n            \n        case \"europe1\":\n            msg.techno = \"Europe 1\";\n            break;\n            \n        case \"presence\":\n            msg.techno = \"Votre service de présence\";\n            break;\n            \n        case \"alert\":\n            msg.techno = \"Votre service d'alerte\";\n            break;\n            \n        case \"hotline\":\n            msg.techno = \"La hotline Digital Airways\";\n            break;\n            \n        case \"withings\":\n            msg.techno = \"Votre balance\";\n            break;\n            \n        case \"flic\":\n            msg.techno = \"Votre bouton\";\n            break;\n            \n        default:\n            break;\n    }\n} else if(msg._topic.includes(\"device\")) {\n    switch(msg.service.type) {\n        case \"zwave-light-dimmer-switch\":\n            msg.techno = \"Votre ampoule LED\";\n            break;\n            \n        case \"zwave-remote-control-multi-purpose\":\n            msg.techno = \"Votre télécommande\";\n            break;\n            \n        case \"zwave-motion-sensor\":\n            msg.techno = \"Votre détecteur de présence\";\n            break;\n            \n        default:\n            break;\n    }\n}\nmsg.payload = msg.techno+\" est maintenant fonctionnelle.\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1470,
-        "y": 460,
+        "x": 1580,
+        "y": 462,
         "wires": [
             []
         ]
@@ -368,8 +386,8 @@
         "qos": "",
         "retain": "false",
         "broker": "MQTT.Localhost",
-        "x": 1460,
-        "y": 540,
+        "x": 1570,
+        "y": 542,
         "wires": []
     },
     {
@@ -381,8 +399,8 @@
         "method": "GET",
         "ret": "txt",
         "url": "/flowFilter",
-        "x": 1480,
-        "y": 420,
+        "x": 1590,
+        "y": 422,
         "wires": [
             []
         ]
@@ -414,8 +432,7 @@
         "y": 260,
         "wires": [
             [
-                "57b9de1e.a7279",
-                "fc8e18c9.648bb8"
+                "57b9de1e.a7279"
             ]
         ]
     },
@@ -438,19 +455,6 @@
                 "123e2be2.876b24"
             ]
         ]
-    },
-    {
-        "id": "fc8e18c9.648bb8",
-        "type": "debug",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 410,
-        "y": 260,
-        "wires": []
     },
     {
         "id": "f8d88fbf.dd4d8",
@@ -554,7 +558,7 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "payload",
         "x": 1130,
@@ -614,19 +618,30 @@
         "y": 210,
         "wires": []
     },
-	{
+    {
+        "id": "96bab866.eb5fc",
+        "type": "display",
+        "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "active": true,
+        "x": 1826,
+        "y": 284,
+        "wires": []
+    },
+    {
         "id": "11b692cc.00c46d",
         "type": "notifyUI",
         "z": "nodeGenerator-id",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
         "name": "",
-        "notification": "New device added! Refresh to see it.",
+        "notification": "",
         "notificationType": "success",
         "fix": false,
         "defaultTout": true,
         "timeout": "",
         "timeoutUnits": "",
-        "x": 1460,
-        "y": 500,
+        "x": 1602,
+        "y": 317,
         "wires": [
             []
         ]
