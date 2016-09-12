@@ -101,7 +101,7 @@ function subscription(RED, node, zwave) {
         }
     }
     else {
-        node.error(RED._("mqtt.errors.not-defined"));
+        node.error(RED._("node-red:mqtt.errors.not-defined"));
     }
     node.on('close', function(done) {
         if (node.brokerConn) {

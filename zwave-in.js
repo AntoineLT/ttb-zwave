@@ -56,7 +56,7 @@ module.exports = function(RED) {
                 }
             }
             else {
-                this.error(RED._("mqtt.errors.not-defined"));
+                this.error(RED._("node-red:mqtt.errors.not-defined"));
             }
             this.on('close', function (done) {
                 if (node.brokerConn) {

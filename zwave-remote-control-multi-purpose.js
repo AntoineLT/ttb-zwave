@@ -6,8 +6,7 @@ module.exports = function(RED) {
     var path      = require('path'),
         mqttCP    = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var flows     = require('./js/flows'),
-        zwave     = require('./js/openZWave').zwave;
+    var flows     = require('./js/flows');
 
     function remoteControlMultiPurpose(config) {
         RED.nodes.createNode(this, config);
@@ -53,7 +52,7 @@ function subscription(RED, node) {
         }, node.id);
     }
     else {
-        node.error(RED._("mqtt.errors.not-defined"));
+        node.error(RED._("node-red:mqtt.errors.not-defined"));
     }
     node.on('close', function(done) {
         if (node.brokerConn) {
