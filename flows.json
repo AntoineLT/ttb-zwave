@@ -108,8 +108,7 @@
                 "83a7f826.949e38"
             ],
             [
-                "6ba2a535.c1b4fc",
-                "83a7f826.949e38"
+                "6ba2a535.c1b4fc"
             ]
         ]
     },
@@ -160,7 +159,7 @@
         "z": "nodeGenerator-id",
         "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
         "name": "find Tab ID",
-        "func": "for(var i = 0; i < msg.payload.length; i++) {\n    if(msg.payload[i].type === \"tab\" && msg.payload[i].origin === undefined) {\n        msg.idTab = msg.payload[i].id;\n        break;\n    }\n}\nif(i < msg.payload.length) {\n    return msg;\n}",
+        "func": "for(var i = 0; i < msg.payload.length; i++) {\n    if(msg.payload[i].type === \"zwave\") {\n        msg.idTab = msg.payload[i].z;\n        break;\n    }\n}\nif(i < msg.payload.length) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 550,
@@ -299,7 +298,7 @@
         "func": "if(msg.idSource !== undefined) {\n    var index = msg.techno + \"-service\";\n    if(msg.techno === \"presence\") {\n        switch(msg.idSource){\n            case \"045D7A7AA62780\":\n                for(var i = 0; i < msg.payload.length; i++) {\n                    if(msg.payload[i].id === \"044E7A7AA62780\" \n                        && msg.payload[i].wires[0].indexOf(index)===-1) {\n                        msg.payload[i].wires[0].push(index);\n                        break;\n                    }\n                }\n                break;\n                \n            case \"044E7A7AA62780\":\n                for(var i = 0; i < msg.payload.length; i++) {\n                    if(msg.payload[i].id === \"045D7A7AA62780\" \n                        && msg.payload[i].wires[0].indexOf(index)===-1) {\n                        msg.payload[i].wires[0].push(index);\n                        break;\n                    }\n                }\n                break;\n                \n            default:\n                break;\n        }\n    }\n    for(var j = 0; j < msg.payload.length; j++) {\n        if(msg.payload[j].id === msg.idSource \n            && msg.payload[j].wires[0].indexOf(index)===-1) {\n            msg.payload[j].wires[0].push(index);\n            break;\n        }\n    }\n    if(msg.idSource && j < msg.payload.length) {\n        msg.method = \"PUT\";\n        msg.headers = {\n            \"Content-Type\":\"application/json\"\n        };\n        msg.payload = msg.result;\n        return msg;\n    }\n}\nmsg.method = \"PUT\";\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n};\nmsg.payload = msg.result;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1230,
+        "x": 1270,
         "y": 360,
         "wires": [
             [
@@ -316,7 +315,7 @@
         "method": "use",
         "ret": "txt",
         "url": "",
-        "x": 1220,
+        "x": 1260,
         "y": 400,
         "wires": [
             [
@@ -335,7 +334,7 @@
         "func": "msg = {};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1430,
+        "x": 1470,
         "y": 380,
         "wires": [
             [
@@ -352,7 +351,7 @@
         "func": "if(msg._topic.includes(\"service\")) {\n    switch(msg.techno) {\n        case \"weather\":\n            msg.techno = \"La météo\";\n            break;\n            \n        case \"europe1\":\n            msg.techno = \"Europe 1\";\n            break;\n            \n        case \"presence\":\n            msg.techno = \"Votre service de présence\";\n            break;\n            \n        case \"alert\":\n            msg.techno = \"Votre service d'alerte\";\n            break;\n            \n        case \"hotline\":\n            msg.techno = \"La hotline Digital Airways\";\n            break;\n            \n        case \"withings\":\n            msg.techno = \"Votre balance\";\n            break;\n            \n        case \"flic\":\n            msg.techno = \"Votre bouton\";\n            break;\n            \n        default:\n            break;\n    }\n} else if(msg._topic.includes(\"device\")) {\n    switch(msg.service.type) {\n        case \"zwave-light-dimmer-switch\":\n            msg.techno = \"Votre ampoule LED\";\n            break;\n            \n        case \"zwave-remote-control-multi-purpose\":\n            msg.techno = \"Votre télécommande\";\n            break;\n            \n        case \"zwave-motion-sensor\":\n            msg.techno = \"Votre détecteur de présence\";\n            break;\n            \n        default:\n            break;\n    }\n}\nmsg.payload = msg.techno+\" est maintenant fonctionnelle.\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1430,
+        "x": 1470,
         "y": 460,
         "wires": [
             []
@@ -368,7 +367,7 @@
         "qos": "",
         "retain": "false",
         "broker": "MQTT.Localhost",
-        "x": 1420,
+        "x": 1460,
         "y": 540,
         "wires": []
     },
@@ -381,7 +380,7 @@
         "method": "GET",
         "ret": "txt",
         "url": "/flowFilter",
-        "x": 1440,
+        "x": 1480,
         "y": 420,
         "wires": [
             []
