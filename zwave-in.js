@@ -1,7 +1,7 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     'use strict';
 
-    var isUtf8    = require('is-utf8');
+    var isUtf8 = require('is-utf8');
 
     function MQTTInNode(n) {
         RED.nodes.createNode(this, n);

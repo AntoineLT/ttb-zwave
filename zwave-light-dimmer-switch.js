@@ -1,13 +1,13 @@
 'use strict';
 
-module.exports = function(RED) {
+module.exports = function (RED) {
     var homeDir = process.env.NODE_RED_HOME;
 
     var path = require('path'),
         mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
     var flows = require('./js/flows'),
-        zwave    = require('./js/openZWave').zwave;
+        zwave = require('./js/openZWave').zwave;
 
     function lightDimmerSwitch(config) {
         RED.nodes.createNode(this, config);
@@ -38,28 +38,30 @@ module.exports = function(RED) {
 };
 
 function subscription(RED, node, zwave) {
-    var isUtf8     = require('is-utf8'),
-        flows      = require('./js/flows');
+    var isUtf8 = require('is-utf8'),
+        flows = require('./js/flows');
 
     var msg,
         zwaveTopic = flows.checkZwaveNodeTopic();
     if (node.topic) {
         node.brokerConn.register(node);
-        node.brokerConn.subscribe(node.topic,2,function(topic,payload,packet) {
-            if (isUtf8(payload)) { payload = payload.toString(); }
+        node.brokerConn.subscribe(node.topic, 2, function (topic, payload, packet) {
+            if (isUtf8(payload)) {
+                payload = payload.toString();
+            }
             try {
                 msg = JSON.parse(payload);
             } catch (e) {
                 node.error(e);
             }
-            if(typeof msg !== 'object') {
+            if (typeof msg !== 'object') {
                 msg = {
                     payload: msg || payload
                 };
             }
             lightDimmerSwitchFunc(node, zwave, msg);
         }, node.id);
-        if(node.topicOut !== undefined) {
+        if (node.topicOut !== undefined) {
             node.brokerConn.subscribe(node.topicOut, 2, function (topic, payload, packet) {
                 if (isUtf8(payload)) {
                     payload = payload.toString();
@@ -72,10 +74,10 @@ function subscription(RED, node, zwave) {
                 if (typeof msg !== 'object') {
                     msg = {
                         payload: msg || payload,
-                        intent: (((msg || payload) === true)||((msg || payload) >= 50))? 1 : 0
+                        intent: (((msg || payload) === true) || ((msg || payload) >= 50)) ? 1 : 0
                     };
                 }
-                switch(msg.payload) {
+                switch (msg.payload) {
                     case "true":
                     case "TRUE":
                         msg.payload = true;
@@ -103,10 +105,10 @@ function subscription(RED, node, zwave) {
     else {
         node.error(RED._("node-red:mqtt.errors.not-defined"));
     }
-    node.on('close', function(done) {
+    node.on('close', function (done) {
         if (node.brokerConn) {
-            node.brokerConn.unsubscribe(node.topic,node.id);
-            node.brokerConn.deregister(node,done);
+            node.brokerConn.unsubscribe(node.topic, node.id);
+            node.brokerConn.deregister(node, done);
         }
     });
 }
@@ -114,7 +116,7 @@ function subscription(RED, node, zwave) {
 function lightDimmerSwitchFunc(node, zwave, msg) {
     var handler = require('./js/handler');
 
-    if(handler.nodes[node.nodeid].classes[38]  !== undefined) {
+    if (handler.nodes[node.nodeid].classes[38] !== undefined) {
         var currentValue = handler.nodes[node.nodeid].classes[38][0].value;
         if (msg.status && msg.status === "toggle") {
             if (currentValue <= 50) {

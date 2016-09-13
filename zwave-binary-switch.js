@@ -10,12 +10,11 @@ module.exports = function(RED) {
         zwave    = require('./js/openZWave').zwave;
 
 	function binarySwitch(config) {
-		
 		RED.nodes.createNode(this, config);
 
 		this.brokerConn = RED.nodes.getNode(config.broker);
 		if (this.brokerConn === undefined && this.brokerConn === null) {
-			this.error(RED._("mqtt.errors.missing-config"));
+			this.error(RED._("node-red:mqtt.errors.missing-config"));
 			return;
 		}
 

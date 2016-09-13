@@ -1,8 +1,8 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     'use strict';
 
     var outNode = require('./js/outNode'),
-        zwave   = require('./js/openZWave').zwave;
+        zwave = require('./js/openZWave').zwave;
 
     function zwaveOutNode(config) {
         RED.nodes.createNode(this, config);
