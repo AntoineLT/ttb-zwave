@@ -6,7 +6,9 @@
             "placeholder": "zwave/"
         },
         "name": "Name",
-        "push": "Push"
+        "push": "Push",
+        "scancomplete": "ZWave : Scan Complete",
+        "inclusion": "ZWave : Inclusion mode activated"
     },
     "zwave-in": {
         "nodeid": "NodeID",

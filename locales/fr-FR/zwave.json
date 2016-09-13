@@ -6,7 +6,9 @@
             "value": "zwave/"
         },
         "name": "Nom",
-        "push": "Push"
+        "push": "Push",
+        "scancomplete": "ZWave : Scan Terminé",
+        "inclusion": "ZWave : Mode d'inclusion activé"
     },
     "zwave-in": {
         "nodeid": "NodeID",

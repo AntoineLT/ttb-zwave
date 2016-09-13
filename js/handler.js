@@ -217,12 +217,17 @@ function notification(node, nodeid, notif) {
     }
 }
 
-function scanComplete(node) {
+function scanComplete(RED, node) {
     node.log('Z-Wave network scan complete!');
     node.status({
         fill: 'green',
         shape: 'ring',
         text: 'node-red:common.status.connected'
+    });
+    RED.comms.publish("notifyUI", {
+        text : RED._("ttb-zwave/zwave:zwave.scancomplete"),
+        type: 'success',
+        fixed: false
     });
 }
 

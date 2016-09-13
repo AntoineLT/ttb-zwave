@@ -175,7 +175,6 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
             break;
     }
     if (mqtt !== null && msg.payload.typeNode) mqtt.publish(msg);
-
 }
 
 module.exports = {
