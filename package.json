@@ -7,13 +7,14 @@
       "zwave": "zwave.js",
       "zwave-in": "zwave-in.js",
       "zwave-out": "zwave-out.js",
+      "zwave-generic": "zwave-generic.js",
       "zwave-binary-switch": "zwave-binary-switch.js",
       "zwave-light-dimmer-switch": "zwave-light-dimmer-switch.js",
       "zwave-motion-sensor": "zwave-motion-sensor.js",
       "zwave-remote-control-multi-purpose": "zwave-remote-control-multi-purpose.js"
     }
   },
-  "installation-duration": 360,
+  "installation-duration": 420,
   "dependencies": {
     "is-utf8": "^0.2.1",
     "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git"

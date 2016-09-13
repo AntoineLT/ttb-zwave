@@ -30,5 +30,12 @@
         "class": "Class",
         "index": "Index",
         "value": "Value"
+    },
+    "zwave-generic": {
+        "name": "Name",
+        "device": "Device",
+        "commandclass": "Class",
+        "indexclass": "Index",
+        "notready": "Your ZWave network is not ready try again later!"
     }
 }
