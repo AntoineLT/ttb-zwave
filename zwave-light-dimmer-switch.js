@@ -91,13 +91,12 @@ function subscription(RED, node, zwave) {
                     default:
                         break;
                 }
-                var msgMQTT = {
+                if (node.mqtt !== null) node.mqtt.publish({
                     'payload': msg,
                     'qos': 0,
                     'retain': true,
-                    'topic': zwaveTopic + node.nodeid + '/out'
-                };
-                if (node.mqtt !== null) node.mqtt.publish(msgMQTT);
+                    'topic': zwaveTopic + '/' + node.nodeid + '/out'
+                });
                 node.send(msg);
             }, node.id);
         }

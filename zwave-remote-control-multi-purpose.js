@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = function(RED) {
+module.exports = function (RED) {
     var homeDir = process.env.NODE_RED_HOME;
 
-    var path      = require('path'),
-        mqttCP    = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
+    var path = require('path'),
+        mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var flows     = require('./js/flows');
+    var flows = require('./js/flows');
 
     function remoteControlMultiPurpose(config) {
         RED.nodes.createNode(this, config);
@@ -36,14 +36,16 @@ function subscription(RED, node) {
     var msg;
     if (node.topic) {
         node.brokerConn.register(node);
-        node.brokerConn.subscribe(node.topic,2,function(topic,payload,packet) {
-            if (isUtf8(payload)) { payload = payload.toString(); }
+        node.brokerConn.subscribe(node.topic, 2, function (topic, payload, packet) {
+            if (isUtf8(payload)) {
+                payload = payload.toString();
+            }
             try {
                 msg = JSON.parse(payload);
             } catch (e) {
                 node.error(e);
             }
-            if(typeof msg !== 'object') {
+            if (typeof msg !== 'object') {
                 msg = {
                     payload: msg || payload
                 };
@@ -54,10 +56,10 @@ function subscription(RED, node) {
     else {
         node.error(RED._("node-red:mqtt.errors.not-defined"));
     }
-    node.on('close', function(done) {
+    node.on('close', function (done) {
         if (node.brokerConn) {
-            node.brokerConn.unsubscribe(node.topic,node.id);
-            node.brokerConn.deregister(node,done);
+            node.brokerConn.unsubscribe(node.topic, node.id);
+            node.brokerConn.deregister(node, done);
         }
     });
 }
@@ -70,7 +72,7 @@ function softRemote(node, sceneID) {
     var msgMQTT = {
             qos: 0,
             retain: true,
-            topic: topic + node.nodeid + '/out'
+            topic: topic + '/' + node.nodeid + '/out'
         },
         msg = {
             payload: sceneID
