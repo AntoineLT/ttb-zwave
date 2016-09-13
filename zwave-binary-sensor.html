@@ -1,0 +1,55 @@
+<script type="text/x-red" data-template-name="zwave-binary-sensor">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ttb-zwave/zwave:zwave.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]ttb-zwave/zwave:zwave.name">
+    </div>
+    <div style="cursor: pointer;" class="accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all" id="nset-advanced">
+        <span style="display: inline-block;">
+            <span class="ui-icon ui-icon-triangle-1-e" id="nset-advanced-arrow"></span>
+        </span>
+        <span data-i18n="ttb-zwave/zwave:zwave-in.advanced.title"></span>
+    </div>
+    <div style="padding-top: 7px; padding-bottom: 7px; border-left: 1px solid #d3d3d3; border-bottom: 1px solid #d3d3d3; border-right: 1px solid #d3d3d3; border-radius: 2px; display: none;" id="nset-advanced-from">
+        <div class="form-row" style="padding-top: 7px;">
+            <span style="margin-left: 10px;"></span>
+            <label for="node-input-broker"><i class="fa fa-globe"></i> <span data-i18n="ttb-zwave/zwave:zwave-in.advanced.broker"></span></label>
+            <input type="text" id="node-input-broker">
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('zwave-binary-sensor',{
+        category: 'system',
+        color:"#ffffff",
+        defaults: {
+            name: {value:""},
+            nodeid: {value: ""},
+            mark: {value: null},
+            broker: {type:"mqtt-broker", required:true, value:"MQTT.Localhost"}
+        },
+        inputs:0,
+        outputs:1,
+        icon: function() {
+            return this.mark||"zwave.png";
+        },
+        label: function() {
+            return this.name||"Binary Switch";
+        },
+        oneditprepare: function() {
+            $("#nset-advanced").click(function() {
+                var form = $("#nset-advanced-from");
+                var arrow = $("#nset-advanced-arrow");
+                if(form.css("display") == "none") {
+                    form.css("display", "block");
+                    arrow.removeClass("ui-icon-triangle-1-e");
+                    arrow.addClass("ui-icon-triangle-1-s");
+                } else {
+                    form.css("display", "none");
+                    arrow.removeClass("ui-icon-triangle-1-s");
+                    arrow.addClass("ui-icon-triangle-1-e");
+                }
+            });
+        }
+    });
+</script>

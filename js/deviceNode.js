@@ -5,19 +5,19 @@ var flows = require('./flows');
 // productIDTotal refers to '../../node_modules/openzwave-shared/deps/open-zwave/config/manufacturer_specific.xml'
 
 function withClient(RED, zwave, nodeid, nodeinfo) {
-    if(!zwave.lastY[nodeid-2]) zwave.lastY[nodeid-2] = 40;
+    if (!zwave.lastY[nodeid - 2]) zwave.lastY[nodeid - 2] = 40;
     var manufacturerid = nodeinfo.manufacturerid.slice(2, nodeinfo.manufacturerid.length),
-        producttype    = nodeinfo.producttype.slice(2, nodeinfo.producttype.length),
-        productid      = nodeinfo.productid.slice(2, nodeinfo.productid.length),
-        productIDTotal = manufacturerid+"-"+producttype+"-"+productid,
+        producttype = nodeinfo.producttype.slice(2, nodeinfo.producttype.length),
+        productid = nodeinfo.productid.slice(2, nodeinfo.productid.length),
+        productIDTotal = manufacturerid + "-" + producttype + "-" + productid,
         node = {
             "id": nodeid + "-" + nodeinfo.product.replace(/ /g, ''),
             "name": nodeid + ": " + nodeinfo.manufacturer + ', ' + nodeinfo.product,
             "broker": "MQTT.Localhost",
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-            "x": 250+((nodeid-2)*300),
-            "y": zwave.lastY[nodeid-2],
+            "x": 250 + ((nodeid - 2) * 300),
+            "y": zwave.lastY[nodeid - 2],
             "z": "zwave"
         };
 
@@ -47,27 +47,34 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             node.type = "zwave-motion-sensor";
             break;
 
+        case "010f-0700-1000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-2000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-3000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-4000": // FIBARO System, FGK101 Door Opening Sensor
+            node.type = "zwave-binary-sensor";
+            break;
+
         default:
             break;
     }
     RED.nodes.addNodeToClients(node);
-    zwave.lastY[nodeid-2] += 60;
+    zwave.lastY[nodeid - 2] += 60;
 }
 
 function withoutClient(zwave, nodeid, nodeinfo) {
-    if(!zwave.lastY[nodeid-2]) zwave.lastY[nodeid-2] = 40;
+    if (!zwave.lastY[nodeid - 2]) zwave.lastY[nodeid - 2] = 40;
     var manufacturerid = nodeinfo.manufacturerid.slice(2, nodeinfo.manufacturerid.length),
-        producttype    = nodeinfo.producttype.slice(2, nodeinfo.producttype.length),
-        productid      = nodeinfo.productid.slice(2, nodeinfo.productid.length),
-        productIDTotal = manufacturerid+"-"+producttype+"-"+productid,
+        producttype = nodeinfo.producttype.slice(2, nodeinfo.producttype.length),
+        productid = nodeinfo.productid.slice(2, nodeinfo.productid.length),
+        productIDTotal = manufacturerid + "-" + producttype + "-" + productid,
         node = {
             "id": nodeid + "-" + nodeinfo.product.replace(/ /g, ''),
             "name": nodeid + ": " + nodeinfo.manufacturer + ', ' + nodeinfo.product,
             "broker": "MQTT.Localhost",
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
-            "x": 250+((nodeid-2)*300),
-            "y": zwave.lastY[nodeid-2],
+            "x": 250 + ((nodeid - 2) * 300),
+            "y": zwave.lastY[nodeid - 2],
             "z": "zwave"
         };
 
@@ -101,18 +108,26 @@ function withoutClient(zwave, nodeid, nodeinfo) {
             node.name = "Motion Sensor";
             break;
 
+        case "010f-0700-1000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-2000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-3000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-4000": // FIBARO System, FGK101 Door Opening Sensor
+            node.type = "zwave-binary-sensor";
+            node.name = "Door Sensor";
+            break;
+
         default:
             break;
     }
     flows.addNodeToServerFlows(node);
-    zwave.lastY[nodeid-2] += 60;
+    zwave.lastY[nodeid - 2] += 60;
 }
 
 function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
     var manufacturerid = nodeinfo.manufacturerid.slice(2, nodeinfo.manufacturerid.length),
-        producttype    = nodeinfo.producttype.slice(2, nodeinfo.producttype.length),
-        productid      = nodeinfo.productid.slice(2, nodeinfo.productid.length),
-        productIDTotal = manufacturerid+"-"+producttype+"-"+productid,
+        producttype = nodeinfo.producttype.slice(2, nodeinfo.producttype.length),
+        productid = nodeinfo.productid.slice(2, nodeinfo.productid.length),
+        productIDTotal = manufacturerid + "-" + producttype + "-" + productid,
         msg = {
             payload: {
                 senderID: nodeid,
@@ -149,15 +164,22 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
             msg.payload.typeNode = "zwave-motion-sensor";
             break;
 
+        case "010f-0700-1000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-2000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-3000": // FIBARO System, FGK101 Door Opening Sensor
+        case "010f-0700-4000": // FIBARO System, FGK101 Door Opening Sensor
+            msg.payload.typeNode = "zwave-binary-sensor";
+            break;
+
         default:
             break;
     }
-    if(mqtt !== null && msg.payload.typeNode) mqtt.publish(msg);
+    if (mqtt !== null && msg.payload.typeNode) mqtt.publish(msg);
 
 }
 
 module.exports = {
-    'withClient'   : withClient,
+    'withClient': withClient,
     'withoutClient': withoutClient,
-    'newdeviceMQTT'   : newdeviceMQTT
+    'newdeviceMQTT': newdeviceMQTT
 };

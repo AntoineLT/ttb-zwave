@@ -8,6 +8,7 @@
       "zwave-in": "zwave-in.js",
       "zwave-out": "zwave-out.js",
       "zwave-generic": "zwave-generic.js",
+      "zwave-binary-sensor": "zwave-binary-sensor.js",
       "zwave-binary-switch": "zwave-binary-switch.js",
       "zwave-light-dimmer-switch": "zwave-light-dimmer-switch.js",
       "zwave-motion-sensor": "zwave-motion-sensor.js",
@@ -31,9 +32,9 @@
     "email": "thethingbox@gmail.com",
     "url": "http://thethingbox.io/"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/TheThingBox/ttb-zwave.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheThingBox/ttb-zwave.git"
   },
   "license": "WTFPL"
 }
