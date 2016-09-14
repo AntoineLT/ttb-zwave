@@ -19,7 +19,7 @@ module.exports = function (RED) {
         }
 
         var zwaveTopic = flows.checkZwaveNodeTopic();
-        this.topic = zwaveTopic + '/' + config.nodeid + '/48/0';
+        this.topic = zwaveTopic + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
 
         this.mqtt = mqttCP.get(
             this.brokerConn.broker,
