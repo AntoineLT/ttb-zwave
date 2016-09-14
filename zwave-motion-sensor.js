@@ -8,29 +8,28 @@ module.exports = function (RED) {
 
     var flows = require('./js/flows');
 
-    function motionSensor(config) {
+    function main(config) {
         RED.nodes.createNode(this, config);
+        //this.config = config;
 
-        this.brokerConn = RED.nodes.getNode(this.broker);
+        this.brokerConn = RED.nodes.getNode(config.broker);
         if (this.brokerConn === undefined && this.brokerConn === null) {
             this.error(RED._("node-red:mqtt.errors.missing-config"));
             return;
         }
 
         var zwaveTopic = flows.checkZwaveNodeTopic();
-        this.nodeid = config.nodeid;
-        this.topic = zwaveTopic + '/' + this.nodeid + '/48/0';
-        this.broker = config.broker;
+        this.topic = zwaveTopic + '/' + config.nodeid + '/48/0';
 
         this.mqtt = mqttCP.get(
-            node.brokerConn.broker,
-            node.brokerConn.port
+            this.brokerConn.broker,
+            this.brokerConn.port
         );
 
         subscription(RED, this);
     }
 
-    RED.nodes.registerType("zwave-motion-sensor", motionSensor);
+    RED.nodes.registerType("zwave-motion-sensor", main);
 };
 
 function subscription(RED, node) {
