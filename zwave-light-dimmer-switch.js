@@ -66,7 +66,7 @@ function subscription(RED, node, zwave) {
             } catch (e) {
                 msg.payload = payload;
             }
-            (msg.payload === true) ? msg.intent = 1 : msg.intent = 0;
+            (msg.payload >= 50) ? msg.intent = 1 : msg.intent = 0;
             if (node.mqtt !== null) node.mqtt.publish({
                 'payload': msg,
                 'qos': 0,
