@@ -6,47 +6,55 @@ module.exports = function (RED) {
     var path = require('path'),
         mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var flows = require('./js/flows'),
-        zwave = require('./js/openZWave').zwave;
+    var flows = require('./js/flows');
 
-    function binarySwitch(config) {
+    function main(config) {
         RED.nodes.createNode(this, config);
+        this.config = config;
 
         this.brokerConn = RED.nodes.getNode(config.broker);
-        if (this.brokerConn === undefined && this.brokerConn === null) {
+        if (this.brokerConn === undefined || this.brokerConn === null) {
             this.error(RED._("node-red:mqtt.errors.missing-config"));
             return;
         }
 
         var zwaveTopic = flows.checkZwaveNodeTopic();
-        this.nodeid = config.nodeid;
-        this.topic = zwaveTopic + '/' + this.nodeid + '/in';
-        this.topicOut = zwaveTopic + '/' + this.nodeid + '/37/0';
-        this.broker = config.broker;
+        this.topic = zwaveTopic + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
+        this.topicIn = zwaveTopic + '/' + config.nodeid + '/in';
 
         this.mqtt = mqttCP.get(
             this.brokerConn.broker,
             this.brokerConn.port
         );
 
+        var zwave = require('./js/openZWave').zwave;
+
         subscription(RED, this, zwave);
 
         var node = this;
-
         this.on('input', function (msg) {
             binarySwitchFunc(node, zwave, msg);
         });
     }
 
-    RED.nodes.registerType("zwave-binary-switch", binarySwitch);
+    RED.nodes.registerType("zwave-binary-switch", main);
+
+    RED.httpAdmin.get("/zwave/nodesArray", function (req, res) {
+        var nodes = require('./js/handler').nodes;
+        if (!nodes) {
+            return res.status(400).json({err: "ERROR"});
+        }
+        res.status(200).json(nodes);
+    });
 };
 
 function subscription(RED, node, zwave) {
     var isUtf8 = require('is-utf8'),
         flows = require('./js/flows');
 
-    var msg,
+    var msg = {},
         zwaveTopic = flows.checkZwaveNodeTopic();
+
     if (node.topic) {
         node.brokerConn.register(node);
         node.brokerConn.subscribe(node.topic, 2, function (topic, payload, packet) {
@@ -54,65 +62,46 @@ function subscription(RED, node, zwave) {
                 payload = payload.toString();
             }
             try {
-                msg = JSON.parse(payload);
+                msg.payload = JSON.parse(payload);
             } catch (e) {
-                node.error(e);
+                msg.payload = payload;
             }
-            if (typeof msg !== 'object') {
-                msg = {
-                    payload: msg || payload
-                };
-            }
-            binarySwitchFunc(node, zwave, msg);
-
+            (msg.payload === true) ? msg.intent = 1 : msg.intent = 0;
+            if (node.mqtt !== null) node.mqtt.publish({
+                'payload': msg,
+                'qos': 0,
+                'retain': true,
+                'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
+            });
+            node.send(msg);
         }, node.id);
-        if (node.topicOut !== undefined) {
-            node.brokerConn.subscribe(node.topicOut, 2, function (topic, payload, packet) {
-                if (isUtf8(payload)) {
-                    payload = payload.toString();
-                }
-                try {
-                    msg = JSON.parse(payload);
-                } catch (e) {
-                    node.error(e);
-                }
-                if (typeof msg !== 'object') {
-                    msg = {
-                        payload: msg || payload,
-                        intent: (((msg || payload) === true) || ((msg || payload) >= 50)) ? 1 : 0
-                    };
-                }
-                switch (msg.payload) {
-                    case "true":
-                    case "TRUE":
-                        msg.payload = true;
-                        break;
-
-                    case "false":
-                    case "FALSE":
-                        msg.payload = false;
-                        break;
-
-                    default:
-                        break;
-                }
-
-                if (node.mqtt !== null) node.mqtt.publish({
-                    'payload': msg,
-                    'qos': 0,
-                    'retain': true,
-                    'topic': zwaveTopic + '/' + node.nodeid + '/out'
-                });
-                node.send(msg);
-            }, node.id);
-        }
     }
     else {
         node.error(RED._("node-red:mqtt.errors.not-defined"));
     }
+
+    if (node.topicIn) {
+        node.brokerConn.register(node);
+        node.brokerConn.subscribe(node.topicIn, 2, function (topic, payload, packet) {
+            if (isUtf8(payload)) {
+                payload = payload.toString();
+            }
+            try {
+                msg = JSON.parse(payload);
+            } catch (e) {
+                msg.payload = payload;
+            }
+            binarySwitchFunc(node, zwave, msg);
+        }, node.id);
+    }
+    else {
+        node.error(RED._("node-red:mqtt.errors.not-defined"));
+    }
+
     node.on('close', function (done) {
         if (node.brokerConn) {
             node.brokerConn.unsubscribe(node.topic, node.id);
+            node.brokerConn.unsubscribe(node.topicIn, node.id);
             node.brokerConn.deregister(node, done);
         }
     });
@@ -120,23 +109,23 @@ function subscription(RED, node, zwave) {
 
 function binarySwitchFunc(node, zwave, msg) {
     var handler = require('./js/handler');
-    if (handler.nodes[node.nodeid].classes[37] !== undefined) {
-        var currentValue = handler.nodes[node.nodeid].classes[37][0].value;
+    if (handler.nodes[node.config.nodeid].classes[37] !== undefined) {
+        var currentValue = handler.nodes[node.config.nodeid].classes[37][0].value;
         if (msg.status && msg.status === "toggle") {
             if (currentValue === false) {
-                zwave.setValue(node.nodeid, 37, 1, 0, true);
+                zwave.setValue(node.config.nodeid, 37, 1, 0, true);
             } else if (currentValue === true) {
-                zwave.setValue(node.nodeid, 37, 1, 0, false);
+                zwave.setValue(node.config.nodeid, 37, 1, 0, false);
             }
         } else {
             if (msg.intent || msg.intent == 0) {
                 switch (msg.intent) {
                     case 0:
-                        zwave.setValue(node.nodeid, 37, 1, 0, false);
+                        zwave.setValue(node.config.nodeid, 37, 1, 0, false);
                         break;
 
                     case 1:
-                        zwave.setValue(node.nodeid, 37, 1, 0, true);
+                        zwave.setValue(node.config.nodeid, 37, 1, 0, true);
                         break;
                 }
             }

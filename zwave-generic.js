@@ -10,10 +10,10 @@ module.exports = function (RED) {
 
     function main(config) {
         RED.nodes.createNode(this, config);
-        //this.config = config;
+        this.config = config;
 
         this.brokerConn = RED.nodes.getNode(config.broker);
-        if (this.brokerConn === undefined && this.brokerConn === null) {
+        if (this.brokerConn === undefined || this.brokerConn === null) {
             this.error(RED._("node-red:mqtt.errors.missing-config"));
             return;
         }
@@ -63,7 +63,7 @@ function subscription(RED, node) {
                 'payload': msg,
                 'qos': 0,
                 'retain': true,
-                'topic': zwaveTopic + '/' + node.nodeid + '/out'
+                'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
             });
             node.send(msg);
         }, node.id);

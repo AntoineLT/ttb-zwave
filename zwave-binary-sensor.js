@@ -8,19 +8,18 @@ module.exports = function (RED) {
 
     var flows = require('./js/flows');
 
-    function binarySensor(config) {
+    function main(config) {
         RED.nodes.createNode(this, config);
+        this.config = config;
 
         this.brokerConn = RED.nodes.getNode(config.broker);
-        if (this.brokerConn === undefined && this.brokerConn === null) {
+        if (this.brokerConn === undefined || this.brokerConn === null) {
             this.error(RED._("node-red:mqtt.errors.missing-config"));
             return;
         }
 
         var zwaveTopic = flows.checkZwaveNodeTopic();
-        this.nodeid = config.nodeid;
-        this.topic = zwaveTopic + '/' + this.nodeid + '/48/0';
-        this.broker = config.broker;
+        this.topic = zwaveTopic + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
 
         this.mqtt = mqttCP.get(
             this.brokerConn.broker,
@@ -30,7 +29,15 @@ module.exports = function (RED) {
         subscription(RED, this);
     }
 
-    RED.nodes.registerType("zwave-binary-sensor", binarySensor);
+    RED.nodes.registerType("zwave-binary-sensor", main);
+
+    RED.httpAdmin.get("/zwave/nodesArray", function (req, res) {
+        var nodes = require('./js/handler').nodes;
+        if (!nodes) {
+            return res.status(400).json({err: "ERROR"});
+        }
+        res.status(200).json(nodes);
+    });
 };
 
 function subscription(RED, node) {
@@ -56,7 +63,7 @@ function subscription(RED, node) {
                 'payload': msg,
                 'qos': 0,
                 'retain': true,
-                'topic': zwaveTopic + '/' + node.nodeid + '/out'
+                'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
             });
             node.send(msg);
         }, node.id);

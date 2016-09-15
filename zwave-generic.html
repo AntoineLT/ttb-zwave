@@ -107,9 +107,13 @@
                     if (that.productname !== '' && that.classindexname !== '') {
                         if (exist) {
                             productlist.val(that.nodeid).trigger("change");
-                            indexlist.val(that.classindex).trigger("change");
+                            indexlist.find("option").each(function () {
+                                if ($(this).attr("commandclass") === that.commandclass
+                                        && $(this).val() === that.classindex)
+                                    $(this).attr("selected", "selected");
+                            });
                         } else {
-                            indexListOpt.length   = 0;
+                            indexListOpt.length = 0;
                             productListOpt[productListOpt.length] = new Option(that.productname, that.nodeid, true, true);
                             indexListOpt[indexListOpt.length]     = new Option(that.classindexname, that.classindex, true, true);
                             indexListOpt[indexListOpt.length-1].setAttribute("commandclass",that.commandclass);
