@@ -6,9 +6,7 @@ module.exports = function (RED) {
     var path = require('path'),
         mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-    var flows = require('./js/flows'),
-        handler = require('./js/handler'),
-        outNode = require('./js/outNode'),
+    var handler = require('./js/handler'),
         zwave = require('./js/openZWave').zwave;
 
     var mqtt = null,
