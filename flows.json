@@ -241,7 +241,7 @@
         "z": "nodeGenerator-id",
         "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
         "name": "addNodeToServerFlows",
-        "func": "var node = msg.node;\nnode.z = msg.payload.id;\n\nvar content = msg.payload,\n    contentL = content.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    content.push(node);\n} else {\n    for(var i = 0; i < contentL; i++) {\n        if(content[i].id === node.id && content[i].type === node.type)\n            break;\n    }\n    if(i === contentL) content.push(node);\n}\nif(contentL < content.length) {\n    //msg.payload = JSON.stringify(msg.payload, null, 4);\n    return msg;\n}",
+        "func": "var node = msg.node;\nnode.z = msg.payload[0].id;\n\nvar content = msg.payload,\n    contentL = content.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    content.push(node);\n} else {\n    for(var i = 0; i < contentL; i++) {\n        if(content[i].id === node.id && content[i].type === node.type)\n            break;\n    }\n    if(i === contentL) content.push(node);\n}\nif(contentL < content.length) {\n    //msg.payload = JSON.stringify(msg.payload, null, 4);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 1010,
@@ -475,7 +475,7 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
         "name": "Config Informations",
-        "func": "msg.techno   = msg.topic.replace(/newdevice\\//g, \"\");\nmsg.typeNode = msg.payload.typeNode;\nmsg.senderID = msg.payload.senderID;\nmsg.nodeInfo = msg.payload.nodeInfo;\n\nswitch(msg.typeNode) {\n    case \"zwave-binary-switch\":\n        msg.taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        msg.taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n        msg.taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n        msg.taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\nmsg.service = msg.payload;\nmsg.payload = \"\";\nreturn msg;",
+        "func": "msg.techno         = msg.topic.replace(/newdevice\\//g, \"\");\nmsg.typeNode       = msg.payload.typeNode;\nmsg.senderID       = msg.payload.senderID;\nmsg.nodeInfo       = msg.payload.nodeInfo;\nmsg.productname    = msg.payload.productname;\nmsg.classindexname = msg.payload.classindexname;\nmsg.commandclass   = msg.payload.commandclass;\nmsg.classindex     = msg.payload.classindex;\n\nswitch(msg.typeNode) {\n    case \"zwave-binary-switch\":\n        msg.taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        msg.taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n    case \"nodonSoftRemote\":\n        msg.taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n    case \"zwave-binary-sensor\":\n    case \"aeotecMultiSensor\":\n        msg.taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\nmsg.service = msg.payload;\nmsg.payload = \"\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 320,
@@ -507,7 +507,7 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
         "name": "Specific parameters",
-        "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    name: msg.nodeInfo.product.slice(msg.nodeInfo.product.indexOf(\" \")+1, msg.nodeInfo.product.length),\n    id: msg.senderID + \"-\" + msg.nodeInfo.product.replace(/ /g, ''),\n    nodeid: msg.senderID,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.includes('remote') || msg.typeNode.includes('motion'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
+        "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    name: msg.nodeInfo.product.slice(msg.nodeInfo.product.indexOf(\" \")+1, msg.nodeInfo.product.length),\n    id: msg.senderID + \"-\" + msg.nodeInfo.product.replace(/ /g, ''),\n    productname: msg.productname,\n    classindexname: msg.classindexname,\n    nodeid: msg.senderID,\n    commandclass: msg.commandclass,\n    classindex: msg.classindex,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.toLowerCase().includes('remote') \n    || msg.typeNode.toLowerCase().includes('motion')\n    || msg.typeNode.toLowerCase().includes('binary')\n    || msg.typeNode.toLowerCase().includes('multisensor'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 760,
@@ -614,8 +614,8 @@
             }
         ],
         "currentLanguage": "en-US",
-        "x": 92.5,
-        "y": 210,
+        "x": 80,
+        "y": 220,
         "wires": []
     },
     {

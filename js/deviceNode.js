@@ -153,8 +153,7 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
             break;
 
         case "0165-0002-0002": // NodOn, CRC-3-6-0x Soft Remote
-            zwave.setConfigParam(nodeid, 3, 1, 1);
-            msg.payload.typeNode = "zwave-remote-control-multi-purpose";
+            msg.payload.typeNode = "nodonSoftRemote";
             break;
 
         case "010f-0600-1000": // FIBARO System, FGWPE Wall Plug
@@ -181,6 +180,18 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
         case "010f-0700-3000": // FIBARO System, FGK101 Door Opening Sensor
         case "010f-0700-4000": // FIBARO System, FGK101 Door Opening Sensor
             msg.payload.typeNode = "zwave-binary-sensor";
+            msg.payload.commandclass = "48";
+            msg.payload.classindex = "0";
+            msg.payload.classindexname = nodes[nodeid].classes[msg.payload.commandclass][msg.payload.classindex].label;
+            break;
+
+        case "0086-0002-004a": // Aeotec, ZW074 MultiSensor Gen5
+        case "0086-0102-004a": // Aeotec, ZW074 MultiSensor Gen5
+        case "0086-0202-004a": // Aeotec, ZW074 MultiSensor Gen5
+        case "0086-0002-0064": // Aeotec, ZW074 MultiSensor 6
+        case "0086-0102-0064": // Aeotec, ZW074 MultiSensor 6
+        case "0086-0202-0064": // Aeotec, ZW074 MultiSensor 6
+            msg.payload.typeNode = "aeotecMultiSensor";
             msg.payload.commandclass = "48";
             msg.payload.classindex = "0";
             msg.payload.classindexname = nodes[nodeid].classes[msg.payload.commandclass][msg.payload.classindex].label;

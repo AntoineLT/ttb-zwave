@@ -1,10 +1,11 @@
 'use strict';
 
-var check      = require('./check.js'),
-    deviceNode = require('./deviceNode');
+var check = require('./check.js'),
+    deviceNode = require('./deviceNode'),
+    flows = require('./flows');
 
 //var nisutil = require(process.env.NODE_RED_HOME+"/node_modules/nisutil");
-var nodes =[];
+var nodes = [];
 
 function driverReady(node, RED, client, homeid) {
     node.log('Driver ready');
@@ -53,11 +54,6 @@ function nodeAdded(nodeid) {
 function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     //node.log('node ready: nodeid:'+ nodeid + ", nodeinfo:");
     //nisutil.dumpPropsHex("nodeinfo:", nodeinfo, 1, false);
-    //if(nodeid === 5 || nodeid === 4) {
-    //    zwave.setConfigParam(nodeid, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
-    //    zwave.setConfigParam(nodeid, 4, 1, 1);  // Enable PIR sensor
-    //    zwave.setConfigParam(nodeid, 5, 1, 1);  // Send PIR detection on binary sensor command class
-    //}
 
     node.log('node ready: nodeid:' + nodeid + ", " + nodeinfo.manufacturer + " " + nodeinfo.product + " (" + nodeinfo.type + ")");
 
@@ -71,11 +67,9 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].loc = nodeinfo.loc;
     nodes[nodeid].ready = true;
 
-    /*
-     node.log('node ready '+nodeid+': '
-     +((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '
-     +((nodeinfo.product) ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype));
-     */
+     //node.log('node ready '+nodeid+': '
+     //+((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '
+     //+((nodeinfo.product) ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype));
     if (nodeinfo.manufacturer && nodeinfo.product) {
         var productInfo = nodeinfo.product.replace(/ /g, '');
 
@@ -101,6 +95,13 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
             }
         }
     }
+    var zwaveTopic = flows.checkZwaveNodeTopic();
+    if (mqtt !== null) mqtt.publish({
+        'qos': 0,
+        'retain': false,
+        'topic': zwaveTopic + '/nodeready/' + nodeid,
+        'payload': true
+    });
 }
 
 function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
@@ -227,22 +228,22 @@ function scanComplete(RED, node) {
         text: 'node-red:common.status.connected'
     });
     RED.comms.publish("notifyUI", {
-        text : RED._("ttb-zwave/zwave:zwave.scancomplete"),
+        text: RED._("ttb-zwave/zwave:zwave.scancomplete"),
         type: 'success',
         fixed: false
     });
 }
 
 module.exports = {
-    'nodes'         : nodes,
-    'driverReady'   : driverReady,
-    'driverFailed'  : driverFailed,
-    'nodeAdded'     : nodeAdded,
-    'nodeReady'     : nodeReady,
-    'valueAdded'    : valueAdded,
-    'valueChanged'  : valueChanged,
-    'valueRemoved'  : valueRemoved,
-    'sceneEvent'    : sceneEvent,
-    'notification'  : notification,
-    'scanComplete'  : scanComplete
+    'nodes': nodes,
+    'driverReady': driverReady,
+    'driverFailed': driverFailed,
+    'nodeAdded': nodeAdded,
+    'nodeReady': nodeReady,
+    'valueAdded': valueAdded,
+    'valueChanged': valueChanged,
+    'valueRemoved': valueRemoved,
+    'sceneEvent': sceneEvent,
+    'notification': notification,
+    'scanComplete': scanComplete
 };
