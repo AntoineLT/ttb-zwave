@@ -53,6 +53,11 @@ function nodeAdded(nodeid) {
 function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     //node.log('node ready: nodeid:'+ nodeid + ", nodeinfo:");
     //nisutil.dumpPropsHex("nodeinfo:", nodeinfo, 1, false);
+    //if(nodeid === 5 || nodeid === 4) {
+    //    zwave.setConfigParam(nodeid, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
+    //    zwave.setConfigParam(nodeid, 4, 1, 1);  // Enable PIR sensor
+    //    zwave.setConfigParam(nodeid, 5, 1, 1);  // Send PIR detection on binary sensor command class
+    //}
 
     node.log('node ready: nodeid:' + nodeid + ", " + nodeinfo.manufacturer + " " + nodeinfo.product + " (" + nodeinfo.type + ")");
 
@@ -66,9 +71,6 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].loc = nodeinfo.loc;
     nodes[nodeid].ready = true;
 
-    //if(nodeinfo.product === "CRC-3-6-0x Soft Remote") {
-    //zwave.setConfigParam(nodeid, 3, 1, 1);
-    //}
     /*
      node.log('node ready '+nodeid+': '
      +((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '

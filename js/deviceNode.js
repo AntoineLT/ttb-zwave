@@ -155,8 +155,6 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
         case "0165-0002-0002": // NodOn, CRC-3-6-0x Soft Remote
             zwave.setConfigParam(nodeid, 3, 1, 1);
             msg.payload.typeNode = "zwave-remote-control-multi-purpose";
-            msg.payload.commandclass = "38";
-            msg.payload.classindex = "0";
             break;
 
         case "010f-0600-1000": // FIBARO System, FGWPE Wall Plug
