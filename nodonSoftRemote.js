@@ -154,7 +154,7 @@ function nodeReady(node) {
     node.brokerConn.register(node);
     node.brokerConn.subscribe(topic, 2, function () {
         var zwave = require('./js/openZWave').zwave;
-        zwave.setConfigParam(nodeid, 3, 1, 1); // Enable scene mode for the SoftRemote
+        zwave.setConfigParam(node.config.nodeid, 3, 1, 1); // Enable scene mode for the SoftRemote
     }, node.id);
 
     node.on('close', function (done) {
