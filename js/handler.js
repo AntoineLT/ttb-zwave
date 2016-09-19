@@ -83,8 +83,7 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
             }
         }
 
-        var comclass;
-        for (comclass in nodes[nodeid]['classes']) {
+        for (var comclass in nodes[nodeid]['classes']) {
             if (nodes[nodeid]['classes'].hasOwnProperty(comclass)) {
                 switch (comclass) {
                     case 0x25: // COMMAND_CLASS_SWITCH_BINARY
@@ -92,6 +91,19 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
                         zwave.enablePoll(nodeid, comclass);
                         break;
                 }
+            }
+        }
+
+        for(var i = 1; i < nodes.length; i++) {
+            if(nodes[i] === null || typeof nodes[i] === 'undefined') {
+                node.log("node: [" + i + "] empty");
+                continue;
+            }
+            if(nodes[i].hasOwnProperty("ready")
+                    && nodes[i].ready === true) {
+                node.log("node: ["+i+"] manufacturer:" + nodes[i].manufacturer + ", product:"+ nodes[i].product);
+            } else {
+                node.log("node: [" + i + "] not ready");
             }
         }
     }

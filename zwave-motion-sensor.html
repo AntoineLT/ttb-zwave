@@ -69,7 +69,7 @@
                     indexListOpt.length   = 0;
                     productlist.prop('disabled', 'disabled');
                     for (var i = 2; i < data.length; i++) {
-                        if (data[i].manufacturer !== "" && data[i].product !== "") {
+                        if (data[i] !== null && data[i].manufacturer !== "" && data[i].product !== "") {
                             if (that.productname === data[i].manufacturer + " - " + data[i].product)
                                 exist = true;
                         }
@@ -155,7 +155,7 @@
     function checkIfOneIsReady(data) {
         var test = false;
         for(var i = 2; i < data.length; i++) {
-            if(data[i].ready === true) {
+            if(data[i] !== null && data[i].ready === true) {
                 test = true;
                 break;
             }

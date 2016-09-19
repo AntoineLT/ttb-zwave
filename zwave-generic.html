@@ -67,7 +67,7 @@
                     productListOpt.length = 0;
                     indexListOpt.length   = 0;
                     for (var i = 2; i < data.length; i++) {
-                        if (data[i].manufacturer !== "" && data[i].product !== "") {
+                        if (data[i] !== null && data[i].manufacturer !== "" && data[i].product !== "") {
                             productListOpt[productListOpt.length] = new Option(data[i].manufacturer + " - " + data[i].product, i);
                             if (that.productname === data[i].manufacturer + " - " + data[i].product)
                                 exist = true;
@@ -170,7 +170,7 @@
     function checkIfOneIsReady(data) {
         var test = false;
         for(var i = 2; i < data.length; i++) {
-            if(data[i].ready === true) {
+            if(data[i] !== null && data[i].ready === true) {
                 test = true;
                 break;
             }
