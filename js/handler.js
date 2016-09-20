@@ -75,7 +75,6 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
 
         if (nodeid !== 1 && check.isNotInFlow(nodeid, null, null, productInfo)) {
             if (client) {
-                console.log("client");
                 deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
             } else {
                 deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
