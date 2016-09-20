@@ -83,7 +83,6 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
         default:
             break;
     }
-    console.log(node);
     RED.nodes.addNodeToClients(node);
     zwave.lastY[nodeid - 2] += 60;
 }
