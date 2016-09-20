@@ -67,14 +67,15 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
     nodes[nodeid].loc = nodeinfo.loc;
     nodes[nodeid].ready = true;
 
-     //node.log('node ready '+nodeid+': '
-     //+((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '
-     //+((nodeinfo.product) ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype));
+    //node.log('node ready '+nodeid+': '
+    //+((nodeinfo.manufacturer) ? nodeinfo.manufacturer : ' id=' + nodeinfo.manufacturerid)+', '
+    //+((nodeinfo.product) ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype));
     if (nodeinfo.manufacturer && nodeinfo.product) {
         var productInfo = nodeinfo.product.replace(/ /g, '');
 
-        if (check.isNotInFlow(nodeid, null, null, productInfo)) {
+        if (nodeid !== 1 && check.isNotInFlow(nodeid, null, null, productInfo)) {
             if (client) {
+                console.log("client");
                 deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
             } else {
                 deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
@@ -94,14 +95,14 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
             }
         }
 
-        for(var i = 1; i < nodes.length; i++) {
-            if(nodes[i] === null || typeof nodes[i] === 'undefined') {
+        for (var i = 1; i < nodes.length; i++) {
+            if (nodes[i] === null || typeof nodes[i] === 'undefined') {
                 node.log("node: [" + i + "] empty");
                 continue;
             }
-            if(nodes[i].hasOwnProperty("ready")
-                    && nodes[i].ready === true) {
-                node.log("node: ["+i+"] manufacturer:" + nodes[i].manufacturer + ", product:"+ nodes[i].product);
+            if (nodes[i].hasOwnProperty("ready")
+                && nodes[i].ready === true) {
+                node.log("node: [" + i + "] manufacturer:" + nodes[i].manufacturer + ", product:" + nodes[i].product);
             } else {
                 node.log("node: [" + i + "] not ready");
             }

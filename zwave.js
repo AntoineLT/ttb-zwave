@@ -10,7 +10,7 @@ module.exports = function (RED) {
         zwave = require('./js/openZWave').zwave;
 
     var mqtt = null,
-        client = false,
+        client = true,
         zwaveConnected = false,
         mqttConnected = false;
 
