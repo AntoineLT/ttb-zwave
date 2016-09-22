@@ -59,6 +59,22 @@ function subscription(RED, node) {
                 msg.payload = payload;
             }
 
+            switch (msg.payload) {
+                case true:
+                    msg.intent = 1;
+                    break;
+
+                case false:
+                    msg.intent = 0;
+                    break;
+
+                default:
+                    if(typeof msg.payload === 'number') {
+                        msg.intesity = msg.payload;
+                    }
+                    break;
+            }
+
             if (node.mqtt !== null) node.mqtt.publish({
                 'payload': msg,
                 'qos': 0,
