@@ -1,6 +1,7 @@
 'use strict';
 
-var flows = require('./flows');
+var flows = require('./flows'),
+    devices = require('./devices');
 
 // productIDTotal refers to '../../node_modules/openzwave-shared/deps/open-zwave/config/manufacturer_specific.xml'
 
@@ -24,65 +25,8 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             "z": "zwave"
         };
 
-    switch (productIDTotal) {
-        case "0086-0003-0062": // Aeotec, ZW098 LED Bulb
-        case "0086-0103-0062": // Aeotec, ZW098 LED Bulb
-        case "0086-0203-0062": // Aeotec, ZW098 LED Bulb
-        case "0131-0002-0002": // Zipato, RGBW LED Bulb
-            node.type = "zwave-light-dimmer-switch";
-            node.commandclass = "38";
-            node.classindex = "0";
-            node.classindexname = nodes[nodeid].classes[node.commandclass][node.classindex].label;
-            break;
+    node = devices.checkDevices(node,productIDTotal, nodes, nodeid);
 
-        case "0165-0002-0002": // NodOn, CRC-3-6-0x Soft Remote
-            node.type = "nodonSoftRemote";
-            break;
-
-        case "010f-0600-1000": // FIBARO System, FGWPE Wall Plug
-        case "0165-0001-0001": // NodOn, ASP-3-1-00 Smart Plug
-            node.type = "zwave-binary-switch";
-            node.commandclass = "37";
-            node.classindex = "0";
-            node.classindexname = nodes[nodeid].classes[node.commandclass][node.classindex].label;
-            break;
-
-        case "010f-0800-1001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0800-2001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0800-4001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0801-1001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0801-2001": // FIBARO System, FGMS001 Motion Sensor
-            node.type = "zwave-motion-sensor";
-            node.commandclass = "48";
-            node.classindex = "0";
-            node.classindexname = nodes[nodeid].classes[node.commandclass][node.classindex].label;
-            break;
-
-        case "010f-0700-1000": // FIBARO System, FGK101 Door Opening Sensor
-        case "010f-0700-2000": // FIBARO System, FGK101 Door Opening Sensor
-        case "010f-0700-3000": // FIBARO System, FGK101 Door Opening Sensor
-        case "010f-0700-4000": // FIBARO System, FGK101 Door Opening Sensor
-            node.type = "zwave-binary-sensor";
-            node.commandclass = "48";
-            node.classindex = "0";
-            node.classindexname = nodes[nodeid].classes[node.commandclass][node.classindex].label;
-            break;
-
-        case "0086-0002-004a": // Aeotec, ZW074 MultiSensor Gen5
-        case "0086-0102-004a": // Aeotec, ZW074 MultiSensor Gen5
-        case "0086-0202-004a": // Aeotec, ZW074 MultiSensor Gen5
-        case "0086-0002-0064": // Aeotec, ZW074 MultiSensor 6
-        case "0086-0102-0064": // Aeotec, ZW074 MultiSensor 6
-        case "0086-0202-0064": // Aeotec, ZW074 MultiSensor 6
-            node.type = "aeotecMultiSensor";
-            node.commandclass = "48";
-            node.classindex = "0";
-            node.classindexname = nodes[nodeid].classes[node.commandclass][node.classindex].label;
-            break;
-
-        default:
-            break;
-    }
     RED.nodes.addNodeToClients(node);
     zwave.lastY[nodeid - 2] += 60;
 }
@@ -167,65 +111,8 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
             topic: "newdevice/zwave"
         };
 
-    switch (productIDTotal) {
-        case "0086-0003-0062": // Aeotec, ZW098 LED Bulb
-        case "0086-0103-0062": // Aeotec, ZW098 LED Bulb
-        case "0086-0203-0062": // Aeotec, ZW098 LED Bulb
-        case "0131-0002-0002": // Zipato, RGBW LED Bulb
-            msg.payload.typeNode = "zwave-light-dimmer-switch";
-            msg.payload.commandclass = "38";
-            msg.payload.classindex = "0";
-            msg.payload.classindexname = nodes[nodeid].classes[msg.payload.commandclass][msg.payload.classindex].label;
-            break;
+    msg.payload = devices.checkDevices(msg.payload, productIDTotal, nodes, nodeid);
 
-        case "0165-0002-0002": // NodOn, CRC-3-6-0x Soft Remote
-            msg.payload.typeNode = "nodonSoftRemote";
-            break;
-
-        case "010f-0600-1000": // FIBARO System, FGWPE Wall Plug
-        case "0165-0001-0001": // NodOn, ASP-3-1-00 Smart Plug
-            msg.payload.typeNode = "zwave-binary-switch";
-            msg.payload.commandclass = "37";
-            msg.payload.classindex = "0";
-            msg.payload.classindexname = nodes[nodeid].classes[msg.payload.commandclass][msg.payload.classindex].label;
-            break;
-
-        case "010f-0800-1001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0800-2001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0800-4001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0801-1001": // FIBARO System, FGMS001 Motion Sensor
-        case "010f-0801-2001": // FIBARO System, FGMS001 Motion Sensor
-            msg.payload.typeNode = "zwave-motion-sensor";
-            msg.payload.commandclass = "48";
-            msg.payload.classindex = "0";
-            msg.payload.classindexname = nodes[nodeid].classes[msg.payload.commandclass][msg.payload.classindex].label;
-            break;
-
-        case "010f-0700-1000": // FIBARO System, FGK101 Door Opening Sensor
-        case "010f-0700-2000": // FIBARO System, FGK101 Door Opening Sensor
-        case "010f-0700-3000": // FIBARO System, FGK101 Door Opening Sensor
-        case "010f-0700-4000": // FIBARO System, FGK101 Door Opening Sensor
-            msg.payload.typeNode = "zwave-binary-sensor";
-            msg.payload.commandclass = "48";
-            msg.payload.classindex = "0";
-            msg.payload.classindexname = nodes[nodeid].classes[msg.payload.commandclass][msg.payload.classindex].label;
-            break;
-
-        case "0086-0002-004a": // Aeotec, ZW074 MultiSensor Gen5
-        case "0086-0102-004a": // Aeotec, ZW074 MultiSensor Gen5
-        case "0086-0202-004a": // Aeotec, ZW074 MultiSensor Gen5
-        case "0086-0002-0064": // Aeotec, ZW074 MultiSensor 6
-        case "0086-0102-0064": // Aeotec, ZW074 MultiSensor 6
-        case "0086-0202-0064": // Aeotec, ZW074 MultiSensor 6
-            msg.payload.typeNode = "aeotecMultiSensor";
-            msg.payload.commandclass = "48";
-            msg.payload.classindex = "0";
-            msg.payload.classindexname = nodes[nodeid].classes[msg.payload.commandclass][msg.payload.classindex].label;
-            break;
-
-        default:
-            break;
-    }
     if (mqtt !== null && msg.payload.typeNode) mqtt.publish(msg);
 }
 
