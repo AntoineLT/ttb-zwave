@@ -98,7 +98,7 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
         "name": "NodeFactory Parameters",
-        "func": "if(Array.isArray(msg.payload)) {\n    for(var i = 0; i < msg.payload.length; i++) {\n        msg.payload[i].type = msg.typeNode;\n        msg.payload[i].broker = \"MQTT.Localhost\";\n        msg.payload[i].x = Math.floor(Math.random() * 600) + 100;\n        msg.payload[i].y = Math.floor(Math.random() * 1000) + 40;\n        msg.payload[i].extra.ui = true;\n        msg.node = msg.payload;\n    }\n} else {\n    msg.payload.type = msg.typeNode;\n    if(msg.typeNode.includes(\"subflow\") === false) msg.payload.broker = \"MQTT.Localhost\";\n    msg.payload.x = Math.floor(Math.random() * 600) + 100;\n    msg.payload.y = Math.floor(Math.random() * 1000) + 40;\n    msg.payload.extra.ui = true;\n    msg.node = msg.payload;\n}\nreturn msg;",
+        "func": "if(Array.isArray(msg.payload)) {\n    for(var i = 0; i < msg.payload.length; i++) {\n        msg.payload[i].type = msg.typeNode;\n        msg.payload[i].broker = \"MQTT.Localhost\";\n        msg.payload[i].x = Math.random() * 50;\n        msg.payload[i].y = Math.random() * 50;\n        msg.payload[i].extra.ui = true;\n        msg.node = msg.payload;\n    }\n} else {\n    msg.payload.type = msg.typeNode;\n    if(msg.typeNode.includes(\"subflow\") === false) msg.payload.broker = \"MQTT.Localhost\";\n    msg.payload.x = Math.random() * 50;\n    msg.payload.y = Math.random() * 50;\n    msg.payload.extra.ui = true;\n    msg.node = msg.payload;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 770,
@@ -357,7 +357,8 @@
         "y": 300,
         "wires": [
             [
-                "notifZWave"
+                "notifZWave",
+                "debug5ZWave"
             ]
         ]
     },
@@ -686,5 +687,18 @@
                 "controlLoopZWave"
             ]
         ]
+    },
+    {
+        "id": "debug5ZWave",
+        "type": "debug",
+        "z": "nodeGeneratorZWave",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "notification",
+        "x": 2180,
+        "y": 300,
+        "wires": []
     }
 ]
