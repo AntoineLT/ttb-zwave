@@ -669,5 +669,22 @@
                 "38270661.99c7fa"
             ]
         ]
+    },
+    {
+        "id":"c193e146.f914",
+        "type":"function",
+        "z":"2dc0e687.57877a",
+        "origin": "/root/userdir/node_modules/ttb-zwave/flows.json",
+        "name":"next element ?",
+        "func":"context.global.nodeGenerator.shift();\nif(typeof context.global.nodeGenerator !== 'undefined'\n        && typeof context.global.nodeGenerator[0] !== 'undefined') {\n    context.global.putFlag = true;\n} else {\n    context.global.putFlag = false;\n}\nreturn msg;",
+        "outputs":1,
+        "noerr":0,
+        "x":1840,
+        "y":340,
+        "wires": [
+            [
+                "38270661.99c7fa"
+            ]
+        ]
     }
 ]
