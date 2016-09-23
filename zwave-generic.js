@@ -70,7 +70,7 @@ function subscription(RED, node) {
 
                 default:
                     if(typeof msg.payload === 'number') {
-                        msg.intesity = msg.payload;
+                        msg.intensity = msg.payload;
                     }
                     break;
             }
