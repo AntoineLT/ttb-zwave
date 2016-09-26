@@ -25,7 +25,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             "z": "zwave"
         };
 
-    node = devices.checkDevices(node,productIDTotal, nodes, nodeid);
+    node = devices.checkDevices(node, productIDTotal, nodes, nodeid);
 
     RED.nodes.addNodeToClients(node);
     zwave.lastY[nodeid - 2] += 60;
@@ -99,21 +99,23 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
     var manufacturerid = nodeinfo.manufacturerid.slice(2, nodeinfo.manufacturerid.length),
         producttype = nodeinfo.producttype.slice(2, nodeinfo.producttype.length),
         productid = nodeinfo.productid.slice(2, nodeinfo.productid.length),
-        productIDTotal = manufacturerid + "-" + producttype + "-" + productid,
-        msg = {
-            payload: {
-                senderID: nodeid,
-                nodeInfo: nodeinfo,
-                productname: nodeinfo.manufacturer + " - " + nodeinfo.product
-            },
-            qos: 0,
-            retain: false,
-            topic: "newdevice/zwave"
-        };
+        productIDTotal = manufacturerid + "-" + producttype + "-" + productid;
 
-    msg.payload = devices.checkDevices(msg.payload, productIDTotal, nodes, nodeid);
+    var MQTTpayload = devices.checkDevices({
+            senderID: nodeid,
+            nodeInfo: nodeinfo,
+            productname: nodeinfo.manufacturer + " - " + nodeinfo.product
+        },
+        productIDTotal,
+        nodes,
+        nodeid);
 
-    if (mqtt !== null && msg.payload.typeNode) mqtt.publish(msg);
+    if (mqtt !== null && msg.payload.typeNode) mqtt.publish({
+        payload: MQTTpayload,
+        qos: 0,
+        retain: false,
+        topic: "newdevice/zwave"
+    });
 }
 
 module.exports = {
