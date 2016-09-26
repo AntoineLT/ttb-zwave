@@ -53,6 +53,9 @@ function checkDevices(node, productIDTotal, nodes, nodeid) {
             break;
 
         default:
+            (node.senderID !== undefined)? node.typeNode = "zwave-generic" : node.type = "zwave-generic";
+            node.commandclass = Object.keys(nodes[nodeid].classes)[0];
+            node.classindex = Object.keys(nodes[nodeid].classes[node.commandclass])[0];
             break;
     }
     if (node.commandclass !== undefined && node.classindex !== undefined)
