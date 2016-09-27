@@ -110,7 +110,7 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
         nodes,
         nodeid);
 
-    if (mqtt !== null && msg.payload.typeNode) mqtt.publish({
+    if (mqtt !== null && MQTTpayload.typeNode) mqtt.publish({
         payload: MQTTpayload,
         qos: 0,
         retain: false,
