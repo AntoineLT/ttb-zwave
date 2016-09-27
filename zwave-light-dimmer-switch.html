@@ -34,7 +34,7 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('zwave-light-dimmer-switch',{
+    RED.nodes.registerType('zwave-light-dimmer-switch', {
         category: 'system',
         color: '#ffffff',
         defaults: {
@@ -45,33 +45,33 @@
             productname: {value: ''},
             classindexname: {value: ''},
             mark: {value: null},
-            broker: {type:"mqtt-broker", required:true, value:"MQTT.Localhost"}
+            broker: {type: "mqtt-broker", required: true, value: "MQTT.Localhost"}
         },
-        inputs:1,
-        outputs:1,
+        inputs: 1,
+        outputs: 1,
         align: 'right',
-        icon: function() {
-            return this.mark||"zwave.png";
+        icon: function () {
+            return this.mark || "zwave.png";
         },
-        label: function() {
-            return this.name||"Light Dimmer Switch";
+        label: function () {
+            return this.name || "Light Dimmer Switch";
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             var that = this;
             var exist = false;
             $('.notready').hide();
-            $.getJSON("zwave/nodesArray", function(data){
+            $.getJSON("zwave/nodesArray", function (data) {
                 var productlist = $('#node-input-productlist'),
                         indexlist = $('#node-input-indexlist');
                 var productListOpt = productlist.prop('options'),
                         indexListOpt = indexlist.prop('options');
-                if(checkIfOneIsReady(data)) {
+                if (checkIfOneIsReady(data)) {
                     productListOpt.length = 0;
-                    indexListOpt.length   = 0;
+                    indexListOpt.length = 0;
                     productlist.prop('disabled', 'disabled');
                     for (var i = 2; i < data.length; i++) {
                         if (data[i] !== null && data[i].manufacturer !== "" && data[i].product !== "") {
-                            if (that.productname === data[i].manufacturer + " - " + data[i].product)
+                            if (that.productname === i + ": " + data[i].manufacturer + " - " + data[i].product)
                                 exist = true;
                         }
                     }
@@ -85,7 +85,7 @@
                                             data[productSelected].classes[j][k].label,
                                             data[productSelected].classes[j][k].index
                                     );
-                                    indexListOpt[indexListOpt.length-1].setAttribute("commandclass",j);
+                                    indexListOpt[indexListOpt.length - 1].setAttribute("commandclass", j);
                                 }
                             }
                         }
@@ -101,8 +101,8 @@
                         } else {
                             indexListOpt.length = 0;
                             productListOpt[productListOpt.length] = new Option(that.productname, that.nodeid, true, true);
-                            indexListOpt[indexListOpt.length]     = new Option(that.classindexname, that.classindex, true, true);
-                            indexListOpt[indexListOpt.length-1].setAttribute("commandclass",that.commandclass);
+                            indexListOpt[indexListOpt.length] = new Option(that.classindexname, that.classindex, true, true);
+                            indexListOpt[indexListOpt.length - 1].setAttribute("commandclass", that.commandclass);
                         }
                     }
                 } else {
@@ -113,20 +113,20 @@
                         $('.notready').show();
                         productlist.prop('disabled', 'disabled');
                         indexlist.prop('disabled', 'disabled');
-                        if(that.productname !== '')
+                        if (that.productname !== '')
                             productListOpt[productListOpt.length] = new Option(that.productname, that.nodeid);
-                        if(that.classindexname !== '') {
-                            indexListOpt[indexListOpt.length]     = new Option(that.classindexname, that.classindex);
+                        if (that.classindexname !== '') {
+                            indexListOpt[indexListOpt.length] = new Option(that.classindexname, that.classindex);
                             indexListOpt[indexListOpt.length - 1].setAttribute("commandclass", that.commandclass);
                         }
                     }
                 }
             });
-            $("#nset-advanced").click(function() {
+            $("#nset-advanced").click(function () {
                 var div = $("#nset-advanced"),
                         form = $("#nset-advanced-form"),
                         arrow = $("#nset-advanced-arrow");
-                if(form.css("display") == "none") {
+                if (form.css("display") == "none") {
                     form.css("display", "block");
                     div.css("margin-bottom", "0px");
                     form.css("margin-bottom", "12px");
@@ -141,22 +141,22 @@
                 }
             });
         },
-        oneditsave: function() {
+        oneditsave: function () {
             var productlist = $('#node-input-productlist'),
                     indexlist = $('#node-input-indexlist');
 
-            this.nodeid           = productlist.val();
-            this.commandclass     = $('option:selected', indexlist).attr('commandclass');
-            this.classindex       = indexlist.val();
-            this.productname      = productlist.find('option:selected').text();
-            this.classindexname   = indexlist.find('option:selected').text();
+            this.nodeid = productlist.val();
+            this.commandclass = $('option:selected', indexlist).attr('commandclass');
+            this.classindex = indexlist.val();
+            this.productname = productlist.find('option:selected').text();
+            this.classindexname = indexlist.find('option:selected').text();
         }
     });
 
     function checkIfOneIsReady(data) {
         var test = false;
-        for(var i = 2; i < data.length; i++) {
-            if(data[i] !== null && data[i].ready === true) {
+        for (var i = 2; i < data.length; i++) {
+            if (data[i] !== null && data[i].ready === true) {
                 test = true;
                 break;
             }
@@ -168,7 +168,7 @@
         classnumber = parseInt(classnumber);
         var test = false;
 
-        switch(classnumber) {
+        switch (classnumber) {
             case 94:
             case 112:
             case 115:

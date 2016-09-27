@@ -18,7 +18,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             "name": nodeid + ": " + nodeinfo.manufacturer + ', ' + nodeinfo.product,
             "broker": "MQTT.Localhost",
             "nodeid": nodeid,
-            "productname": nodeinfo.manufacturer + " - " + nodeinfo.product,
+            "productname": nodeid + ": " + nodeinfo.manufacturer + " - " + nodeinfo.product,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
             "x": 250 + ((nodeid - 2) * 300),
             "y": zwave.lastY[nodeid - 2],
@@ -104,7 +104,7 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
     var MQTTpayload = devices.checkDevices({
             senderID: nodeid,
             nodeInfo: nodeinfo,
-            productname: nodeinfo.manufacturer + " - " + nodeinfo.product
+            productname: nodeid + ": " + nodeinfo.manufacturer + " - " + nodeinfo.product
         },
         productIDTotal,
         nodes,
