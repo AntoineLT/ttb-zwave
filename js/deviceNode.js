@@ -25,7 +25,7 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
             "z": "zwave"
         };
 
-    node = devices.checkDevices(node, productIDTotal, nodes, nodeid);
+    node = devices.checkDevices(node, productIDTotal, nodes, nodeid, zwave);
 
     RED.nodes.addNodeToClients(node);
     zwave.lastY[nodeid - 2] += 60;
@@ -52,7 +52,8 @@ function withoutClient(zwave, nodeid, nodeinfo) {
         },
         productIDTotal,
         nodes,
-        nodeid);
+        nodeid,
+        zwave);
 
     flows.addNodeToServerFlows(node);
     zwave.lastY[nodeid - 2] += 60;
@@ -73,7 +74,8 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
         },
         productIDTotal,
         nodes,
-        nodeid);
+        nodeid,
+        zwave);
 
     if (mqtt !== null && MQTTpayload.typeNode) mqtt.publish({
         payload: MQTTpayload,
