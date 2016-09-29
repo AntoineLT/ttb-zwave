@@ -13,7 +13,7 @@ function checkDevices(node, productIDTotal, nodes, nodeid, zwave) {
 
         case "0165-0002-0002": // NodOn, CRC-3-6-0x Soft Remote
             (node.senderID !== undefined)? node.typeNode = "nodonSoftRemote" : node.type = "nodonSoftRemote";
-            zwave.setConfigParam(node.config.nodeid, 3, 1, 1); // Enable scene mode for the SoftRemote
+            zwave.setConfigParam(nodeid, 3, 1, 1); // Enable scene mode for the SoftRemote
             break;
 
         case "010f-0600-1000": // FIBARO System, FGWPE Wall Plug
@@ -51,9 +51,9 @@ function checkDevices(node, productIDTotal, nodes, nodeid, zwave) {
             (node.senderID !== undefined)? node.typeNode = "aeotecMultiSensor" : node.type = "aeotecMultiSensor";
             node.commandclass = "48";
             node.classindex = "0";
-            zwave.setConfigParam(node.config.nodeid, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
-            zwave.setConfigParam(node.config.nodeid, 4, 1, 1);  // Enable PIR sensor
-            zwave.setConfigParam(node.config.nodeid, 5, 1, 1);  // Send PIR detection on binary sensor command class
+            zwave.setConfigParam(nodeid, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
+            zwave.setConfigParam(nodeid, 4, 1, 1);  // Enable PIR sensor
+            zwave.setConfigParam(nodeid, 5, 1, 1);  // Send PIR detection on binary sensor command class
             break;
 
         default:
