@@ -45,7 +45,7 @@ function checkZwaveNodeTopic() {
             break;
         }
     }
-    return topic || undefined;
+    return topic || "coldfacts/zwave";
 }
 
 module.exports = {
