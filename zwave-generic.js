@@ -27,6 +27,12 @@ module.exports = function (RED) {
         );
 
         subscription(RED, this);
+
+        var zwave = require('./js/openZWave').zwave;
+        var node = this;
+        this.on('input', function (msg) {
+            inputGenericNode(node, zwave, msg);
+        });
     }
 
     RED.nodes.registerType("zwave-generic", main);
@@ -69,7 +75,7 @@ function subscription(RED, node) {
                     break;
 
                 default:
-                    if(typeof msg.payload === 'number') {
+                    if (typeof msg.payload === 'number') {
                         msg.intensity = msg.payload;
                     }
                     break;
@@ -93,4 +99,60 @@ function subscription(RED, node) {
             node.brokerConn.deregister(node, done);
         }
     });
+}
+
+function inputGenericNode(node, zwave, msg) {
+    var intent = parseInt((typeof msg.payload === 'object' && msg.payload.hasOwnProperty('intent')) ? msg.payload.intent : msg.intent),
+        intensity = parseInt((typeof msg.payload === 'object' && msg.payload.hasOwnProperty('intensity')) ? msg.payload.intensity : msg.intensity),
+        color = (typeof msg.payload === 'object' && msg.payload.hasOwnProperty('color')) ? msg.payload.color : msg.color,
+        value;
+
+    switch (node.config.commandclass) {
+        case "37": // switch ZWave commandclass
+            if (intent || intent === 0) {
+                switch (intent) {
+                    case 0:
+                        value = false;
+                        break;
+
+                    case 1:
+                        value = true;
+                        break;
+                }
+            }
+            break;
+
+        case "38": // level ZWave commandclass
+            if (intent || intent === 0) {
+                switch (intent) {
+                    case 0:
+                        value = 0;
+                        break;
+
+                    case 1:
+                        value = 99;
+                        break;
+                }
+            }
+            if (intensity || intensity === 0) {
+                value = intensity;
+            }
+            break;
+
+        case "51": // color ZWave commandclass
+            if (color) {
+                if (color.length === 7) {
+                    value = color + "0000";
+                } else {
+                    value = color;
+                }
+            }
+            break;
+
+        default:
+            break;
+    }
+    if (typeof value !== 'undefined') {
+        zwave.setValue(node.config.nodeid, node.config.commandclass, 1, node.config.classindex, value);
+    }
 }
