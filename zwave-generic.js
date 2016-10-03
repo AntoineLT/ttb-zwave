@@ -27,12 +27,6 @@ module.exports = function (RED) {
         );
 
         subscription(RED, this);
-
-        var zwave = require('./js/openZWave').zwave;
-        var node = this;
-        this.on('input', function (msg) {
-            inputGenericNode(node, zwave, msg);
-        });
     }
 
     RED.nodes.registerType("zwave-generic", main);

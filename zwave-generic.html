@@ -35,7 +35,7 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('zwave-generic', {
-        category: 'hardware',
+        category: 'ZWave',
         color: '#ffffff',
         defaults: {
             name: {value: ''},
@@ -50,7 +50,7 @@
         outputs: 1,
         align: 'right',
         icon: 'zwave.png',
-        paletteLabel: 'ZWave Generic Node',
+        paletteLabel: 'Generic' ,
         label: function () {
             return this.name || 'ZWave Generic Node';
         },

@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('zwave-inclusion-node', {
-        category: 'hardware',
+        category: 'ZWave',
         color: "#ffffff",
         defaults: {
             name: {value: ""}
@@ -16,7 +16,7 @@
         outputs: 0,
         align: 'right',
         icon: 'zwave.png',
-        paletteLabel: "ZWave Inclusion Node",
+        paletteLabel: "Inclusion",
         label: function () {
             return this.name || "Z-Wave Inclusion";
         }
