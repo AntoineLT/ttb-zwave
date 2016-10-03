@@ -54,7 +54,7 @@
             return this.mark || "zwave.png";
         },
         label: function () {
-            return this.name || "Binary Switch";
+            return "[" + this.nodeid + "] " + (this.name || "Binary Switch");
         },
         oneditprepare: function () {
             var that = this;

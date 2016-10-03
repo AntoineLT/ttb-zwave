@@ -52,7 +52,7 @@
         icon: 'zwave.png',
         paletteLabel: 'Generic' ,
         label: function () {
-            return this.name || 'ZWave Generic Node';
+            return "[" + this.nodeid + "] " + (this.name || 'ZWave Generic');
         },
         oneditprepare: function () {
             var that = this;

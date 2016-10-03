@@ -53,7 +53,7 @@
             return this.mark || "zwave.png";
         },
         label: function () {
-            return this.name || "Motion Sensor";
+            return "[" + this.nodeid + "] " + (this.name || "Motion Sensor");
         },
         oneditprepare: function () {
             var that = this;
@@ -172,13 +172,9 @@
             case 112:
             case 115:
             case 134:
-                test = false;
-                break;
+                return false;
             default:
-                test = true;
-                break;
+                return true;
         }
-
-        return test;
     }
 </script>

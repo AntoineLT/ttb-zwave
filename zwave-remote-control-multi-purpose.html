@@ -39,7 +39,7 @@
             return this.mark||"zwave.png";
         },
         label: function() {
-            return this.name||"Remote Control Multi Purpose";
+            return "[" + this.nodeid + "] " + (this.name || "Remote Control");
         },
         oneditprepare: function() {
             if(this.push === true) {

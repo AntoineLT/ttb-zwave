@@ -54,7 +54,7 @@
             return this.mark || "zwave.png";
         },
         label: function () {
-            return this.name || "Light Dimmer Switch";
+            return "[" + this.nodeid + "] " + (this.name || "Light Dimmer Switch");
         },
         oneditprepare: function () {
             var that = this;
