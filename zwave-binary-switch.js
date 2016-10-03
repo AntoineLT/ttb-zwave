@@ -66,7 +66,18 @@ function subscription(RED, node, zwave) {
             } catch (e) {
                 msg.payload = payload;
             }
-            (msg.payload === true) ? msg.intent = 1 : msg.intent = 0;
+
+			if(msg.payload === true) {
+				msg.payload = 1;
+				msg.intent = 1;
+				msg.message = "A motion was detected";
+			}
+			else {
+				msg.payload = 0;
+				msg.intent = 0;
+				msg.message = "No more motion";
+			}
+			
             if (node.mqtt !== null) node.mqtt.publish({
                 'payload': msg,
                 'qos': 0,

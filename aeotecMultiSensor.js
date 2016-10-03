@@ -26,7 +26,6 @@ module.exports = function (RED) {
             this.brokerConn.port
         );
 
-        //nodeReady(this);
         subscription(RED, this);
     }
 
@@ -59,7 +58,18 @@ function subscription(RED, node) {
             } catch (e) {
                 msg.payload = payload;
             }
-            (msg.payload === true) ? msg.intent = 1 : msg.intent = 0;
+
+			if(msg.payload === true) {
+				msg.payload = 1;
+				msg.intent = 1;
+				msg.message = "A motion was detected";
+			}
+			else {
+				msg.payload = 0;
+				msg.intent = 0;
+				msg.message = "No more motion";
+			}
+			
             if (node.mqtt !== null) node.mqtt.publish({
                 'payload': msg,
                 'qos': 0,
@@ -75,28 +85,6 @@ function subscription(RED, node) {
     node.on('close', function (done) {
         if (node.brokerConn) {
             node.brokerConn.unsubscribe(node.topic, node.id);
-            node.brokerConn.deregister(node, done);
-        }
-    });
-}
-
-function nodeReady(node) {
-    var flows = require('./js/flows');
-
-    var zwaveTopic = flows.checkZwaveNodeTopic(),
-        topic = zwaveTopic + '/nodeready/' + node.config.nodeid;
-
-    node.brokerConn.register(node);
-    node.brokerConn.subscribe(topic, 2, function (topic, payload, packet) {
-        var zwave = require('./js/openZWave').zwave;
-        zwave.setConfigParam(node.config.nodeid, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
-        zwave.setConfigParam(node.config.nodeid, 4, 1, 1);  // Enable PIR sensor
-        zwave.setConfigParam(node.config.nodeid, 5, 1, 1);  // Send PIR detection on binary sensor command class
-    }, node.id);
-
-    node.on('close', function (done) {
-        if (node.brokerConn) {
-            node.brokerConn.unsubscribe(topic, node.id);
             node.brokerConn.deregister(node, done);
         }
     });

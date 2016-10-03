@@ -70,7 +70,7 @@ module.exports = function (RED) {
             });
 
             zwave.on('value removed', function (nodeid, comclass, index) {
-                handler.valueRemoved(nodeid, comclass, index);
+                handler.valueRemoved(node, nodeid, comclass, index);
             });
 
             zwave.on('scene event', function (nodeid, sceneid) {

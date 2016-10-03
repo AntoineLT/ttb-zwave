@@ -94,19 +94,27 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
             }
         }
 
+		// Log
+		node.log("--- ZWave Dongle ---------------------");
         for (var i = 1; i < nodes.length; i++) {
             if (nodes[i] === null || typeof nodes[i] === 'undefined') {
                 node.log("node: [" + i + "] empty");
                 continue;
             }
-            if (nodes[i].hasOwnProperty("ready")
-                && nodes[i].ready === true) {
-                node.log("node: [" + i + "] manufacturer:" + nodes[i].manufacturer + ", product:" + nodes[i].product);
+            if (nodes[i].hasOwnProperty("ready") && nodes[i].ready === true) {
+                node.log("node: [" + i + "] " + nodes[i].manufacturer + ", " + nodes[i].product);
             } else {
-                node.log("node: [" + i + "] not ready");
+				var alive=" ";
+				//nisutil.dumpPropsHex("nodes[nodeid].classes):", nodes[nodeid].classes, 1, false);
+				if(Object.keys(nodes[nodeid].classes).length > 1) //!!! don't know why : the commandclass 32 is temopraily present...
+					alive = "alive but ";
+                node.log("node: [" + i + "] "+alive+"no infos yet");
             }
         }
-    }
+		node.log("--------------------------------------");
+
+
+		}
     var zwaveTopic = flows.checkZwaveNodeTopic();
     if (mqtt !== null) mqtt.publish({
         'qos': 0,
@@ -153,6 +161,7 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
     if (!nodes[nodeid].classes[comclass]) {
         nodes[nodeid].classes[comclass] = {};
     }
+	
     nodes[nodeid].classes[comclass][value.index] = value;
 
     if (mqtt != null) mqtt.publish({
@@ -183,7 +192,9 @@ function valueChanged(node, mqtt, nodeid, comclass, value) {
     }
 }
 
-function valueRemoved(nodeid, comclass, index) {
+function valueRemoved(node, nodeid, comclass, index) {
+	node.log('value removed: nodeid:' + nodeid + " comclass:" + comclass);
+
     if (nodes[nodeid].classes[comclass] &&
         nodes[nodeid].classes[comclass][index]) {
         delete nodes[nodeid].classes[comclass][index];
@@ -206,29 +217,33 @@ function sceneEvent(node, mqtt, nodeid, sceneid) {
 function notification(node, nodeid, notif) {
     switch (notif) {
         case 0:
-            node.log('node ' + nodeid + ': message complete');
+            node.log('Notification node ' + nodeid + ': message complete');
             break;
         case 1:
-            node.log('node ' + nodeid + ': timeout');
+            node.log('Notification node  ' + nodeid + ': timeout');
             break;
+			/*
         case 2:
-            node.log('node ' + nodeid + ': nop');
+            node.log('Notification node  ' + nodeid + ': nop');
             break;
+			*/
         case 3:
-            node.log('node ' + nodeid + ': node awake');
+            node.log('Notification node  ' + nodeid + ': node awake');
             break;
         case 4:
-            node.log('node ' + nodeid + ': node sleep');
+            node.log('Notification node  ' + nodeid + ': node sleep');
             break;
         case 5:
-            node.log('node ' + nodeid + ': node dead');
+            node.log('Notification node  ' + nodeid + ': node dead');
             break;
         case 6:
-            node.log('node ' + nodeid + ': node alive');
+            node.log('Notification node  ' + nodeid + ': node alive');
             break;
+		/*	
         default:
-            node.log('node ' + nodeid + ': unhandled notification');
+            node.log('Notification node  ' + nodeid + ': unhandled notification');
             break;
+			*/
     }
 }
 
