@@ -1,1 +1,1 @@
-A Zwave Node-RED node made for TheThingBox project and TimeSquAir.
+A Zwave Node-RED package for TheThingBox project and TimeSquAir.

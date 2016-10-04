@@ -1,4 +1,4 @@
-# Installation node : ttb-zwave
+# Installation node : ttb-zwave2
 
 In order to install the `ttb-zwave` node you have to use the **Import->Node** menu and write :
 
