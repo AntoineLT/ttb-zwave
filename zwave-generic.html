@@ -44,15 +44,17 @@
             classindex: {value: ''},
             productname: {value: ''},
             classindexname: {value: ''},
+            mark: {value: null},
             broker: {type: "mqtt-broker", required: true, value: "MQTT.Localhost"}
         },
         inputs: 1,
         outputs: 1,
-        align: 'right',
-        icon: 'zwave.png',
-        paletteLabel: 'Generic' ,
+        icon: function () {
+            return this.mark || "zwave.png";
+        },
+        paletteLabel: 'ZWave device' ,
         label: function () {
-            return "[" + this.nodeid + "] " + (this.name || 'ZWave Generic');
+            return "[" + this.nodeid + "] " + (this.name || 'ZWave device');
         },
         oneditprepare: function () {
             var that = this;

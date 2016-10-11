@@ -28,7 +28,8 @@ function checkDevices(node, productIDTotal, nodes, nodeid, zwave) {
         case "010f-0800-4001": // FIBARO System, FGMS001 Motion Sensor
         case "010f-0801-1001": // FIBARO System, FGMS001 Motion Sensor
         case "010f-0801-2001": // FIBARO System, FGMS001 Motion Sensor
-            (node.senderID !== undefined)? node.typeNode = "zwave-motion-sensor" : node.type = "zwave-motion-sensor";
+            (node.senderID !== undefined)? node.typeNode = "zwave-generic" : node.type = "zwave-generic";
+            // (node.senderID !== undefined)? node.typeNode = "zwave-motion-sensor" : node.type = "zwave-motion-sensor";
             node.commandclass = "48";
             node.classindex = "0";
             break;
@@ -37,7 +38,8 @@ function checkDevices(node, productIDTotal, nodes, nodeid, zwave) {
         case "010f-0700-2000": // FIBARO System, FGK101 Door Opening Sensor
         case "010f-0700-3000": // FIBARO System, FGK101 Door Opening Sensor
         case "010f-0700-4000": // FIBARO System, FGK101 Door Opening Sensor
-            (node.senderID !== undefined)? node.typeNode = "zwave-binary-sensor" : node.type = "zwave-binary-sensor";
+            (node.senderID !== undefined)? node.typeNode = "zwave-generic" : node.type = "zwave-generic";
+            //(node.senderID !== undefined)? node.typeNode = "zwave-binary-sensor" : node.type = "zwave-binary-sensor";
             node.commandclass = "48";
             node.classindex = "0";
             break;
@@ -48,7 +50,8 @@ function checkDevices(node, productIDTotal, nodes, nodeid, zwave) {
         case "0086-0002-0064": // Aeotec, ZW074 MultiSensor 6
         case "0086-0102-0064": // Aeotec, ZW074 MultiSensor 6
         case "0086-0202-0064": // Aeotec, ZW074 MultiSensor 6
-            (node.senderID !== undefined)? node.typeNode = "aeotecMultiSensor" : node.type = "aeotecMultiSensor";
+           (node.senderID !== undefined)? node.typeNode = "zwave-generic" : node.type = "zwave-generic";
+//            (node.senderID !== undefined)? node.typeNode = "aeotecMultiSensor" : node.type = "aeotecMultiSensor";
             node.commandclass = "48";
             node.classindex = "0";
             zwave.setConfigParam(nodeid, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
