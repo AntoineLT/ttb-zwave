@@ -38,8 +38,9 @@
         icon: function() {
             return this.mark||"zwave.png";
         },
-        label: function() {
-            return "[" + this.nodeid + "] " + (this.name || "Remote Control");
+        paletteLabel: 'ZWave device' ,
+        label: function () {
+            return "[" + this.nodeid + "] " + (this.name || this.productname + " - " + this.classindexname);
         },
         oneditprepare: function() {
             if(this.push === true) {
