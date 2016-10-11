@@ -20,24 +20,18 @@ module.exports = function (RED) {
 
 		var zwaveTopic = flows.checkZwaveNodeTopic();
 		this.topic = zwaveTopic + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
-		this.topicIn = zwaveTopic + '/' + config.nodeid + '/in';
 
+		// console.log("Node " + config.nodeid + " subscribed to '" + this.topic + "'");
+		
 		this.mqtt = mqttCP.get(
 			this.brokerConn.broker,
 			this.brokerConn.port
 		);
 
-		var zwave = require('./js/openZWave').zwave;
-
-		subscription(RED, this, zwave);
-
-		var node = this;
-		this.on('input', function (msg) {
-			binarySwitchFunc(node, zwave, msg);
-		});
+		subscription(RED, this);
 	}
 
-	RED.nodes.registerType("zwave-binary-switch", main);
+	RED.nodes.registerType("zwave-motion-sensor", main);
 
 	RED.httpAdmin.get("/zwave/nodesArray", function (req, res) {
 		var nodes = require('./js/handler').nodes;
@@ -48,7 +42,7 @@ module.exports = function (RED) {
 	});
 };
 
-function subscription(RED, node, zwave) {
+function subscription(RED, node) {
 	var isUtf8 = require('is-utf8'),
 		flows = require('./js/flows');
 
@@ -97,56 +91,10 @@ function subscription(RED, node, zwave) {
 	else {
 		node.error(RED._("node-red:mqtt.errors.not-defined"));
 	}
-
-	if (node.topicIn) {
-		node.brokerConn.register(node);
-		node.brokerConn.subscribe(node.topicIn, 2, function (topic, payload, packet) {
-			if (isUtf8(payload)) {
-				payload = payload.toString();
-			}
-			try {
-				msg = JSON.parse(payload);
-			} catch (e) {
-				msg.payload = payload;
-			}
-			binarySwitchFunc(node, zwave, msg);
-		}, node.id);
-	}
-	else {
-		node.error(RED._("node-red:mqtt.errors.not-defined"));
-	}
-
 	node.on('close', function (done) {
 		if (node.brokerConn) {
 			node.brokerConn.unsubscribe(node.topic, node.id);
-			node.brokerConn.unsubscribe(node.topicIn, node.id);
 			node.brokerConn.deregister(node, done);
 		}
 	});
-}
-
-function binarySwitchFunc(node, zwave, msg) {
-	var handler = require('./js/handler');
-	if (handler.nodes[node.config.nodeid].classes[37] !== undefined) {
-		var currentValue = handler.nodes[node.config.nodeid].classes[37][0].value;
-		if (msg.status && msg.status === "toggle") {
-			if (currentValue === false) {
-				zwave.setValue(node.config.nodeid, 37, 1, 0, true);
-			} else if (currentValue === true) {
-				zwave.setValue(node.config.nodeid, 37, 1, 0, false);
-			}
-		} else {
-			if (msg.intent || msg.intent == 0) {
-				switch (msg.intent) {
-					case 0:
-						zwave.setValue(node.config.nodeid, 37, 1, 0, false);
-						break;
-
-					case 1:
-						zwave.setValue(node.config.nodeid, 37, 1, 0, true);
-						break;
-				}
-			}
-		}
-	}
 }
