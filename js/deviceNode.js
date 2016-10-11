@@ -1,10 +1,10 @@
 'use strict';
 
-var flows = require('./flows'),
-    devices = require('./devices');
+// var flows = require('./flows');
+var devices = require('./devices');
 
 // productIDTotal refers to '../../node_modules/openzwave-shared/deps/open-zwave/config/manufacturer_specific.xml'
-
+/*
 function withClient(RED, zwave, nodeid, nodeinfo) {
     var nodes = require('./handler').nodes;
 
@@ -14,11 +14,11 @@ function withClient(RED, zwave, nodeid, nodeinfo) {
         productid = nodeinfo.productid.slice(2, nodeinfo.productid.length),
         productIDTotal = manufacturerid + "-" + producttype + "-" + productid,
         node = {
-            "id": nodeid + "-" + nodeinfo.product.replace(/ /g, ''),
+            "id": nodeid + "-ZWave",
             "name": nodeid + ": " + nodeinfo.manufacturer + ', ' + nodeinfo.product,
             "broker": "MQTT.Localhost",
             "nodeid": nodeid,
-            "productname": nodeid + ": " + nodeinfo.manufacturer + " - " + nodeinfo.product,
+            "productname": nodeinfo.manufacturer + " - " + nodeinfo.product,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
             "x": 250 + ((nodeid - 2) * 300),
             "y": zwave.lastY[nodeid - 2],
@@ -41,8 +41,8 @@ function withoutClient(zwave, nodeid, nodeinfo) {
         productIDTotal = manufacturerid + "-" + producttype + "-" + productid;
 
     var node = devices.checkDevices({
-            "id": nodeid + "-" + nodeinfo.product.replace(/ /g, ''),
-            "name": nodeid + ": " + nodeinfo.manufacturer + ', ' + nodeinfo.product,
+            "id": nodeid + "-ZWave",
+            "name": nodeinfo.manufacturer + ', ' + nodeinfo.product,
             "broker": "MQTT.Localhost",
             "nodeid": nodeid,
             "mark": nodeinfo.manufacturer.toLowerCase().replace(/ /g, '') + ".png",
@@ -58,7 +58,7 @@ function withoutClient(zwave, nodeid, nodeinfo) {
     flows.addNodeToServerFlows(node);
     zwave.lastY[nodeid - 2] += 60;
 }
-
+*/
 function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
     var nodes = require('./handler').nodes;
 
@@ -70,7 +70,7 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
     var MQTTpayload = devices.checkDevices({
             senderID: nodeid,
             nodeInfo: nodeinfo,
-            productname: nodeid + ": " + nodeinfo.manufacturer + " - " + nodeinfo.product
+            productname: nodeinfo.manufacturer + " - " + nodeinfo.product
         },
         productIDTotal,
         nodes,
@@ -86,7 +86,7 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
 }
 
 module.exports = {
-    'withClient': withClient,
-    'withoutClient': withoutClient,
+ //   'withClient': withClient,
+ //   'withoutClient': withoutClient,
     'newdeviceMQTT': newdeviceMQTT
 };
