@@ -54,7 +54,7 @@
         },
         paletteLabel: 'ZWave device' ,
         label: function () {
-            return "[" + this.nodeid + "] " + (this.name || 'ZWave device');
+            return "[" + this.nodeid + "] " + (this.name || this.productname + " - " + this.classindexname);
         },
         oneditprepare: function () {
             var that = this;

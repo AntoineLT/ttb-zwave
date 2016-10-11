@@ -54,7 +54,7 @@
             return this.mark || "zwave.png";
         },
         label: function () {
-            return "[" + this.nodeid + "] " + (this.name || "Binary Switch");
+            return "[" + this.nodeid + "] " + (this.name || this.productname + " - " + this.classindexname);
         },
         oneditprepare: function () {
             var that = this;
@@ -68,14 +68,13 @@
                 if (checkIfOneIsReady(data)) {
                     productListOpt.length = 0;
                     indexListOpt.length = 0;
-                    productlist.prop('disabled', 'disabled');
                     for (var i = 2; i < data.length; i++) {
                         if (data[i] !== null && data[i].manufacturer !== "" && data[i].product !== "") {
+                            productListOpt[productListOpt.length] = new Option(i + ": " + data[i].manufacturer + " - " + data[i].product, i);
                             if (that.productname === i + ": " + data[i].manufacturer + " - " + data[i].product)
                                 exist = true;
                         }
                     }
-                    productListOpt[productListOpt.length] = new Option(that.productname, that.nodeid);
                     var productSelected = productlist.val();
                     for (var j in data[productSelected].classes) {
                         if (data[productSelected].classes.hasOwnProperty(j) && commandclassToHide(j)) {
@@ -90,6 +89,23 @@
                             }
                         }
                     }
+                    productlist.change(function () {
+                        indexListOpt.length = 0;
+                        productSelected = productlist.val();
+                        for (var j in data[productSelected].classes) {
+                            if (data[productSelected].classes.hasOwnProperty(j) && commandclassToHide(j)) {
+                                for (var k in data[productSelected].classes[j]) {
+                                    if (data[productSelected].classes[j].hasOwnProperty(k)) {
+                                        indexListOpt[indexListOpt.length] = new Option(
+                                                data[productSelected].classes[j][k].label,
+                                                data[productSelected].classes[j][k].index
+                                        );
+                                        indexListOpt[indexListOpt.length - 1].setAttribute("commandclass", j);
+                                    }
+                                }
+                            }
+                        }
+                    });
                     if (that.productname !== '' && that.classindexname !== '') {
                         if (exist) {
                             productlist.val(that.nodeid).trigger("change");
