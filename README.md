@@ -2,8 +2,6 @@ ttb-zwave2
 ==========
 
 
-**This is a work in progress**.
-
 This package add Z-Wave functionalities to:
 
 * TimeSquAir ([http://timesquair.io](http://timesquair.io/)) 
@@ -28,10 +26,7 @@ Look at the Youtube video below:
 
 [![ ](images/zwave/Youtube1.png)](https://www.youtube.com/watch?v=o81MNexwJo8 "Click to open in YouTube")
 
-The documentation is a work in progress:
-
-First drafts are [here](http://thethingbox.io/docs/ZwaveUI.html).
-
+The documentation is [here](http://thethingbox.io/docs/ZwaveUI.html).
 
 
 Credits
