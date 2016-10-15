@@ -102,11 +102,11 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
                 continue;
             }
             if (nodes[i].hasOwnProperty("ready") && nodes[i].ready === true) {
-                node.log("node: [" + i + "] " + nodes[i].manufacturer + ", " + nodes[i].product);
+                node.log("node: [" + i + "] " + (nodes[i].manufacturer == "" ? nodes[i].manufacturer + ", " : "") + nodes[i].product + " (" + nodes[i].type + ")");
             } else {
 				var alive=" ";
 				//nisutil.dumpPropsHex("nodes[nodeid].classes):", nodes[nodeid].classes, 1, false);
-				if(Object.keys(nodes[nodeid].classes).length > 1) //!!! don't know why : the commandclass 32 is temopraily present...
+				if(Object.keys(nodes[nodeid].classes).length > 1) //!!! don't know why : the commandclass 32 is temporarily present...
 					alive = "alive but ";
                 node.log("node: [" + i + "] "+alive+"no infos yet");
             }
