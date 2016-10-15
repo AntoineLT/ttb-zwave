@@ -33,8 +33,8 @@
         "func": "// some work left?\nif(context.global.nodeGenerator.length >0) {\n    // can enter?\n    if(typeof context.global.putFlag === 'undefined' || context.global.putFlag === false) { // let's in\n        context.global.putFlag = true; // prevent enter\n        msg = context.global.nodeGenerator.shift(); // get the next\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 340,
-        "y": 198,
+        "x": 334,
+        "y": 222,
         "wires": [
             [
                 "globalZWave"
@@ -47,7 +47,7 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "NodeFactory Parameters",
-        "func": "if(Array.isArray(msg.payload)) {\n    for(var i = 0; i < msg.payload.length; i++) {\n        msg.payload[i].type = msg.typeNode;\n        msg.payload[i].broker = \"MQTT.Localhost\";\n        msg.payload[i].x = 100 + Math.random() * 50;\n        msg.payload[i].y = 100 + Math.random() * 50;\n        msg.payload[i].extra.ui = true;\n        msg.node = msg.payload;\n    }\n} else {\n    msg.payload.type = msg.typeNode;\n    if(msg.typeNode.includes(\"subflow\") === false) msg.payload.broker = \"MQTT.Localhost\";\n    msg.payload.x = 100 + Math.random() * 50;\n    msg.payload.y = 100 + Math.random() * 50;\n    msg.payload.extra.ui = true;\n    msg.node = msg.payload;\n}\nreturn msg;",
+        "func": "if(Array.isArray(msg.payload)) {\n    for(var i = 0; i < msg.payload.length; i++) {\n        msg.payload[i].type = msg.payload[i].typeNode;\n        msg.payload[i].broker = \"MQTT.Localhost\";\n        msg.payload[i].x = 100 + Math.random() * 50;\n        msg.payload[i].y = 100 + Math.random() * 50;\n        msg.payload[i].extra.ui = true;\n        msg.node = msg.payload;\n    }\n} else {\n    msg.payload.type = msg.payload.typeNode;\n    if(msg.payload.typeNode.includes(\"subflow\") === false) msg.payload.broker = \"MQTT.Localhost\";\n    msg.payload.x = 100 + Math.random() * 50;\n    msg.payload.y = 100 + Math.random() * 50;\n    msg.payload.extra.ui = true;\n    msg.node = msg.payload;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 644.9999618530273,
@@ -63,12 +63,12 @@
         "type": "function",
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "Assert",
-        "func": "if(Array.isArray(msg.payload)){\n    if(msg.payload[0].name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload[0].extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    msg.tab = msg.payload;\n    return [null,msg];\n} else {\n    if(msg.payload.name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload.extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    return [null,msg];\n}",
+        "name": "Assert (qui n'en n'est pas un)",
+        "func": "if(Array.isArray(msg.payload)){\n    if(msg.payload[0].name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload[0].extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    msg.tab = msg.payload; //!!! qu'est ce que ça fout là?\n    return [null,msg];\n} else {\n    if(msg.payload.name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload.extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    return [null,msg];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 157,
-        "y": 100,
+        "x": 206,
+        "y": 116,
         "wires": [
             [
                 "debug1ZWave"
@@ -87,8 +87,8 @@
         "active": true,
         "console": false,
         "complete": "payload",
-        "x": 337,
-        "y": 79,
+        "x": 408,
+        "y": 78,
         "wires": []
     },
     {
@@ -98,8 +98,8 @@
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Error",
         "info": " ",
-        "x": 317,
-        "y": 40,
+        "x": 387,
+        "y": 39,
         "wires": []
     },
     {
@@ -175,11 +175,11 @@
         "type": "function",
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "JSON nodes",
+        "name": "push payload",
         "func": "msg.result = msg.payload;\nmsg.payload = msg.payload.nodes;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 788.3333206176758,
+        "x": 798.3333206176758,
         "y": 354.99999046325684,
         "wires": [
             [
@@ -264,8 +264,8 @@
         "func": "if(msg.idSource !== undefined) {\n    var index = msg.techno + \"-service\";\n    if(Array.isArray(msg.idSource)) {\n        var inc = 0;\n        for(var j = 0; j < msg.payload.length; j++) {\n            for(var k = 0; k < msg.idSource.length; k++) {\n                if(msg.payload[j].id === msg.idSource[k]\n                    && msg.payload[j].wires[0].indexOf(index)===-1) {\n                    msg.payload[j].wires[0].push(index);\n                    inc++;\n                }\n                if(inc === msg.idSource.length){\n                    break;\n                }\n            }\n        }\n        if(inc === msg.idSource.length) {\n            msg.method = \"PUT\";\n            msg.headers = {\n                \"Content-Type\":\"application/json\"\n            };\n            msg.payload = msg.result;\n            return msg;\n        }\n    } else {\n        for(var j = 0; j < msg.payload.length; j++) {\n            if(msg.payload[j].id === msg.idSource \n                && msg.payload[j].wires[0].indexOf(index)===-1) {\n                msg.payload[j].wires[0].push(index);\n                break;\n            }\n        }\n        if(msg.idSource && j < msg.payload.length) {\n            msg.method = \"PUT\";\n            msg.headers = {\n                \"Content-Type\":\"application/json\"\n            };\n            msg.payload = msg.result;\n            return msg;\n        }\n    }\n}\nmsg.method = \"PUT\";\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n};\nmsg.payload = msg.result;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1328.3333206176758,
-        "y": 394.99999046325684,
+        "x": 1322.3333740234375,
+        "y": 387,
         "wires": [
             [
                 "putFlowZWave"
@@ -281,8 +281,8 @@
         "method": "use",
         "ret": "txt",
         "url": "",
-        "x": 1318.3333206176758,
-        "y": 434.99999046325684,
+        "x": 1319.3333740234375,
+        "y": 429,
         "wires": [
             [
                 "validZWave",
@@ -297,7 +297,7 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Set message",
-        "func": "msg.message = \"Added new device\";\n\nif(msg.nodeInfo !== undefined)\n    msg.message =  msg.message + \" slot \" + msg.senderID + \": \" + msg.nodeInfo.product + \" (\" +msg.nodeInfo.manufacturer + \")\";\n\nmsg.message = msg.message + \" Refresh your browser !\"\nmsg.notification = msg.message;\nreturn msg;",
+        "func": "msg.message = \"Added new device slot \" + msg.node.nodeid;\n\nif(msg.node.nodeInfo !== undefined)\n    msg.message =  msg.message + \": \" + msg.node.nodeInfo.product + \" (\" +msg.node.nodeInfo.manufacturer + \")\";\n\nmsg.message = msg.message + \" Refresh your browser !\"\nmsg.notification = msg.message;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1628.3333206176758,
@@ -365,7 +365,7 @@
         "qos": "2",
         "broker": "MQTT.Localhost",
         "x": 110,
-        "y": 120,
+        "y": 103,
         "wires": [
             [
                 "jsonConvZWave"
@@ -379,45 +379,12 @@
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
         "x": 270,
-        "y": 120,
+        "y": 103,
         "wires": [
             [
                 "assert2ZWave"
             ]
         ]
-    },
-    {
-        "id": "assert2ZWave",
-        "type": "function",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "Assert",
-        "func": "if(msg.payload.senderID===undefined) \n    return [{payload:\"ASSERT: msg.payload.senderID missing\"}, null];\n\nreturn [null,msg];",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 270,
-        "y": 160,
-        "wires": [
-            [
-                "debug2ZWave"
-            ],
-            [
-                "confInfZWave"
-            ]
-        ]
-    },
-    {
-        "id": "debug2ZWave",
-        "type": "debug",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "",
-        "active": true,
-        "console": false,
-        "complete": "payload",
-        "x": 570,
-        "y": 160,
-        "wires": []
     },
     {
         "id": "confInfZWave",
@@ -428,8 +395,8 @@
         "func": "msg.techno         = msg.topic.replace(/newdevice\\//g, \"\");\nmsg.typeNode       = msg.payload.typeNode;\nmsg.senderID       = msg.payload.senderID;\nmsg.nodeInfo       = msg.payload.nodeInfo;\nmsg.productname    = msg.payload.productname;\nmsg.classindexname = msg.payload.classindexname;\nmsg.commandclass   = msg.payload.commandclass;\nmsg.classindex     = msg.payload.classindex;\n\nswitch(msg.typeNode) {\n    case \"zwave-binary-switch\":\n        msg.taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        msg.taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n    case \"nodonSoftRemote\":\n        msg.taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n    case \"zwave-binary-sensor\":\n    case \"aeotecMultiSensor\":\n        msg.taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\nmsg.service = msg.payload;\nmsg.payload = \"\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 320,
-        "y": 200,
+        "x": 321,
+        "y": 387,
         "wires": [
             [
                 "boxIP2ZWave"
@@ -442,8 +409,8 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
-        "x": 550,
-        "y": 200,
+        "x": 551,
+        "y": 387,
         "wires": [
             [
                 "specZWave"
@@ -460,12 +427,10 @@
         "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    name: msg.nodeInfo.product.slice(msg.nodeInfo.product.indexOf(\" \")+1, msg.nodeInfo.product.length),\n    id: msg.senderID + \"-ZWave\",\n    productname: msg.productname,\n    classindexname: msg.classindexname,\n    nodeid: msg.senderID,\n    commandclass: msg.commandclass,\n    classindex: msg.classindex,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.includes('remote') || msg.typeNode.includes('motion')|| msg.typeNode.includes('binary'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 760,
-        "y": 200,
+        "x": 761,
+        "y": 387,
         "wires": [
-            [
-                "Assert3ZWave"
-            ]
+            []
         ]
     },
     {
@@ -526,17 +491,6 @@
         "wires": []
     },
     {
-        "id": "commentDOwn1ZWave",
-        "type": "commentdown",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "Error",
-        "info": " ",
-        "x": 550,
-        "y": 120,
-        "wires": []
-    },
-    {
         "id": "commentDOwn2ZWave",
         "type": "commentdown",
         "z": "ttb-zwave-tab",
@@ -565,7 +519,7 @@
         ],
         "currentLanguage": "en-US",
         "x": 80,
-        "y": 80,
+        "y": 63,
         "wires": []
     },
     {
@@ -657,12 +611,152 @@
         "func": "if(typeof context.global.nodeGenerator === 'undefined')\n    context.global.nodeGenerator = [];\n\ncontext.global.nodeGenerator.push(msg);\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 328,
-        "y": 132,
+        "x": 325,
+        "y": 179,
         "wires": [
             [
                 "controlLoopZWave"
             ]
         ]
+    },
+    {
+        "id": "b14922d6.95bca",
+        "type": "function",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "Config Informations",
+        "func": "var ip  = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nvar taglet;\nswitch(msg.service.typeNode) {\n    case \"zwave-binary-switch\":\n        taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n    case \"nodonSoftRemote\":\n        taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n    case \"zwave-binary-sensor\":\n    case \"aeotecMultiSensor\":\n        taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\n\nmsg.service.extra.skale = \"http://\"+ip+\"/taglets/com.daw.\"+taglet+\".taglet\";\n\n\nmsg.payload = msg.service;\nmsg.service = undefined;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 735,
+        "y": 303,
+        "wires": [
+            [
+                "Assert3ZWave"
+            ]
+        ]
+    },
+    {
+        "id": "54b8609b.e3b72",
+        "type": "function",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "Specific parameters",
+        "func": "var techno = msg.topic.replace(/newdevice\\//g, \"\");\n\nmsg.service = {\n    id: msg.payload.senderID + \"-ZWave\",\n    name: \"\",\n    productname: msg.payload.productname,\n    classindexname: msg.payload.classindexname,\n    nodeid: msg.payload.senderID,\n    typeNode: msg.payload.typeNode,\n    commandclass: msg.payload.commandclass,\n    classindex: msg.payload.classindex,\n    nodeInfo: msg.payload.nodeInfo,\n    mark: msg.payload.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+techno+\"/\"+msg.payload.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+techno+\"/\"+msg.payload.senderID+'/out',\n    \tDeviceType: msg.payload.nodeInfo.type,\n    },\n    wires: [[]]\n};\n\n// !!! always provide a statusIn even if not used?\nif(msg.payload.typeNode.includes('remote') || msg.payload.typeNode.includes('motion')|| msg.payload.typeNode.includes('binary'))\n    msg.service.extra.StatusIn = undefined;\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 363,
+        "y": 302,
+        "wires": [
+            [
+                "52def1b3.bf7fa8"
+            ]
+        ]
+    },
+    {
+        "id": "52def1b3.bf7fa8",
+        "type": "boxip",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "",
+        "x": 552,
+        "y": 302,
+        "wires": [
+            [
+                "b14922d6.95bca"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "debug2ZWave",
+        "type": "debug",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "",
+        "active": true,
+        "console": false,
+        "complete": "payload",
+        "x": 333,
+        "y": 209,
+        "wires": []
+    },
+    {
+        "id": "commentDOwn1ZWave",
+        "type": "commentdown",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "Error",
+        "info": " ",
+        "x": 313,
+        "y": 169,
+        "wires": []
+    },
+    {
+        "id": "assert2ZWave",
+        "type": "function",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "Assert",
+        "func": "if(msg.payload.senderID===undefined) return [{payload:\"ASSERT: msg.payload.senderID missing\"}, null];\n\nreturn [null,msg];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 139,
+        "y": 215,
+        "wires": [
+            [
+                "debug2ZWave"
+            ],
+            [
+                "54b8609b.e3b72"
+            ]
+        ]
+    },
+    {
+        "id": "54cb99c0.a8c358",
+        "type": "debug",
+        "z": "nodeGeneratorZWave",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "",
+        "active": true,
+        "console": false,
+        "complete": "true",
+        "x": 1598,
+        "y": 182,
+        "wires": []
+    },
+    {
+        "id": "cfbaafcb.2d42e8",
+        "type": "debug",
+        "z": "nodeGeneratorZWave",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "",
+        "active": true,
+        "console": false,
+        "complete": "payload",
+        "x": 1620,
+        "y": 230,
+        "wires": []
+    },
+    {
+        "id": "1eed4e0a.90c5a2",
+        "type": "info",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "previous version",
+        "info": "",
+        "icon": "comment.png",
+        "langs": [
+            {
+                "key": "en-US",
+                "title": "previous version",
+                "body": "",
+                "isDefault": true
+            }
+        ],
+        "currentLanguage": "en-US",
+        "x": 307.5,
+        "y": 351,
+        "wires": []
     }
 ]
