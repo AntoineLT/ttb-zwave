@@ -16,7 +16,7 @@
                 "y": 100,
                 "wires": [
                     {
-                        "id": "globalZWave"
+                        "id": "assert1ZWave"
                     }
                 ]
             }
@@ -30,67 +30,16 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Control loop",
-        "func": "if(typeof context.global.nodeGenerator !== 'undefined'\n        && typeof context.global.nodeGenerator[0] !== 'undefined'\n        && context.global.putFlag === true) {\n    msg = context.global.nodeGenerator[0]; // !!! pop ?\n    return msg;\n}",
+        "func": "// some work left?\nif(context.global.nodeGenerator.length >0) {\n    // can enter?\n    if(typeof context.global.putFlag === 'undefined' || context.global.putFlag === false) { // let's in\n        context.global.putFlag = true; // prevent enter\n        msg = context.global.nodeGenerator.shift(); // get the next\n        return msg;\n    }\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 390,
-        "y": 100,
+        "x": 340,
+        "y": 198,
         "wires": [
             [
-                "assert1ZWave"
+                "globalZWave"
             ]
         ]
-    },
-    {
-        "id": "factoryZWave",
-        "type": "nodefactory",
-        "z": "nodeGeneratorZWave",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "",
-        "x": 740,
-        "y": 280,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "clientServerZWave",
-        "type": "function",
-        "z": "nodeGeneratorZWave",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "client or server?",
-        "func": "return [msg, null]; // create on server\n//return [null, msg]; // create on client",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 740,
-        "y": 180,
-        "wires": [
-            [
-                "getFlowsZWave"
-            ],
-            [
-                "factoryZWave"
-            ]
-        ]
-    },
-    {
-        "id": "comment1ZWave",
-        "type": "commentdown",
-        "z": "nodeGeneratorZWave",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "Create on client",
-        "info": " ",
-        "langs": [
-            {
-                "key": "en-US",
-                "title": "Create on client",
-                "body": " ",
-                "isDefault": true
-            }
-        ],
-        "x": 740,
-        "y": 240,
-        "wires": []
     },
     {
         "id": "parametersZWave",
@@ -101,11 +50,11 @@
         "func": "if(Array.isArray(msg.payload)) {\n    for(var i = 0; i < msg.payload.length; i++) {\n        msg.payload[i].type = msg.typeNode;\n        msg.payload[i].broker = \"MQTT.Localhost\";\n        msg.payload[i].x = 100 + Math.random() * 50;\n        msg.payload[i].y = 100 + Math.random() * 50;\n        msg.payload[i].extra.ui = true;\n        msg.node = msg.payload;\n    }\n} else {\n    msg.payload.type = msg.typeNode;\n    if(msg.typeNode.includes(\"subflow\") === false) msg.payload.broker = \"MQTT.Localhost\";\n    msg.payload.x = 100 + Math.random() * 50;\n    msg.payload.y = 100 + Math.random() * 50;\n    msg.payload.extra.ui = true;\n    msg.node = msg.payload;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 770,
-        "y": 120,
+        "x": 644.9999618530273,
+        "y": 141.6666431427002,
         "wires": [
             [
-                "clientServerZWave"
+                "getFlowsZWave"
             ]
         ]
     },
@@ -115,17 +64,17 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Assert",
-        "func": "if(Array.isArray(msg.payload)){\n\n    if(msg.payload[0].extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    msg.tab = msg.payload;\n    return [null,msg];\n} else {\n\n    if(msg.payload.extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    return [null,msg];\n}",
+        "func": "if(Array.isArray(msg.payload)){\n    if(msg.payload[0].name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload[0].extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    msg.tab = msg.payload;\n    return [null,msg];\n} else {\n    if(msg.payload.name===undefined) \n        return [{payload:\"ASSERT: msg.payload.name missing\"}, null];\n    \n    if(msg.payload.extra===undefined) \n        return [{payload:\"ASSERT: msg.payload.extra missing\"}, null];\n        \n    return [null,msg];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 550,
+        "x": 157,
         "y": 100,
         "wires": [
             [
                 "debug1ZWave"
             ],
             [
-                "parametersZWave"
+                "4fa4281b.526b38"
             ]
         ]
     },
@@ -138,7 +87,7 @@
         "active": true,
         "console": false,
         "complete": "payload",
-        "x": 730,
+        "x": 337,
         "y": 79,
         "wires": []
     },
@@ -149,7 +98,7 @@
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Error",
         "info": " ",
-        "x": 710,
+        "x": 317,
         "y": 40,
         "wires": []
     },
@@ -162,8 +111,8 @@
         "method": "GET",
         "ret": "obj",
         "url": "/flows",
-        "x": 950,
-        "y": 160,
+        "x": 608.3333206176758,
+        "y": 194.99999046325684,
         "wires": [
             [
                 "idTabZWave"
@@ -179,8 +128,8 @@
         "func": "msg.idTab = undefined;\nfor(var i = 0; i < msg.payload.length; i++) {\n    /*\n    if(msg.payload[i].type === \"tab\" && msg.payload[i].label === \"HomeKeeper\") {\n        msg.idTab = msg.payload[i].id;\n        break;\n    }\n    */\n    if(msg.payload[i].type === \"zwave\") {\n        msg.idTab = msg.payload[i].z;\n        break;\n    }\n}\nif(msg.idTab) {\n    return msg;\n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 950,
-        "y": 200,
+        "x": 608.3333206176758,
+        "y": 234.99999046325684,
         "wires": [
             [
                 "boxipZWave"
@@ -196,8 +145,8 @@
         "func": "msg.url = \"http://\"+msg.payload+\".local/flow/\"+msg.idTab;\nmsg.method = \"GET\";\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 950,
-        "y": 280,
+        "x": 608.3333206176758,
+        "y": 314.99999046325684,
         "wires": [
             [
                 "getFlowZWave"
@@ -213,8 +162,8 @@
         "method": "use",
         "ret": "obj",
         "url": "",
-        "x": 1120,
-        "y": 280,
+        "x": 778.3333206176758,
+        "y": 314.99999046325684,
         "wires": [
             [
                 "nodesZWave"
@@ -230,8 +179,8 @@
         "func": "msg.result = msg.payload;\nmsg.payload = msg.payload.nodes;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1130,
-        "y": 320,
+        "x": 788.3333206176758,
+        "y": 354.99999046325684,
         "wires": [
             [
                 "arrayOrNotZWave"
@@ -244,8 +193,8 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
-        "x": 940,
-        "y": 240,
+        "x": 598.3333206176758,
+        "y": 274.99999046325684,
         "wires": [
             [
                 "formatURLZWave"
@@ -261,8 +210,8 @@
         "func": "var node = msg.node;\nnode.z = msg.payload[0].id;\n\nvar content = msg.payload,\n    contentL = content.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    content.push(node);\n} else {\n    for(var i = 0; i < contentL; i++) {\n        if(content[i].id === node.id && content[i].type === node.type)\n            break;\n    }\n    if(i === contentL) content.push(node);\n}\nif(contentL < content.length) {\n    //msg.payload = JSON.stringify(msg.payload, null, 4);\n    return msg;\n} else {\n    context.global.nodeGenerator.shift();\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1410,
-        "y": 380,
+        "x": 1068.3333206176758,
+        "y": 414.99999046325684,
         "wires": [
             [
                 "formatHttpZWave"
@@ -278,8 +227,8 @@
         "func": "if(Array.isArray(msg.node)) {\n    return [msg,null];\n} else {\n    return [null,msg];\n}\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 1160,
-        "y": 360,
+        "x": 818.3333206176758,
+        "y": 394.99999046325684,
         "wires": [
             [
                 "addToServerArrayZWave"
@@ -298,8 +247,8 @@
         "func": "var node = msg.node;\n\nvar content  = msg.payload,\n    contentL = content.length;\n\nfor(var i = 0; i < node.length; i++) {\n    node[i].z = msg.payload[0].id;\n    \n    if(!node[i].id) {\n        node[i].id = (1+Math.random()*4294967295).toString(16);\n        content.push(node[i]);\n    } else {\n        for(var j = 0; j < contentL; j++) {\n            if(content[j].id === node[i].id && content[j].type === node[i].type)\n                break;\n        }\n        if(j === contentL) content.push(node[i]);\n    }\n}\nif(contentL < content.length) {\n    //msg.payload = JSON.stringify(msg.payload, null, 4);\n    return msg;\n} else {\n    context.global.nodeGenerator.shift();\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1430,
-        "y": 340,
+        "x": 1088.3333206176758,
+        "y": 374.99999046325684,
         "wires": [
             [
                 "formatHttpZWave"
@@ -315,8 +264,8 @@
         "func": "if(msg.idSource !== undefined) {\n    var index = msg.techno + \"-service\";\n    if(Array.isArray(msg.idSource)) {\n        var inc = 0;\n        for(var j = 0; j < msg.payload.length; j++) {\n            for(var k = 0; k < msg.idSource.length; k++) {\n                if(msg.payload[j].id === msg.idSource[k]\n                    && msg.payload[j].wires[0].indexOf(index)===-1) {\n                    msg.payload[j].wires[0].push(index);\n                    inc++;\n                }\n                if(inc === msg.idSource.length){\n                    break;\n                }\n            }\n        }\n        if(inc === msg.idSource.length) {\n            msg.method = \"PUT\";\n            msg.headers = {\n                \"Content-Type\":\"application/json\"\n            };\n            msg.payload = msg.result;\n            return msg;\n        }\n    } else {\n        for(var j = 0; j < msg.payload.length; j++) {\n            if(msg.payload[j].id === msg.idSource \n                && msg.payload[j].wires[0].indexOf(index)===-1) {\n                msg.payload[j].wires[0].push(index);\n                break;\n            }\n        }\n        if(msg.idSource && j < msg.payload.length) {\n            msg.method = \"PUT\";\n            msg.headers = {\n                \"Content-Type\":\"application/json\"\n            };\n            msg.payload = msg.result;\n            return msg;\n        }\n    }\n}\nmsg.method = \"PUT\";\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n};\nmsg.payload = msg.result;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1670,
-        "y": 360,
+        "x": 1328.3333206176758,
+        "y": 394.99999046325684,
         "wires": [
             [
                 "putFlowZWave"
@@ -332,8 +281,8 @@
         "method": "use",
         "ret": "txt",
         "url": "",
-        "x": 1660,
-        "y": 400,
+        "x": 1318.3333206176758,
+        "y": 434.99999046325684,
         "wires": [
             [
                 "emptyMessageZWave",
@@ -353,8 +302,8 @@
         "func": "msg.message = \"Added new device\";\n\nif(msg.nodeInfo !== undefined)\n    msg.message =  msg.message + \" slot \" + msg.senderID + \": \" + msg.nodeInfo.product + \" (\" +msg.nodeInfo.manufacturer + \")\";\n\nmsg.message = msg.message + \" Refresh your browser !\"\nmsg.notification = msg.message;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1970,
-        "y": 300,
+        "x": 1628.3333206176758,
+        "y": 334.99999046325684,
         "wires": [
             [
                 "notifZWave",
@@ -371,8 +320,8 @@
         "func": "msg = {};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1970,
-        "y": 380,
+        "x": 1628.3333206176758,
+        "y": 414.99999046325684,
         "wires": [
             [
                 "flowFilterZWave"
@@ -389,8 +338,8 @@
         "qos": "",
         "retain": "false",
         "broker": "MQTT.Localhost",
-        "x": 1960,
-        "y": 540,
+        "x": 1618.3333206176758,
+        "y": 574.9999904632568,
         "wires": []
     },
     {
@@ -402,8 +351,8 @@
         "method": "GET",
         "ret": "txt",
         "url": "/flowFilter",
-        "x": 1980,
-        "y": 420,
+        "x": 1638.3333206176758,
+        "y": 454.99999046325684,
         "wires": [
             []
         ]
@@ -510,7 +459,7 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Specific parameters",
-        "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    id: msg.senderID + \"-ZWave\",\n    productname: msg.productname,\n    classindexname: msg.classindexname,\n    nodeid: msg.senderID,\n    commandclass: msg.commandclass,\n    classindex: msg.classindex,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.includes('remote') \n    || msg.typeNode.includes('motion')\n    || msg.typeNode.includes('binary'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
+        "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    name: msg.nodeInfo.product.slice(msg.nodeInfo.product.indexOf(\" \")+1, msg.nodeInfo.product.length),\n    id: msg.senderID + \"-ZWave\",\n    productname: msg.productname,\n    classindexname: msg.classindexname,\n    nodeid: msg.senderID,\n    commandclass: msg.commandclass,\n    classindex: msg.classindex,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.includes('remote') || msg.typeNode.includes('motion')|| msg.typeNode.includes('binary'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 760,
@@ -633,8 +582,8 @@
         "defaultTout": true,
         "timeout": "",
         "timeoutUnits": "",
-        "x": 1960,
-        "y": 340,
+        "x": 1618.3333206176758,
+        "y": 374.99999046325684,
         "wires": [
             []
         ]
@@ -644,15 +593,15 @@
         "type": "function",
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "Set global variable",
-        "func": "if(!context.global.settings.hk_ordinate) {\n    context.global.settings.hk_ordinate = 60;\n} else {\n    context.global.settings.hk_ordinate += 60;\n}\nif(typeof context.global.nodeGenerator === 'undefined' || context.global.nodeGenerator.length === 0) {\n    context.global.putFlag = true;\n    context.global.nodeGenerator = [];\n} \ncontext.global.nodeGenerator.push(msg);\nreturn msg;\n",
+        "name": "Set hk_ordinate",
+        "func": "if(!context.global.settings.hk_ordinate) {\n    context.global.settings.hk_ordinate = 60;\n} else {\n    context.global.settings.hk_ordinate += 60;\n}\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 190,
-        "y": 100,
+        "x": 614.9999618530273,
+        "y": 98.6666431427002,
         "wires": [
             [
-                "controlLoopZWave"
+                "parametersZWave"
             ]
         ]
     },
@@ -662,11 +611,11 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "next element ?",
-        "func": "context.global.nodeGenerator.shift();\nif(typeof context.global.nodeGenerator !== 'undefined'\n        && typeof context.global.nodeGenerator[0] !== 'undefined') {\n    context.global.putFlag = true;\n} else {\n    context.global.putFlag = false;\n}\nreturn msg;",
+        "func": "\ncontext.global.putFlag = false;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 975,
-        "y": 590,
+        "x": 789.3333206176758,
+        "y": 541.9999904632568,
         "wires": [
             [
                 "controlLoopZWave"
@@ -680,10 +629,10 @@
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
         "active": true,
-        "console": "false",
+        "console": "true",
         "complete": "notification",
-        "x": 2180,
-        "y": 300,
+        "x": 1838.3333206176758,
+        "y": 334.99999046325684,
         "wires": []
     },
     {
@@ -695,10 +644,27 @@
         "func": "if(msg._topic.includes(\"service\")) {\n    switch(msg.techno) {\n        case \"weather\":\n            msg.techno = \"La météo\";\n            break;\n            \n        case \"europe1\":\n            msg.techno = \"Europe 1\";\n            break;\n            \n        case \"presence\":\n            msg.techno = \"Votre service de présence\";\n            break;\n            \n        case \"alert\":\n            msg.techno = \"Votre service d'alerte\";\n            break;\n            \n        case \"hotline\":\n            msg.techno = \"La hotline Digital Airwayze\";\n            break;\n            \n        case \"withings\":\n            msg.techno = \"Votre balance\";\n            break;\n            \n        case \"flic\":\n            msg.techno = \"Votre bouton\";\n            break;\n            \n        default:\n            break;\n    }\n} else if(msg._topic.includes(\"device\")) {\n    switch(msg.service.type) {\n        case \"zwave-light-dimmer-switch\":\n            msg.techno = \"Votre ampoule LED\";\n            break;\n            \n        case \"Enocean-f6-2-1\":\n        case \"nodonSoftRemote\":\n        case \"zwave-remote-control-multi-purpose\":\n            msg.techno = \"Votre télécommande\";\n            break;\n            \n        case \"aeotecMultiSensor\":\n        case \"zwave-motion-sensor\":\n            msg.techno = \"Votre détecteur de présence\";\n            break;\n            \n        case \"zwave-binary-sensor\":\n            msg.techno = \"Votre capteur de porte\";\n            break;\n            \n        default:\n            break;\n    }\n}\nmsg.payload = msg.techno + \" est maintenant fonctionnelle.\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1970,
-        "y": 460,
+        "x": 1628.3333206176758,
+        "y": 494.99999046325684,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "4fa4281b.526b38",
+        "type": "function",
+        "z": "nodeGeneratorZWave",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "push msg",
+        "func": "if(typeof context.global.nodeGenerator === 'undefined')\n    context.global.nodeGenerator = [];\n\ncontext.global.nodeGenerator.push(msg);\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 328,
+        "y": 132,
+        "wires": [
+            [
+                "controlLoopZWave"
+            ]
         ]
     }
 ]
