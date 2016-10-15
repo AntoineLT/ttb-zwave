@@ -285,8 +285,6 @@
         "y": 434.99999046325684,
         "wires": [
             [
-                "emptyMessageZWave",
-                "formMessageZWave",
                 "validZWave",
                 "setMessageZWave",
                 "nextElementZWave"
@@ -351,8 +349,8 @@
         "method": "GET",
         "ret": "txt",
         "url": "/flowFilter",
-        "x": 1638.3333206176758,
-        "y": 454.99999046325684,
+        "x": 1837.3333740234375,
+        "y": 416,
         "wires": [
             []
         ]
@@ -582,8 +580,8 @@
         "defaultTout": true,
         "timeout": "",
         "timeoutUnits": "",
-        "x": 1618.3333206176758,
-        "y": 374.99999046325684,
+        "x": 1821.3333740234375,
+        "y": 372,
         "wires": [
             []
         ]
