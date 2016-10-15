@@ -34,16 +34,16 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('zwave-generic', {
-        category: 'ZWave',
-        color: '#ffffff',
+    RED.nodes.registerType("zwave-generic", {
+        category: "system",
+        color: "#ffffff",
         defaults: {
-            name: {value: ''},
-            nodeid: {value: ''},
-            commandclass: {value: ''},
-            classindex: {value: ''},
-            productname: {value: ''},
-            classindexname: {value: ''},
+            name: {value: ""},
+            nodeid: {value: ""},
+            commandclass: {value: ""},
+            classindex: {value: ""},
+            productname: {value: ""},
+            classindexname: {value: ""},
             mark: {value: null},
             broker: {type: "mqtt-broker", required: true, value: "MQTT.Localhost"}
         },
@@ -140,9 +140,9 @@
                 }
             });
             $("#nset-advanced").click(function () {
-                var div = $("#nset-advanced"),
-                        form = $("#nset-advanced-form"),
-                        arrow = $("#nset-advanced-arrow");
+                var div = $("#nset-advanced");
+                var form = $("#nset-advanced-from");
+                var arrow = $("#nset-advanced-arrow");
                 if (form.css("display") == "none") {
                     form.css("display", "block");
                     div.css("margin-bottom", "0px");

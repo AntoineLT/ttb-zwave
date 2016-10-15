@@ -36,14 +36,14 @@
 <script type="text/javascript">
     RED.nodes.registerType('zwave-binary-switch', {
         category: 'system',
-        color: '#ffffff',
+        color: "#ffffff",
         defaults: {
-            name: {value: ''},
-            nodeid: {value: ''},
-            commandclass: {value: ''},
-            classindex: {value: ''},
-            productname: {value: ''},
-            classindexname: {value: ''},
+            name: {value: ""},
+            nodeid: {value: ""},
+            commandclass: {value: ""},
+            classindex: {value: ""},
+            productname: {value: ""},
+            classindexname: {value: ""},
             mark: {value: null},
             broker: {type: "mqtt-broker", required: true, value: "MQTT.Localhost"}
         },
@@ -68,10 +68,11 @@
                 if (checkIfOneIsReady(data)) {
                     productListOpt.length = 0;
                     indexListOpt.length = 0;
+                    productlist.prop('disabled', 'disabled'); // remove this line to allow changing the zwave node
                     for (var i = 2; i < data.length; i++) {
                         if (data[i] !== null && data[i].manufacturer !== "" && data[i].product !== "") {
                             productListOpt[productListOpt.length] = new Option(i + ": " + data[i].manufacturer + " - " + data[i].product, i);
-                            if (that.productname === i + ": " + data[i].manufacturer + " - " + data[i].product)
+                            if (that.productname === data[i].manufacturer + " - " + data[i].product)
                                 exist = true;
                         }
                     }
@@ -139,9 +140,9 @@
                 }
             });
             $("#nset-advanced").click(function () {
-                var div = $("#nset-advanced"),
-                        form = $("#nset-advanced-form"),
-                        arrow = $("#nset-advanced-arrow");
+                var div = $("#nset-advanced");
+                var form = $("#nset-advanced-from");
+                var arrow = $("#nset-advanced-arrow");
                 if (form.css("display") == "none") {
                     form.css("display", "block");
                     div.css("margin-bottom", "0px");
@@ -164,7 +165,7 @@
             this.nodeid = productlist.val();
             this.commandclass = $('option:selected', indexlist).attr('commandclass');
             this.classindex = indexlist.val();
-            this.productname = productlist.find('option:selected').text();
+            // this.productname = productlist.find('option:selected').text();  // add/remove this line to allow changing the zwave node
             this.classindexname = indexlist.find('option:selected').text();
         }
     });

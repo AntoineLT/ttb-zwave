@@ -1,6 +1,6 @@
 {
   "name": "ttb-zwave2",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "A Zwave Node-RED package for TheThingBox and TimeSquAir.",
   "node-red": {
     "nodes": {
@@ -9,12 +9,9 @@
       "zwave-out": "zwave-out.js",
       "zwave-generic": "zwave-generic.js",
       "zwave-inclusion-node": "zwave-inclusion-node.js",
-      "zwave-binary-sensor": "zwave-binary-sensor.js",
       "zwave-binary-switch": "zwave-binary-switch.js",
       "zwave-light-dimmer-switch": "zwave-light-dimmer-switch.js",
-      "zwave-motion-sensor": "zwave-motion-sensor.js",
       "zwave-remote-control-multi-purpose": "zwave-remote-control-multi-purpose.js",
-      "aeotecMultiSensor": "aeotecMultiSensor.js",
       "nodonSoftRemote": "nodonSoftRemote.js"
     }
   },

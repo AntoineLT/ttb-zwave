@@ -65,6 +65,7 @@ function subscription(RED, node, zwave) {
 				msg.payload = JSON.parse(payload);
 			} catch (e) {
 				msg.payload = payload;
+				console.log("#Exception '" + e + "' in zwave-binary-switch/subscription for Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
 			}
 
 			// console.log("Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
@@ -107,6 +108,7 @@ function subscription(RED, node, zwave) {
 			try {
 				msg = JSON.parse(payload);
 			} catch (e) {
+				console.log("#Exception '" + e + "' in zwave-binary-switch/subscription for Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
 				msg.payload = payload;
 			}
 			binarySwitchFunc(node, zwave, msg);

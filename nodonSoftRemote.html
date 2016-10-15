@@ -13,7 +13,7 @@
         </span>
         <span data-i18n="ttb-zwave/zwave:zwave-in.advanced.title"></span>
     </div>
-    <div style="padding-top: 7px; padding-bottom: 7px; border-left: 1px solid #d3d3d3; border-bottom: 1px solid #d3d3d3; border-right: 1px solid #d3d3d3; border-radius: 2px; display: none;" id="nset-advanced-from">
+    <div style="padding-top: 7px; padding-bottom: 7px; border-left: 1px solid #d3d3d3; border-bottom: 1px solid #d3d3d3; border-right: 1px solid #d3d3d3; border-radius: 2px; display: none;" id="nset-advanced-form">
         <div class="form-row" style="padding-top: 7px;">
             <span style="margin-left: 10px;"></span>
             <label for="node-input-broker"><i class="fa fa-globe"></i> <span data-i18n="ttb-zwave/zwave:zwave-in.advanced.broker"></span></label>
@@ -27,31 +27,31 @@
         category: 'system',
         color:"#ffffff",
         defaults: {
-            name: {value:""},
+            name: {value: ""},
             nodeid: {value: ""},
             push: {value: true},
             mark: {value: null},
-            broker: {type:"mqtt-broker", required:true, value:"MQTT.Localhost"}
+            broker: {type: "mqtt-broker", required: true, value: "MQTT.Localhost"}
         },
         inputs:0,
-        outputs:1,
-        icon: function() {
-            return this.mark||"zwave.png";
+        outputs: 1,
+        icon: function () {
+            return this.mark || "zwave.png";
         },
         paletteLabel: 'ZWave device' ,
         label: function () {
             return "[" + this.nodeid + "] " + (this.name || this.productname + " - " + this.classindexname);
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             if(this.push === true) {
                 $("#node-input-push").prop("checked", true);
             } else {
                 $("#node-input-push").prop("checked", false);
             }
-            $("#nset-advanced").click(function() {
+            $("#nset-advanced").click(function () {
                 var form = $("#nset-advanced-from");
                 var arrow = $("#nset-advanced-arrow");
-                if(form.css("display") == "none") {
+                if (form.css("display") == "none") {
                     form.css("display", "block");
                     arrow.removeClass("ui-icon-triangle-1-e");
                     arrow.addClass("ui-icon-triangle-1-s");
@@ -62,7 +62,7 @@
                 }
             });
         },
-        oneditsave: function() {
+        oneditsave: function () {
             this.push = $("#node-input-push").prop("checked");
         }
     });
