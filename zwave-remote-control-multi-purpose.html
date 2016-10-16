@@ -13,7 +13,7 @@
         </span>
         <span data-i18n="ttb-zwave2/zwave:zwave-in.advanced.title"></span>
     </div>
-    <div style="padding-top: 7px; padding-bottom: 7px; border-left: 1px solid #d3d3d3; border-bottom: 1px solid #d3d3d3; border-right: 1px solid #d3d3d3; border-radius: 2px; display: none;" id="nset-advanced-from">
+    <div style="padding-top: 7px; padding-bottom: 7px; border-left: 1px solid #d3d3d3; border-bottom: 1px solid #d3d3d3; border-right: 1px solid #d3d3d3; border-radius: 2px; display: none;" id="nset-advanced-form">
         <div class="form-row" style="padding-top: 7px;">
             <span style="margin-left: 10px;"></span>
             <label for="node-input-broker"><i class="fa fa-globe"></i> <span data-i18n="ttb-zwave2/zwave:zwave-in.advanced.broker"></span></label>
@@ -48,7 +48,7 @@
                 $("#node-input-push").prop("checked", false);
             }
             $("#nset-advanced").click(function() {
-                var form = $("#nset-advanced-from");
+                var form = $("#nset-advanced-form");
                 var arrow = $("#nset-advanced-arrow");
                 if(form.css("display") == "none") {
                     form.css("display", "block");
