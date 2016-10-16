@@ -37,7 +37,7 @@
         "name": "Name",
         "device": "Device",
         "commandclass": "Class",
-        "indexclass": "Index",
-        "notready": "Your ZWave network is not ready try again later!"
+        "indexclass": "Function",
+        "notready": "Your ZWave network is not ready, try again later!"
     }
 }

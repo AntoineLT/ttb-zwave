@@ -207,7 +207,7 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "addNodeToServerFlows",
-        "func": "var node = msg.node;\nnode.z = msg.payload[0].id;\n\nvar flow = msg.payload;\nvar contentL = flow.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    flow.push(node);\n} else {\n    // if an id exists, find if the node is already in the flow\n    for(var i = 0; i < contentL; i++) {\n        if(flow[i].id === node.id)\n            break;\n    }\n    if(i === contentL) // not found\n\t\tflow.push(node); // add it\n}\n\n\nreturn msg;\n",
+        "func": "var node = msg.node;\nnode.z = msg.payload[0].id;\n\nvar flow = msg.payload;\nvar contentL = flow.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    flow.push(node);\n} else {\n    // if an id exists, find if the node is already in the flow\n    for(var i = 0; i < contentL; i++) {\n        if(flow[i].id === node.id)\n            break;\n    }\n    if(i === contentL){ // not found\n\t\tflow.push(node); // add it\n\t\treturn msg; // PUT it\n    }\n}\n\n\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1038.9999389648438,
