@@ -30,11 +30,11 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Control loop",
-        "func": "// some work left?\nif(context.global.nodeGenerator.length >0) {\n    // can enter?\n    if(typeof context.global.putFlag === 'undefined' || context.global.putFlag === false) { // let's in\n        context.global.putFlag = true; // prevent enter\n        msg = context.global.nodeGenerator.shift(); // get the next\n        return msg;\n    }\n}",
+        "func": "// some work left?\n\nif(context.global.nodeGenerator.length >0) {\n    // can enter?\n    if(typeof context.global.putFlag === 'undefined' || context.global.putFlag === false) { // let's in\n        context.global.putFlag = true; // prevent enter\n        msg = context.global.nodeGenerator.shift(); // get the next\n        //console.log(\"Gate is open: enter loop with \" + msg.payload.id + \" (array length:\" + context.global.nodeGenerator.length+\")\");\n        return msg;\n    }\n    // else  console.log(\"Gate is closed\");\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 628.9998626708984,
-        "y": 103.33332633972168,
+        "x": 615.9998779296875,
+        "y": 48.33332824707031,
         "wires": [
             [
                 "globalZWave"
@@ -207,12 +207,15 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "addNodeToServerFlows",
-        "func": "var node = msg.node;\nnode.z = msg.payload[0].id;\n\nvar flow = msg.payload;\nvar contentL = flow.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    flow.push(node);\n} else {\n    // if an id exists, find if the node is already in the flow\n    for(var i = 0; i < contentL; i++) {\n        if(flow[i].id === node.id)\n            break;\n    }\n    if(i === contentL){ // not found\n\t\tflow.push(node); // add it\n\t\treturn msg; // PUT it\n    }\n}\n\n\n\n",
-        "outputs": 1,
+        "func": "var node = msg.node;\nnode.z = msg.payload[0].id;\n\nvar flow = msg.payload;\nvar contentL = flow.length;\n\nif(!node.id) {\n    node.id = (1+Math.random()*4294967295).toString(16);\n    flow.push(node);\n    return [null,msg]; // PUT it\n} else {\n    // if an id exists, find if the node is already in the flow\n    for(var i = 0; i < contentL; i++) {\n        if(flow[i].id === node.id)\n            break;\n    }\n    if(i === contentL){ // not found\n\t\tflow.push(node); // add it\n\t\treturn [null,msg]; // PUT it\n    }\n    else\n        return [msg, null];\n}\n\n\n\n",
+        "outputs": "2",
         "noerr": 0,
-        "x": 1038.9999389648438,
-        "y": 636.9999599456787,
+        "x": 974,
+        "y": 650.9999389648438,
         "wires": [
+            [
+                "nextElementZWave"
+            ],
             [
                 "formatHttpZWave"
             ]
@@ -227,8 +230,8 @@
         "func": "if(msg.idSource !== undefined) {\n    var index = msg.techno + \"-service\";\n    if(Array.isArray(msg.idSource)) {\n        var inc = 0;\n        for(var j = 0; j < msg.payload.length; j++) {\n            for(var k = 0; k < msg.idSource.length; k++) {\n                if(msg.payload[j].id === msg.idSource[k]\n                    && msg.payload[j].wires[0].indexOf(index)===-1) {\n                    msg.payload[j].wires[0].push(index);\n                    inc++;\n                }\n                if(inc === msg.idSource.length){\n                    break;\n                }\n            }\n        }\n        if(inc === msg.idSource.length) {\n            msg.method = \"PUT\";\n            msg.headers = {\n                \"Content-Type\":\"application/json\"\n            };\n            msg.payload = msg.result;\n            return msg;\n        }\n    } else {\n        for(var j = 0; j < msg.payload.length; j++) {\n            if(msg.payload[j].id === msg.idSource \n                && msg.payload[j].wires[0].indexOf(index)===-1) {\n                msg.payload[j].wires[0].push(index);\n                break;\n            }\n        }\n        if(msg.idSource && j < msg.payload.length) {\n            msg.method = \"PUT\";\n            msg.headers = {\n                \"Content-Type\":\"application/json\"\n            };\n            msg.payload = msg.result;\n            return msg;\n        }\n    }\n}\nmsg.method = \"PUT\";\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n};\nmsg.payload = msg.result;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1327,
-        "y": 529.9999599456787,
+        "x": 1263,
+        "y": 526.9999389648438,
         "wires": [
             [
                 "putFlowZWave"
@@ -525,12 +528,12 @@
         "type": "function",
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "next element ?",
-        "func": "\ncontext.global.putFlag = false;\n\nreturn msg;",
+        "name": "done",
+        "func": "//console.log(\"End of loop\");\ncontext.global.putFlag = false;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1256.999885559082,
-        "y": 255.9999532699585,
+        "x": 1125.9998779296875,
+        "y": 276.99993896484375,
         "wires": [
             [
                 "controlLoopZWave"
@@ -571,11 +574,11 @@
         "z": "nodeGeneratorZWave",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "push msg",
-        "func": "if(typeof context.global.nodeGenerator === 'undefined')\n    context.global.nodeGenerator = [];\n\ncontext.global.nodeGenerator.push(msg);\nreturn msg;\n",
+        "func": "if(typeof context.global.nodeGenerator === 'undefined')\n    context.global.nodeGenerator = [];\n\n\ncontext.global.nodeGenerator.push(msg);\n//console.log(\"Push id:\" + msg.payload.id + \" (=> array length:\" + context.global.nodeGenerator.length +\")\");\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 459.99988555908203,
-        "y": 102.33332538604736,
+        "x": 444.9998779296875,
+        "y": 28.333328247070312,
         "wires": [
             [
                 "controlLoopZWave"
@@ -794,15 +797,35 @@
         "type": "inject",
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "test",
+        "name": "test FGWPE Wall Plug",
         "topic": "",
         "payload": "{ \"senderID\": 100, \"nodeInfo\": { \"manufacturer\": \"FIBARO System\", \"manufacturerid\": \"0x010f\", \"product\": \"FGWPE Wall Plug\", \"producttype\": \"0x0600\", \"productid\": \"0x1000\", \"type\": \"Binary Switch\", \"name\": \"\", \"loc\": \"\" }, \"productname\": \"FIBARO System - FGWPE Wall Plug\", \"typeNode\": \"zwave-binary-switch\", \"commandclass\": \"37\", \"classindex\": \"0\", \"classindexname\": \"Switch\" }",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 86,
+        "x": 136,
         "y": 24,
+        "wires": [
+            [
+                "jsonConvZWave"
+            ]
+        ]
+    },
+    {
+        "id": "cd280d5.4c954f",
+        "type": "inject",
+        "z": "ttb-zwave-tab",
+        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
+        "name": "test NodOn - CRC-3-6-0x Soft Remote",
+        "topic": "",
+        "payload": "{\"senderID\":101,\"nodeInfo\":{\"manufacturer\":\"NodOn\",\"manufacturerid\":\"0x0165\",\"product\":\"CRC-3-6-0x Soft Remote\",\"producttype\":\"0x0002\",\"productid\":\"0x0002\",\"type\":\"Remote Control MultiPurpose\",\"name\":\"\",\"loc\":\"\"},\"productname\":\"NodOn - CRC-3-6-0x Soft Remote\",\"typeNode\":\"nodonSoftRemote\"}",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 381.5,
+        "y": 39,
         "wires": [
             [
                 "jsonConvZWave"

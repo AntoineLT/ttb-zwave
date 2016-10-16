@@ -10,8 +10,8 @@
     </div>
 
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ttb-zwave2/zwave:zwave.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]ttb-zwave2/zwave:zwave.name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ttb-zwave2/zwave:zwave-generic.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="">
     </div>
 
     <div style="cursor: pointer; margin-bottom: 12px;" class="list accordion-header ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all" id="nset-advanced">
@@ -49,12 +49,11 @@
         },
         inputs: 1,
         outputs: 1,
-        align: 'right',
         icon: function () {
             return this.mark || "zwave.png";
         },
         label: function () {
-            return "[" + this.nodeid + "] " + (this.name || "Light Dimmer Switch");
+            return "[" + this.nodeid + "] " + (this.name || this.productname + " - " + this.classindexname);
         },
         oneditprepare: function () {
             var that = this;
@@ -68,14 +67,14 @@
                 if (checkIfOneIsReady(data)) {
                     productListOpt.length = 0;
                     indexListOpt.length = 0;
-                    productlist.prop('disabled', 'disabled');
+                    productlist.prop('disabled', 'disabled'); // remove this line to allow changing the zwave node
                     for (var i = 2; i < data.length; i++) {
                         if (data[i] !== null && data[i].manufacturer !== "" && data[i].product !== "") {
-                            if (that.productname === i + ": " + data[i].manufacturer + " - " + data[i].product)
+                            productListOpt[productListOpt.length] = new Option(i + ": " + data[i].manufacturer + " - " + data[i].product, i);
+                            if (that.productname === data[i].manufacturer + " - " + data[i].product)
                                 exist = true;
                         }
                     }
-                    productListOpt[productListOpt.length] = new Option(that.productname, that.nodeid);
                     var productSelected = productlist.val();
                     for (var j in data[productSelected].classes) {
                         if (data[productSelected].classes.hasOwnProperty(j) && commandclassToHide(j)) {
@@ -90,6 +89,23 @@
                             }
                         }
                     }
+                    productlist.change(function () {
+                        indexListOpt.length = 0;
+                        productSelected = productlist.val();
+                        for (var j in data[productSelected].classes) {
+                            if (data[productSelected].classes.hasOwnProperty(j) && commandclassToHide(j)) {
+                                for (var k in data[productSelected].classes[j]) {
+                                    if (data[productSelected].classes[j].hasOwnProperty(k)) {
+                                        indexListOpt[indexListOpt.length] = new Option(
+                                                data[productSelected].classes[j][k].label,
+                                                data[productSelected].classes[j][k].index
+                                        );
+                                        indexListOpt[indexListOpt.length - 1].setAttribute("commandclass", j);
+                                    }
+                                }
+                            }
+                        }
+                    });
                     if (that.productname !== '' && that.classindexname !== '') {
                         if (exist) {
                             productlist.val(that.nodeid).trigger("change");
@@ -123,9 +139,9 @@
                 }
             });
             $("#nset-advanced").click(function () {
-                var div = $("#nset-advanced"),
-                        form = $("#nset-advanced-form"),
-                        arrow = $("#nset-advanced-arrow");
+                var div = $("#nset-advanced");
+                var form = $("#nset-advanced-form");
+                var arrow = $("#nset-advanced-arrow");
                 if (form.css("display") == "none") {
                     form.css("display", "block");
                     div.css("margin-bottom", "0px");
@@ -148,7 +164,7 @@
             this.nodeid = productlist.val();
             this.commandclass = $('option:selected', indexlist).attr('commandclass');
             this.classindex = indexlist.val();
-            this.productname = productlist.find('option:selected').text();
+            // this.productname = productlist.find('option:selected').text();  // add/remove this line to allow changing the zwave node
             this.classindexname = indexlist.find('option:selected').text();
         }
     });

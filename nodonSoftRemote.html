@@ -1,7 +1,7 @@
 <script type="text/x-red" data-template-name="nodonSoftRemote">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ttb-zwave2/zwave:zwave.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]ttb-zwave2/zwave:zwave.name">
+        <input type="text" id="node-input-name" data-i18n="">
     </div>
     <div class="form-row">
         <label for="node-input-push"><i class="fa fa-bullseye"></i> <span data-i18n="ttb-zwave2/zwave:zwave.push"></span></label>
@@ -40,7 +40,7 @@
         },
         paletteLabel: 'ZWave device' ,
         label: function () {
-            return "[" + this.nodeid + "] " + (this.name || this.productname + " - " + this.classindexname);
+            return "[" + this.nodeid + "] " + (this.name || "Nodon SoftRemote"); // this.productname + " - " + this.classindexname is undefined
         },
         oneditprepare: function () {
             if(this.push === true) {
