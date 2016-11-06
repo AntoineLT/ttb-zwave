@@ -5,8 +5,6 @@
   "node-red": {
     "nodes": {
       "zwave": "zwave.js",
-      "zwave-in": "zwave-in.js",
-      "zwave-out": "zwave-out.js",
       "zwave-generic": "zwave-generic.js",
       "zwave-inclusion-node": "zwave-inclusion-node.js",
       "zwave-binary-switch": "zwave-binary-switch.js",
