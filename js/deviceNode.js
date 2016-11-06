@@ -67,7 +67,7 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
         productid = nodeinfo.productid.slice(2, nodeinfo.productid.length),
         productIDTotal = manufacturerid + "-" + producttype + "-" + productid;
 
-    var MQTTpayload = devices.checkDevices({
+    var node = devices.fillDevices({
             senderID: nodeid,
             nodeInfo: nodeinfo,
             productname: nodeinfo.manufacturer + " - " + nodeinfo.product
@@ -76,13 +76,15 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
         nodes,
         nodeid,
         zwave);
+		
 
-    if (mqtt !== null && MQTTpayload.typeNode) mqtt.publish({
-        payload: MQTTpayload,
-        qos: 0,
-        retain: false,
-        topic: "newdevice/zwave"
-    });
+    if (mqtt !== null && node.typeNode) 
+		mqtt.publish({
+			payload: node,
+			qos: 0,
+			retain: false,
+			topic: "newdevice/zwave"
+		});
 }
 
 module.exports = {

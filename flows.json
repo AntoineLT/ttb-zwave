@@ -330,8 +330,8 @@
         "topic": "newdevice/zwave",
         "qos": "2",
         "broker": "MQTT.Localhost",
-        "x": 110,
-        "y": 103,
+        "x": 103,
+        "y": 211.5,
         "wires": [
             [
                 "jsonConvZWave"
@@ -344,8 +344,8 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
-        "x": 270,
-        "y": 103,
+        "x": 280,
+        "y": 211.5,
         "wires": [
             [
                 "assert2ZWave"
@@ -361,8 +361,8 @@
         "func": "msg.techno         = msg.topic.replace(/newdevice\\//g, \"\");\nmsg.typeNode       = msg.payload.typeNode;\nmsg.senderID       = msg.payload.senderID;\nmsg.nodeInfo       = msg.payload.nodeInfo;\nmsg.productname    = msg.payload.productname;\nmsg.classindexname = msg.payload.classindexname;\nmsg.commandclass   = msg.payload.commandclass;\nmsg.classindex     = msg.payload.classindex;\n\nswitch(msg.typeNode) {\n    case \"zwave-binary-switch\":\n        msg.taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        msg.taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n    case \"nodonSoftRemote\":\n        msg.taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n    case \"zwave-binary-sensor\":\n    case \"aeotecMultiSensor\":\n        msg.taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\nmsg.service = msg.payload;\nmsg.payload = \"\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 321,
-        "y": 387,
+        "x": 326,
+        "y": 479.5,
         "wires": [
             [
                 "boxIP2ZWave"
@@ -375,8 +375,8 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
-        "x": 551,
-        "y": 387,
+        "x": 556,
+        "y": 479.5,
         "wires": [
             [
                 "specZWave"
@@ -393,8 +393,8 @@
         "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    name: msg.nodeInfo.product.slice(msg.nodeInfo.product.indexOf(\" \")+1, msg.nodeInfo.product.length),\n    id: msg.senderID + \"-ZWave\",\n    productname: msg.productname,\n    classindexname: msg.classindexname,\n    nodeid: msg.senderID,\n    commandclass: msg.commandclass,\n    classindex: msg.classindex,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.includes('remote') || msg.typeNode.includes('motion')|| msg.typeNode.includes('binary'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 761,
-        "y": 387,
+        "x": 766,
+        "y": 479.5,
         "wires": [
             []
         ]
@@ -408,8 +408,8 @@
         "func": "// ID du node dans Node-RED\nif(msg.payload.id===undefined) \n    return [{payload:\"ASSERT: msg.payload.id missing\"}, null];\n\n// ID du node dans ZWave\nif(msg.payload.nodeid===undefined) \n    return [{payload:\"ASSERT: msg.payload.nodeid missing\"}, null];\n\n// Nom de l'icône du node dans Node-RED\nif(msg.payload.mark===undefined) \n    return [{payload:\"ASSERT: msg.payload.mark missing\"}, null];\n    \nreturn [null,msg];",
         "outputs": "2",
         "noerr": 0,
-        "x": 950,
-        "y": 200,
+        "x": 955,
+        "y": 292.5,
         "wires": [
             [
                 "debug3ZWave"
@@ -429,8 +429,8 @@
         "active": true,
         "console": false,
         "complete": "payload",
-        "x": 1130,
-        "y": 160,
+        "x": 1135,
+        "y": 252.5,
         "wires": []
     },
     {
@@ -442,8 +442,8 @@
         "active": false,
         "console": "false",
         "complete": "payload",
-        "x": 1130,
-        "y": 240,
+        "x": 1135,
+        "y": 332.5,
         "wires": []
     },
     {
@@ -452,8 +452,8 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
-        "x": 1140,
-        "y": 200,
+        "x": 1145,
+        "y": 292.5,
         "wires": []
     },
     {
@@ -463,8 +463,8 @@
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Error",
         "info": " ",
-        "x": 1110,
-        "y": 120,
+        "x": 1115,
+        "y": 212.5,
         "wires": []
     },
     {
@@ -484,8 +484,8 @@
             }
         ],
         "currentLanguage": "en-US",
-        "x": 80,
-        "y": 63,
+        "x": 84.49993896484375,
+        "y": 52.75001525878906,
         "wires": []
     },
     {
@@ -594,8 +594,8 @@
         "func": "var ip  = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nvar taglet;\nswitch(msg.service.typeNode) {\n    case \"zwave-binary-switch\":\n        taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n    case \"nodonSoftRemote\":\n        taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n    case \"zwave-binary-sensor\":\n    case \"aeotecMultiSensor\":\n        taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\n\nif(taglet)\n    msg.service.extra.skale = \"http://\"+ip+\"/taglets/com.daw.\"+taglet+\".taglet\";\nelse\n    msg.service.extra.skale = \"not available\";\n\nmsg.payload = msg.service;\nmsg.service = undefined;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 735,
-        "y": 303,
+        "x": 740,
+        "y": 395.5,
         "wires": [
             [
                 "Assert3ZWave"
@@ -611,8 +611,8 @@
         "func": "var techno = msg.topic.replace(/newdevice\\//g, \"\");\n\nmsg.service = {\n    id: msg.payload.senderID + \"-ZWave\",\n    name: \"\",\n    productname: msg.payload.productname,\n    classindexname: msg.payload.classindexname,\n    nodeid: msg.payload.senderID,\n    typeNode: msg.payload.typeNode,\n    commandclass: msg.payload.commandclass,\n    classindex: msg.payload.classindex,\n    nodeInfo: msg.payload.nodeInfo,\n    mark: msg.payload.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+techno+\"/\"+msg.payload.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+techno+\"/\"+msg.payload.senderID+'/out',\n    \tDeviceType: msg.payload.nodeInfo.type,\n    },\n    wires: [[]]\n};\n\n// !!! always provide a statusIn even if not used?\nif(msg.payload.typeNode.includes('remote') || msg.payload.typeNode.includes('motion')|| msg.payload.typeNode.includes('binary'))\n    msg.service.extra.StatusIn = undefined;\n    \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 363,
-        "y": 302,
+        "x": 368,
+        "y": 394.5,
         "wires": [
             [
                 "52def1b3.bf7fa8"
@@ -625,8 +625,8 @@
         "z": "ttb-zwave-tab",
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "",
-        "x": 552,
-        "y": 302,
+        "x": 557,
+        "y": 394.5,
         "wires": [
             [
                 "b14922d6.95bca"
@@ -643,8 +643,8 @@
         "active": true,
         "console": false,
         "complete": "payload",
-        "x": 333,
-        "y": 209,
+        "x": 338,
+        "y": 301.5,
         "wires": []
     },
     {
@@ -654,8 +654,8 @@
         "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
         "name": "Error",
         "info": " ",
-        "x": 313,
-        "y": 169,
+        "x": 318,
+        "y": 261.5,
         "wires": []
     },
     {
@@ -667,8 +667,8 @@
         "func": "if(msg.payload.senderID===undefined) return [{payload:\"ASSERT: msg.payload.senderID missing\"}, null];\n\nreturn [null,msg];",
         "outputs": "2",
         "noerr": 0,
-        "x": 139,
-        "y": 215,
+        "x": 144,
+        "y": 307.5,
         "wires": [
             [
                 "debug2ZWave"
@@ -721,8 +721,8 @@
             }
         ],
         "currentLanguage": "en-US",
-        "x": 307.5,
-        "y": 351,
+        "x": 312.5,
+        "y": 443.5,
         "wires": []
     },
     {
@@ -804,8 +804,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 136,
-        "y": 24,
+        "x": 141,
+        "y": 116.5,
         "wires": [
             [
                 "jsonConvZWave"
@@ -824,8 +824,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 381.5,
-        "y": 39,
+        "x": 191.5,
+        "y": 152.5,
         "wires": [
             [
                 "jsonConvZWave"
