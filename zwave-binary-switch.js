@@ -74,13 +74,13 @@ function subscription(RED, node, zwave) {
 				msg.intensity = msg.payload;
 			}
 			
-			if(msg.payload === true) {
+			if(msg.payload === true || msg.payload==1 || msg.payload=="1" ) {
 				msg.payload = 1;
 				msg.intent = 1;
 				msg.message = "Sensor On";
 			}
 			
-			if(msg.payload === false) {
+			if(msg.payload === false || msg.payload==0 || msg.payload=="0") {
 				msg.payload = 0;
 				msg.intent = 0;
 				msg.message = "Sensor Off";
