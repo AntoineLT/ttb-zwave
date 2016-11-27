@@ -21,6 +21,7 @@ function fillDevices(node, productIDTotal, nodes, nodeid, zwave) {
         case "010f-0600-1000": // FIBARO System, FGWPE Wall Plug
         case "0165-0001-0001": // NodOn, ASP-3-1-00 Smart Plug
         case "0060-0004-0001": // AN157 Plug-in switch
+        case "0060-0003-0003": // Everspring AD147 Plug-in Dimmer Module
             (node.senderID !== undefined)? node.typeNode = "zwave-binary-switch" : node.type = "zwave-binary-switch";
             node.commandclass = "37";
             node.classindex = "0";
@@ -69,8 +70,7 @@ function fillDevices(node, productIDTotal, nodes, nodeid, zwave) {
             node.classindex = Object.keys(nodes[nodeid].classes[node.commandclass])[0];
             break;
     }
-    if (node.commandclass !== undefined && node.classindex !== undefined)
-        node.classindexname = nodes[nodeid].classes[node.commandclass][node.classindex].label;
+	
 
     return node;
 }

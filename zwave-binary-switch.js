@@ -130,8 +130,8 @@ function subscription(RED, node, zwave) {
 function binarySwitchFunc(node, zwave, msg) {
 	var handler = require('./js/handler');
 	if (handler.nodes[node.config.nodeid].classes[37] !== undefined) {
-		var currentValue = handler.nodes[node.config.nodeid].classes[37][0].value;
 		if (msg.status && msg.status === "toggle") {
+			var currentValue = handler.nodes[node.config.nodeid].classes[37][0].value;
 			if (currentValue === false) {
 				zwave.setValue(node.config.nodeid, 37, 1, 0, true);
 			} else if (currentValue === true) {
@@ -151,4 +151,20 @@ function binarySwitchFunc(node, zwave, msg) {
 			}
 		}
 	}
+	
+	if (handler.nodes[node.config.nodeid].classes[38] !== undefined) {
+			if (msg.intent || msg.intent == 0) {
+				switch (msg.intent) {
+					case 0:
+						zwave.setValue(node.config.nodeid, 38, 1, 0, false);
+						break;
+
+					case 1:
+						zwave.setValue(node.config.nodeid, 38, 1, 0, true);
+						break;
+				}
+			}	
+	}
+	
+	
 }

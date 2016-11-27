@@ -77,6 +77,9 @@ function newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo) {
         nodeid,
         zwave);
 		
+    if (node.commandclass !== undefined && node.classindex !== undefined && nodes[nodeid].classes[node.commandclass] !== undefined) {
+        node.classindexname = nodes[nodeid].classes[node.commandclass][node.classindex].label;
+	}
 
     if (mqtt !== null && node.typeNode) 
 		mqtt.publish({

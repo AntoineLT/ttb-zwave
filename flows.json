@@ -353,53 +353,6 @@
         ]
     },
     {
-        "id": "confInfZWave",
-        "type": "function",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "Config Informations",
-        "func": "msg.techno         = msg.topic.replace(/newdevice\\//g, \"\");\nmsg.typeNode       = msg.payload.typeNode;\nmsg.senderID       = msg.payload.senderID;\nmsg.nodeInfo       = msg.payload.nodeInfo;\nmsg.productname    = msg.payload.productname;\nmsg.classindexname = msg.payload.classindexname;\nmsg.commandclass   = msg.payload.commandclass;\nmsg.classindex     = msg.payload.classindex;\n\nswitch(msg.typeNode) {\n    case \"zwave-binary-switch\":\n        msg.taglet = \"switch\";\n        break;\n        \n    case \"zwave-light-dimmer-switch\":\n        msg.taglet = \"light\";\n        break;\n        \n    case \"zwave-remote-control-multi-purpose\":\n    case \"nodonSoftRemote\":\n        msg.taglet = \"remote\";\n        break;\n        \n    case \"zwave-motion-sensor\":\n    case \"zwave-binary-sensor\":\n    case \"aeotecMultiSensor\":\n        msg.taglet = \"motion\";\n        break;\n        \n    default:\n        break;\n}\nmsg.service = msg.payload;\nmsg.payload = \"\";\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 326,
-        "y": 479.5,
-        "wires": [
-            [
-                "boxIP2ZWave"
-            ]
-        ]
-    },
-    {
-        "id": "boxIP2ZWave",
-        "type": "boxip",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "",
-        "x": 556,
-        "y": 479.5,
-        "wires": [
-            [
-                "specZWave"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "specZWave",
-        "type": "function",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "Specific parameters",
-        "func": "msg.payload = msg.payload.replace(/\\r?\\n|\\r/g, \"\");\n\nmsg.service = {\n    name: msg.nodeInfo.product.slice(msg.nodeInfo.product.indexOf(\" \")+1, msg.nodeInfo.product.length),\n    id: msg.senderID + \"-ZWave\",\n    productname: msg.productname,\n    classindexname: msg.classindexname,\n    nodeid: msg.senderID,\n    commandclass: msg.commandclass,\n    classindex: msg.classindex,\n    mark: msg.nodeInfo.manufacturer.toLowerCase().replace(/ /g, '') + \".png\",\n    extra: {\n        StatusIn:  \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/in',\n    \tStatusOut: \"coldfacts/\"+msg.techno+\"/\"+msg.senderID+'/out',\n    \tDeviceType: msg.nodeInfo.type,\n    \tskale: \"http://\"+msg.payload+\"/taglets/com.daw.\"+msg.taglet+\".taglet\"\n    },\n    wires: [[]]\n};\n\nif(msg.typeNode.includes('remote') || msg.typeNode.includes('motion')|| msg.typeNode.includes('binary'))\n    msg.service.extra.StatusIn = undefined;\n    \nmsg.payload = msg.service;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 766,
-        "y": 479.5,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "Assert3ZWave",
         "type": "function",
         "z": "ttb-zwave-tab",
@@ -702,27 +655,6 @@
         "complete": "payload",
         "x": 1616.6666259765625,
         "y": 374.9999599456787,
-        "wires": []
-    },
-    {
-        "id": "1eed4e0a.90c5a2",
-        "type": "info",
-        "z": "ttb-zwave-tab",
-        "origin": "/root/userdir/node_modules/ttb-zwave2/flows.json",
-        "name": "previous version",
-        "info": "",
-        "icon": "comment.png",
-        "langs": [
-            {
-                "key": "en-US",
-                "title": "previous version",
-                "body": "",
-                "isDefault": true
-            }
-        ],
-        "currentLanguage": "en-US",
-        "x": 312.5,
-        "y": 443.5,
         "wires": []
     },
     {
