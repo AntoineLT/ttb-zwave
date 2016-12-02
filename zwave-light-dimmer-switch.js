@@ -122,7 +122,6 @@ function SwitchFunc(node, zwave, msg) {
 			}
 		} else {
 			var intent = (typeof msg.payload !== 'object' && (msg.intent || msg.intent == 0)) ? msg.intent : msg.payload.intent;
-			var intensity = parseInt((typeof msg.payload !== 'object') ? msg.intensity : msg.payload.intensity);
 			if (intent || intent == 0) {
 				switch (intent) {
 					case 0: // close
@@ -149,6 +148,7 @@ function SwitchFunc(node, zwave, msg) {
 						break;
 				}
 			}
+			var intensity = parseInt((typeof msg.payload !== 'object') ? msg.intensity : msg.payload.intensity);
 			if (intensity || intensity === 0) {
 				if (intensity === 100) intensity = 99;
 				zwave.setValue(node.config.nodeid, 38, 1, 0, intensity);
