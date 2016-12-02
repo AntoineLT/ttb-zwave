@@ -113,8 +113,8 @@ function SwitchFunc(node, zwave, msg) {
 	var handler = require('./js/handler');
 
 	if (handler.nodes[node.config.nodeid].classes[38] !== undefined) {
-		var currentValue = handler.nodes[node.config.nodeid].classes[38][0].value;
 		if (msg.status && msg.status === "toggle") {
+			var currentValue = handler.nodes[node.config.nodeid].classes[38][0].value;
 			if (currentValue <= 50) {
 				zwave.setValue(node.config.nodeid, 38, 1, 0, 99);
 			} else if (currentValue > 50) {
