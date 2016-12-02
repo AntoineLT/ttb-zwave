@@ -33,7 +33,7 @@ module.exports = function (RED) {
 
 		var node = this;
 		this.on('input', function (msg) {
-			lightDimmerSwitchFunc(node, zwave, msg);
+			SwitchFunc(node, zwave, msg);
 		});
 	}
 
@@ -65,6 +65,7 @@ function subscription(RED, node, zwave) {
 				msg.payload = JSON.parse(payload);
 			} catch (e) {
 				msg.payload = payload;
+				console.log("#Exception '" + e + "' in zwave-light-dimmer-switch/subscription for Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
 			}
 			(msg.payload >= 50) ? msg.intent = 1 : msg.intent = 0;
 			if (node.mqtt !== null) node.mqtt.publish({
@@ -89,9 +90,10 @@ function subscription(RED, node, zwave) {
 			try {
 				msg = JSON.parse(payload);
 			} catch (e) {
+				console.log("#Exception '" + e + "' in zwave-light-dimmer-switch/subscription for Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
 				msg.payload = payload;
 			}
-			lightDimmerSwitchFunc(node, zwave, msg);
+			SwitchFunc(node, zwave, msg);
 		}, node.id);
 	}
 	else {
@@ -107,7 +109,7 @@ function subscription(RED, node, zwave) {
 	});
 }
 
-function lightDimmerSwitchFunc(node, zwave, msg) {
+function SwitchFunc(node, zwave, msg) {
 	var handler = require('./js/handler');
 
 	if (handler.nodes[node.config.nodeid].classes[38] !== undefined) {

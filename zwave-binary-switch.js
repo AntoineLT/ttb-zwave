@@ -33,7 +33,7 @@ module.exports = function (RED) {
 
 		var node = this;
 		this.on('input', function (msg) {
-			binarySwitchFunc(node, zwave, msg);
+			SwitchFunc(node, zwave, msg);
 		});
 	}
 
@@ -111,7 +111,7 @@ function subscription(RED, node, zwave) {
 				console.log("#Exception '" + e + "' in zwave-binary-switch/subscription for Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
 				msg.payload = payload;
 			}
-			binarySwitchFunc(node, zwave, msg);
+			SwitchFunc(node, zwave, msg);
 		}, node.id);
 	}
 	else {
@@ -127,8 +127,9 @@ function subscription(RED, node, zwave) {
 	});
 }
 
-function binarySwitchFunc(node, zwave, msg) {
+function SwitchFunc(node, zwave, msg) {
 	var handler = require('./js/handler');
+
 	if (handler.nodes[node.config.nodeid].classes[37] !== undefined) {
 		if (msg.status && msg.status === "toggle") {
 			var currentValue = handler.nodes[node.config.nodeid].classes[37][0].value;
@@ -140,11 +141,11 @@ function binarySwitchFunc(node, zwave, msg) {
 		} else {
 			if (msg.intent || msg.intent == 0) {
 				switch (msg.intent) {
-					case 0:
+					case 0: // close
 						zwave.setValue(node.config.nodeid, 37, 1, 0, false);
 						break;
 
-					case 1:
+					case 1: // open
 						zwave.setValue(node.config.nodeid, 37, 1, 0, true);
 						break;
 				}
@@ -155,11 +156,11 @@ function binarySwitchFunc(node, zwave, msg) {
 	if (handler.nodes[node.config.nodeid].classes[38] !== undefined) {
 			if (msg.intent || msg.intent == 0) {
 				switch (msg.intent) {
-					case 0:
+					case 0: // close
 						zwave.setValue(node.config.nodeid, 38, 1, 0, false);
 						break;
 
-					case 1:
+					case 1: // open
 						zwave.setValue(node.config.nodeid, 38, 1, 0, true);
 						break;
 				}
