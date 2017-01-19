@@ -1,6 +1,6 @@
 {
   "name": "ttb-zwave2",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "A Zwave Node-RED package for TheThingBox and TimeSquAir.",
   "node-red": {
     "nodes": {
@@ -16,7 +16,7 @@
   "installation-duration": 420,
   "dependencies": {
     "is-utf8": "^0.2.1",
-    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git"
+    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git#5f87a7fcd70c4246c4f9ec6afb4082f102e32989"
   },
   "keywords": [
     "thingbox",
