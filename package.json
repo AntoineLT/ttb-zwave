@@ -16,7 +16,7 @@
   "installation-duration": 420,
   "dependencies": {
     "is-utf8": "^0.2.1",
-    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git#5f87a7fcd70c4246c4f9ec6afb4082f102e32989"
+    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git#fa90b2e78732f556f78356be040a45f680479a79"
   },
   "keywords": [
     "thingbox",
