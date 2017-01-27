@@ -1,32 +1,12 @@
 'use strict';
 
 module.exports = function (RED) {
-	var homeDir = process.env.NODE_RED_HOME;
 
-	var path = require('path'),
-		mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
-
-	var flows = require('./js/flows');
 
 	function main(config) {
 		RED.nodes.createNode(this, config);
 		this.config = config;
 
-		this.brokerConn = RED.nodes.getNode(config.broker);
-		if (this.brokerConn === undefined || this.brokerConn === null) {
-			this.error(RED._("node-red:mqtt.errors.missing-config"));
-			return;
-		}
-
-		var zwaveTopic = flows.checkZwaveNodeTopic();
-		this.topic = zwaveTopic + '/' + config.nodeid + '/scene';
-
-		// console.log("Node " + config.nodeid + " subscribed to '" + this.topic + "'");
-		
-		this.mqtt = mqttCP.get(
-			this.brokerConn.broker,
-			this.brokerConn.port
-		);
 
 		subscription(RED, this);
 	}
@@ -35,31 +15,41 @@ module.exports = function (RED) {
 };
 
 function subscription(RED, node) {
-	var isUtf8 = require('is-utf8');
 
-	var msg = {};
-
-	if (node.topic) {
-		node.brokerConn.register(node);
-		node.brokerConn.subscribe(node.topic, 2, function (topic, payload, packet) {
-			if (isUtf8(payload)) {
-				payload = payload.toString();
-			}
-			try {
-				msg.payload = JSON.parse(payload);
-			} catch (e) {
-				msg.payload = payload;
-			}
-
-			softRemote(node, msg.payload);
-		}, node.id);
+	node.brokerConn = RED.nodes.getNode(node.config.broker);
+	if (node.brokerConn === undefined || node.brokerConn === null) {
+		node.error(RED._("node-red:mqtt.errors.missing-config"));
+		return;
 	}
-	else {
-		node.error(RED._("node-red:mqtt.errors.not-defined"));
-	}
+
+	var flows = require('./js/flows'),
+		zwaveTopic = flows.checkZwaveNodeTopic(),
+		topicpub = zwaveTopic + '/' + node.config.nodeid + '/scene';
+
+	node.brokerConn.register(node);
+	node.brokerConn.subscribe(topicpub, 2, function (topic, payload, packet) {
+
+		var msg = {}; // !!! unused
+		var isUtf8 = require('is-utf8');
+		if (isUtf8(payload)) {
+			payload = payload.toString();
+			}
+		try {
+			msg.payload = JSON.parse(payload);
+		} catch (e) {
+			msg.payload = payload;
+		}
+
+		publishStatusOut(node, msg.payload /* sceneID ??? */);
+		
+		node.send(msg);
+			
+		}
+		, node.id);
+	
 	node.on('close', function (done) {
 		if (node.brokerConn) {
-			node.brokerConn.unsubscribe(node.topic, node.id);
+			node.brokerConn.unsubscribe(topicpub, node.id);
 			node.brokerConn.deregister(node, done);
 		}
 	});
@@ -68,16 +58,26 @@ function subscription(RED, node) {
 var timer = undefined,
     count = 0;
 
-function softRemote(node, sceneID) {
+function publishStatusOut(node, sceneID) {
 	var topic = require('./js/flows').checkZwaveNodeTopic();
+	
 	var msgMQTT = {
 			qos: 0,
 			retain: true,
 			topic: topic + '/' + node.config.nodeid + '/out'
-		},
-		msg = {
+		};
+		
+	var msg = {
 			payload: sceneID
 		};
+
+	var path = require('path'),
+		mqttCP = require(path.resolve(process.env.NODE_RED_HOME, './nodes/core/io/lib/mqttConnectionPool.js')),
+		mqtt = mqttCP.get(
+			node.brokerConn.broker,
+			node.brokerConn.port
+			);
+
 	switch (sceneID) {
 		case 10:
 			msg.intent = 1; // close
@@ -100,7 +100,7 @@ function softRemote(node, sceneID) {
 			clearTimeout(timer);
 			count = 0;
 			break;
-
+/*
 		case 22:
 			if (node.config.push === true) {
 				count++;
@@ -111,9 +111,9 @@ function softRemote(node, sceneID) {
 					'intent': msg.intent
 				};
 				timer = setTimeout(function () {
-					if (node.mqtt != null)  node.mqtt.publish(msgMQTT);
-					node.send(msg);
-					softRemote(node, sceneID);
+					if (mqtt != null)  
+						mqtt.publish(msgMQTT);
+					publishStatusOut(node, sceneID);
 				}, 1000);
 			}
 			break;
@@ -128,13 +128,12 @@ function softRemote(node, sceneID) {
 					'intent': msg.intent
 				};
 				timer = setTimeout(function () {
-					if (node.mqtt != null) node.mqtt.publish(msgMQTT);
-					node.send(msg);
-					softRemote(node, sceneID);
+					if (mqtt != null) mqtt.publish(msgMQTT);
+					publishStatusOut(node, sceneID);
 				}, 1000);
 			}
 			break;
-
+*/
 		default:
 			break;
 	}
@@ -143,7 +142,10 @@ function softRemote(node, sceneID) {
 		'payload': msg.payload,
 		'intent': msg.intent
 	};
-	if (node.mqtt != null)  node.mqtt.publish(msgMQTT);
-	node.send(msg);
+	
+	if (mqtt != null)  
+		mqtt.publish(msgMQTT);
+	
+
 }
 

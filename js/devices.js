@@ -2,7 +2,7 @@
 
 // productIDTotal refers to '../../node_modules/openzwave-shared/deps/open-zwave/config/manufacturer_specific.xml'
 
-function fillDevices(node, productIDTotal, nodes, nodeid, zwave) {
+function fillDevices(node, productIDTotal, nodes, zwave) {
     switch (productIDTotal) {
         case "0086-0003-0062": // Aeotec, ZW098 LED Bulb
         case "0086-0103-0062": // Aeotec, ZW098 LED Bulb
@@ -15,10 +15,11 @@ function fillDevices(node, productIDTotal, nodes, nodeid, zwave) {
 
         case "0165-0002-0002": // NodOn, CRC-3-6-0x Soft Remote
             (node.senderID !== undefined)? node.typeNode = "nodonSoftRemote" : node.type = "nodonSoftRemote";
-            zwave.setConfigParam(nodeid, 3, 1, 1); // Enable scene mode for the SoftRemote
+            zwave.setConfigParam(node.senderID, 3, 1, 1); // Enable scene mode for the SoftRemote
             break;
 
         case "010f-0600-1000": // FIBARO System, FGWPE Wall Plug
+        case "010f-0f01-1000": // FIBARO Button
         case "0165-0001-0001": // NodOn, ASP-3-1-00 Smart Plug
         case "0060-0004-0001": // AN157 Plug-in switch
         case "0060-0003-0003": // Everspring AD147 Plug-in Dimmer Module
@@ -58,21 +59,19 @@ function fillDevices(node, productIDTotal, nodes, nodeid, zwave) {
 //            (node.senderID !== undefined)? node.typeNode = "aeotecMultiSensor" : node.type = "aeotecMultiSensor";
             node.commandclass = "48";
             node.classindex = "0";
-            zwave.setConfigParam(nodeid, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
-            zwave.setConfigParam(nodeid, 4, 1, 1);  // Enable PIR sensor
-            zwave.setConfigParam(nodeid, 5, 1, 1);  // Send PIR detection on binary sensor command class
+            zwave.setConfigParam(node.senderID, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
+            zwave.setConfigParam(node.senderID, 4, 1, 1);  // Enable PIR sensor
+            zwave.setConfigParam(node.senderID, 5, 1, 1);  // Send PIR detection on binary sensor command class
             break;
 
         default:
-			console.log("Node " + nodeid + " handled as generic. (productID:" +productIDTotal + ")");
+			console.log("Node " + node.senderID + " handled as generic. (productID:" +productIDTotal + ")");
             (node.senderID !== undefined)? node.typeNode = "zwave-generic" : node.type = "zwave-generic";
-            node.commandclass = Object.keys(nodes[nodeid].classes)[0];
-            node.classindex = Object.keys(nodes[nodeid].classes[node.commandclass])[0];
+            node.commandclass = Object.keys(nodes[node.senderID].classes)[0]; // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/keys
+            node.classindex = Object.keys(nodes[node.senderID].classes[node.commandclass])[0];
             break;
     }
 	
-
-    return node;
 }
 
 module.exports = {

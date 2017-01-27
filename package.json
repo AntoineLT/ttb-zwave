@@ -1,6 +1,6 @@
 {
   "name": "ttb-zwave2",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "A Zwave Node-RED package for TheThingBox and TimeSquAir.",
   "node-red": {
     "nodes": {
@@ -32,7 +32,38 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TheThingBox/ttb-zwave.git"
+    "url": "git+https://github.com/TheThingBox/ttb-zwave.git"
   },
-  "license": "WTFPL"
+  "license": "WTFPL",
+  "gitHead": "e26d38ed0db1543b6cac5ac58158fb042e7738bb",
+  "bugs": {
+    "url": "https://github.com/TheThingBox/ttb-zwave/issues"
+  },
+  "homepage": "https://github.com/TheThingBox/ttb-zwave#readme",
+  "_id": "ttb-zwave2@1.4.0",
+  "scripts": {},
+  "_shasum": "da3542b14f35e746ddc6fef738316f82e955c7e7",
+  "_from": "ttb-zwave2@latest",
+  "_npmVersion": "2.15.8",
+  "_nodeVersion": "7.3.0",
+  "_npmUser": {
+    "name": "thethingbox",
+    "email": "thethingbox@gmail.com"
+  },
+  "dist": {
+    "shasum": "da3542b14f35e746ddc6fef738316f82e955c7e7",
+    "tarball": "https://registry.npmjs.org/ttb-zwave2/-/ttb-zwave2-1.4.0.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "thethingbox",
+      "email": "thethingbox@gmail.com"
+    }
+  ],
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/ttb-zwave2-1.4.0.tgz_1484919061095_0.6816420662216842"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/ttb-zwave2/-/ttb-zwave2-1.4.0.tgz"
 }

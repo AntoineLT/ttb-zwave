@@ -16,7 +16,7 @@ Install
 If you want to install it : 
 
 * Use the menu "import / node" and type "ttb-zwave2" in the dialog box. 
-* Wait for the install (about 10 minutes!)
+* Wait for the install (about 10 minutes! on Pi3, desesperately long on Pi2...)
 * Then reboot.
 
 Use
@@ -31,7 +31,7 @@ The documentation is [here](http://thethingbox.io/docs/ZwaveUI.html).
 
 Credits
 -------
-Uses openzwave.
+Uses [openzwave](https://github.com/OpenZWave/open-zwave).
 
 
 Complains

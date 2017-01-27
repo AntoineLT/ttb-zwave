@@ -1,10 +1,9 @@
 'use strict';
 
 module.exports = function (RED) {
-    var homeDir = process.env.NODE_RED_HOME;
 
     var path = require('path'),
-        mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
+        mqttCP = require(path.resolve(process.env.NODE_RED_HOME, './nodes/core/io/lib/mqttConnectionPool.js'));
 
     var handler = require('./js/handler'),
         zwave = require('./js/openZWave').zwave;

@@ -21,7 +21,8 @@ module.exports = function (RED) {
 		var zwaveTopic = flows.checkZwaveNodeTopic();
 		this.topic = zwaveTopic + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
 		this.topicIn = zwaveTopic + '/' + config.nodeid + '/in';
-
+		// console.log("Node " + config.nodeid + " subscribed to '" + this.topic + "'");
+		
 		this.mqtt = mqttCP.get(
 			this.brokerConn.broker,
 			this.brokerConn.port
