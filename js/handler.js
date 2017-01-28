@@ -164,7 +164,7 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
 	nodes[nodeid].classes[comclass][value.index] = value;
 
 	if (mqtt != null) mqtt.publish({
-		'qos': 1,
+		'qos': 0,
 		'retain': false,
 		'topic': node.topic + '/' + nodeid + '/' + comclass + '/' + value.index,
 		'payload': value.value
@@ -182,7 +182,7 @@ function valueChanged(node, mqtt, nodeid, comclass, value) {
 		nodes[nodeid].classes[comclass][value.index] = value;
 
 		if (mqtt != null) mqtt.publish({
-			'qos': 1,
+			'qos': 0,
 			'retain': false,
 			'topic': node.topic + '/' + nodeid + '/' + comclass + '/' + value.index,
 			'payload': value.value
@@ -205,7 +205,7 @@ function sceneEvent(node, mqtt, nodeid, sceneid) {
 	nodes[nodeid].scene = sceneid;
 
 	if (mqtt != null) mqtt.publish({
-		'qos': 1,
+		'qos': 0,
 		'retain': false,
 		'topic': node.topic + '/' + nodeid + '/scene',
 		'payload': sceneid
