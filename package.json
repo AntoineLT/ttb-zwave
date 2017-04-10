@@ -1,6 +1,6 @@
 {
-  "name": "ttb-zwave2",
-  "version": "1.4.1",
+  "name": "ttb-zwave3",
+  "version": "1.0.0",
   "description": "A Zwave Node-RED package for TheThingBox and TimeSquAir.",
   "node-red": {
     "nodes": {
@@ -9,14 +9,14 @@
       "zwave-inclusion-node": "zwave-inclusion-node.js",
       "zwave-binary-switch": "zwave-binary-switch.js",
       "zwave-light-dimmer-switch": "zwave-light-dimmer-switch.js",
-      "zwave-remote-control-multi-purpose": "zwave-remote-control-multi-purpose.js",
       "nodonSoftRemote": "nodonSoftRemote.js"
     }
   },
   "installation-duration": 420,
   "dependencies": {
     "is-utf8": "^0.2.1",
-    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git#016be321dc37a4bf2cd71cfa905578e64907bd09"
+    "mqtt": "2.2.1",
+    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git"
   },
   "keywords": [
     "thingbox",
@@ -40,9 +40,9 @@
     "url": "https://github.com/TheThingBox/ttb-zwave/issues"
   },
   "homepage": "https://github.com/TheThingBox/ttb-zwave#readme",
-  "_id": "ttb-zwave2@1.4.0",
+  "_id": "ttb-zwave2@1.4.2",
   "scripts": {},
-  "_shasum": "da3542b14f35e746ddc6fef738316f82e955c7e7",
+  "_shasum": "466bf71ef7aa193c797c8ce7078b387e51a4c26d",
   "_from": "ttb-zwave2@latest",
   "_npmVersion": "2.15.8",
   "_nodeVersion": "7.3.0",
@@ -51,8 +51,8 @@
     "email": "thethingbox@gmail.com"
   },
   "dist": {
-    "shasum": "da3542b14f35e746ddc6fef738316f82e955c7e7",
-    "tarball": "https://registry.npmjs.org/ttb-zwave2/-/ttb-zwave2-1.4.0.tgz"
+    "shasum": "466bf71ef7aa193c797c8ce7078b387e51a4c26d",
+    "tarball": "https://registry.npmjs.org/ttb-zwave2/-/ttb-zwave2-1.4.2.tgz"
   },
   "maintainers": [
     {
@@ -62,8 +62,8 @@
   ],
   "_npmOperationalInternal": {
     "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/ttb-zwave2-1.4.0.tgz_1484919061095_0.6816420662216842"
+    "tmp": "tmp/ttb-zwave2-1.4.2.tgz_1487175305119_0.19612689688801765"
   },
   "directories": {},
-  "_resolved": "https://registry.npmjs.org/ttb-zwave2/-/ttb-zwave2-1.4.0.tgz"
+  "_resolved": "https://registry.npmjs.org/ttb-zwave2/-/ttb-zwave2-1.4.2.tgz"
 }

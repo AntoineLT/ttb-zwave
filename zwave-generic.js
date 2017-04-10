@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports = function (RED) {
+	
 
-	function main(config) {
+	function main(config) { // from MQTTInNode
 		RED.nodes.createNode(this, config);
 		this.config = config;
 
@@ -22,6 +23,7 @@ module.exports = function (RED) {
 
 function subscription(RED, node) {
 
+
 	var brokerConn = RED.nodes.getNode(node.config.broker);
 	if (brokerConn === undefined || brokerConn === null) {
 		node.error(RED._("node-red:mqtt.errors.missing-config"));
@@ -29,18 +31,17 @@ function subscription(RED, node) {
 		return;
 	}
 
-	var flows = require('./js/flows'),
-		zwaveTopic = flows.checkZwaveNodeTopic(),
-		topicpub = zwaveTopic + '/' + node.config.nodeid + '/' + node.config.commandclass + '/' + node.config.classindex;
+	var isUtf8 = require('is-utf8');
+	var flows = require('./js/flows');
+	
+	var zwaveTopic = flows.checkZwaveNodeTopic();
+	var topicpub = zwaveTopic + '/' + node.config.nodeid + '/' + node.config.commandclass + '/' + node.config.classindex;
+	//console.log("zwave-generic.js: topicpub " + topicpub);
 
 	brokerConn.register(node);
 	brokerConn.subscribe(topicpub, 2, function (topic, payload, packet) {
-		
+		if (isUtf8(payload)) { payload = payload.toString(); }
 		var msg = {};
-		var isUtf8 = require('is-utf8');
-		if (isUtf8(payload)) {
-			payload = payload.toString();
-			}
 		try {
 			msg.payload = JSON.parse(payload);
 		} catch (e) {
@@ -64,10 +65,10 @@ function subscription(RED, node) {
 			msg.intent = 0;
 			msg.message = "Sensor Off";
 		}
-		
-		var path = require('path'),
-			mqttCP = require(path.resolve(process.env.NODE_RED_HOME, './nodes/core/io/lib/mqttConnectionPool.js')),
-			mqtt = mqttCP.get(
+		/*
+		var path = require('path');
+		var mqttCP = require(path.resolve(process.env.NODE_RED_HOME, './nodes/core/io/lib/mqttConnectionPool.js'));
+		var mqtt = mqttCP.get(
 				brokerConn.broker,
 				brokerConn.port
 				);
@@ -78,6 +79,7 @@ function subscription(RED, node) {
 			'retain': true,
 			'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
 		});
+		*/
 		node.send(msg);
 	}
 	, node.id);

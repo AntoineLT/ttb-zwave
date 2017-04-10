@@ -2,121 +2,104 @@
 
 module.exports = function (RED) {
 
-    var path = require('path'),
-        mqttCP = require(path.resolve(process.env.NODE_RED_HOME, './nodes/core/io/lib/mqttConnectionPool.js'));
+	var path = require('path');
+	var mqtt = require("mqtt"); // https://www.npmjs.com/package/mqtt
 
-    var handler = require('./js/handler'),
-        zwave = require('./js/openZWave').zwave;
 
-    var mqtt = null,
-        client = false,
-        zwaveConnected = false,
-        mqttConnected = false;
+	var handler = require('./js/handler');
+	var zwave = require('./js/openZWave').zwave;
 
-    function zwaveController(config) {
-        RED.nodes.createNode(this, config);
-        this.topic = config.topic;
-        this.broker = config.broker;
-        this.brokerConfig = RED.nodes.getNode(this.broker);
-        var node = this;
-        node.status({
-            fill: 'grey',
-            shape: 'dot',
-            text: 'node-red:common.status.not-connected'
-        });
-        if (typeof this.brokerConfig != 'undefined') {
-            if (!mqtt) {
-                mqtt = mqttCP.get(
-                    node.brokerConfig.broker,
-                    node.brokerConfig.port
-                );
-                mqtt.on('connectionlost', function () {
-                    node.warn('Connection to MQTT lost');
-                });
-                mqtt.on('connect', function () {
-                    node.log('Connection to MQTT established');
-                });
-                mqtt.connect();
-                mqttConnected = true;
-            }
+	var zwaveConnected = false;
+	var mqttConnected = false;
+	var mqtt = null;
 
-            zwave.lastY = [];
+	function zwaveController(config) { // copied from MQTTOutNode
+		RED.nodes.createNode(this, config);
+		this.topic = config.topic;
+		this.broker = config.broker;
+		this.brokerConn = RED.nodes.getNode(this.broker);
+		var node = this;
 
-            zwave.on('driver ready', function (homeid) {
-                handler.driverReady(node, RED, client, homeid);
-            });
+		if (this.brokerConn) {
+			mqtt = this.brokerConn;
+			
+			this.status({fill:"red",shape:"ring",text:"node-red:common.status.disconnected"});
 
-            zwave.on('driver failed', function () {
-                handler.driverFailed(node);
-            });
 
-            zwave.on('node added', function (nodeid) {
-                handler.nodeAdded(nodeid);
-            });
+			zwave.lastY = [];
 
-            zwave.on('node ready', function (nodeid, nodeinfo) {
-                handler.nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo);
-            });
+			zwave.on('driver ready', function (homeid) {
+				handler.driverReady(node, RED, false, homeid);
+			});
 
-            // first time device detected
-            zwave.on('value added', function (nodeid, comclass, value) {
-                handler.valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value);
-            });
+			zwave.on('driver failed', function () {
+				handler.driverFailed(node);
+			});
 
-            // changed device's state
-            zwave.on('value changed', function (nodeid, comclass, value) {
-                handler.valueChanged(node, mqtt, nodeid, comclass, value);
-            });
+			zwave.on('node added', function (nodeid) {
+				handler.nodeAdded(nodeid);
+			});
 
-            zwave.on('value removed', function (nodeid, comclass, index) {
-                handler.valueRemoved(node, nodeid, comclass, index);
-            });
+			zwave.on('node ready', function (nodeid, nodeinfo) {
+				handler.nodeReady(node, RED, zwave, mqtt, false, nodeid, nodeinfo);
+			});
 
-            zwave.on('scene event', function (nodeid, sceneid) {
-                handler.sceneEvent(node, mqtt, nodeid, sceneid);
-            });
+			// first time device detected
+			zwave.on('value added', function (nodeid, comclass, value) {
+				handler.valueAdded(node, RED, zwave, mqtt, false, nodeid, comclass, value);
+			});
 
-            zwave.on('notification', function (nodeid, notif) {
-                handler.notification(node, nodeid, notif);
-            });
+			// changed device's state
+			zwave.on('value changed', function (nodeid, comclass, value) {
+				handler.valueChanged(node, mqtt, nodeid, comclass, value);
+			});
 
-            zwave.on('scan complete', function () {
-                handler.scanComplete(RED, node);
-            });
+			zwave.on('value removed', function (nodeid, comclass, index) {
+				handler.valueRemoved(node, nodeid, comclass, index);
+			});
 
-            var zwaveUSB = "/dev/ttyACM0"; // Z-Stick Gen5
-            //var zwaveUSB="/dev/ttyUSB0"; // Z-Stick S2
+			zwave.on('scene event', function (nodeid, sceneid) {
+				handler.sceneEvent(node, mqtt, nodeid, sceneid);
+			});
 
-            if (!zwaveConnected) {
-                node.status({
-                    fill: 'blue',
-                    shape: 'dot',
-                    text: 'node-red:common.status.connecting'
-                });
-                zwave.connect(zwaveUSB);
-                zwaveConnected = true;
-            } else {
-                node.status({
-                    fill: 'green',
-                    shape: 'ring',
-                    text: 'node-red:common.status.connected'
-                });
-            }
+			zwave.on('notification', function (nodeid, notif) {
+				handler.notification(node, nodeid, notif);
+			});
 
-            this.on('close', function () {
-                if (zwave && zwaveConnected) {
-                    zwave.removeAllListeners();
-                    //zwave.disconnect(zwaveUSB);
-                    //zwaveConnected = false;
-                }
-                if (mqtt && mqttConnected) {
-                    mqtt.disconnect();
-                    mqtt = null;
-                    mqttConnected = false;
-                }
-            });
-        }
-    }
+			zwave.on('scan complete', function () {
+				handler.scanComplete(RED, node);
+			});
 
-    RED.nodes.registerType("zwave", zwaveController);
+			var zwaveUSB = "/dev/ttyACM0"; // Z-Stick Gen5
+			//var zwaveUSB="/dev/ttyUSB0"; // Z-Stick S2
+
+			if (!zwaveConnected) {
+				node.status({
+					fill: 'blue',
+					shape: 'dot',
+					text: 'node-red:common.status.connecting'
+				});
+				zwave.connect(zwaveUSB);
+				zwaveConnected = true;
+			} else {
+				node.status({
+					fill: 'green',
+					shape: 'ring',
+					text: 'node-red:common.status.connected'
+				});
+			}
+			node.brokerConn.register(node);
+			this.on('close', function (done) {
+				node.brokerConn.deregister(node,done);
+				if (zwave && zwaveConnected) {
+					zwave.removeAllListeners();
+					//zwave.disconnect(zwaveUSB);
+					//zwaveConnected = false;
+				}
+
+			});
+		}
+	}
+
+	RED.nodes.registerType("zwave", zwaveController);
 };

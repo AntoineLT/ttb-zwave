@@ -3,12 +3,12 @@
 module.exports = function (RED) {
 	var homeDir = process.env.NODE_RED_HOME;
 
-	var path = require('path'),
-		mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
+	var path = require('path');
+	var mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
 	var flows = require('./js/flows');
 
-	function main(config) {
+	function main(config) { // from MQTTInNode
 		RED.nodes.createNode(this, config);
 		this.config = config;
 
@@ -32,6 +32,7 @@ module.exports = function (RED) {
 		subscription(RED, this, zwave);
 
 		var node = this;
+		
 		this.on('input', function (msg) {
 			SwitchFunc(node, zwave, msg);
 		});
@@ -49,8 +50,8 @@ module.exports = function (RED) {
 };
 
 function subscription(RED, node, zwave) {
-	var isUtf8 = require('is-utf8'),
-		flows = require('./js/flows');
+	var isUtf8 = require('is-utf8');
+	var flows = require('./js/flows');
 
 	var msg = {},
 		zwaveTopic = flows.checkZwaveNodeTopic();
@@ -68,12 +69,15 @@ function subscription(RED, node, zwave) {
 				console.log("#Exception '" + e + "' in zwave-light-dimmer-switch/subscription for Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
 			}
 			(msg.payload >= 50) ? msg.intent = 1 : msg.intent = 0;
-			if (node.mqtt !== null) node.mqtt.publish({
+			/*
+			if (node.mqtt !== null) 
+				node.mqtt.publish({
 				'payload': msg,
 				'qos': 0,
 				'retain': true,
 				'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
 			});
+			*/
 			node.send(msg);
 		}, node.id);
 	}

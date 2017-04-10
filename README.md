@@ -1,8 +1,8 @@
-ttb-zwave2
+ttb-zwave3
 ==========
 
 
-This package add Z-Wave functionalities to:
+This package adds Z-Wave functionalities to:
 
 * TimeSquAir ([http://timesquair.io](http://timesquair.io/)) 
 * TheThingBox ([http://thethingbox.io](http://thethingbox.io)), 
@@ -15,7 +15,7 @@ Install
 
 If you want to install it : 
 
-* Use the menu "import / node" and type "ttb-zwave2" in the dialog box. 
+* Use the menu "import / node" and type "ttb-zwave3" in the dialog box. 
 * Wait for the install (about 10 minutes! on Pi3, desesperately long on Pi2...)
 * Then reboot.
 

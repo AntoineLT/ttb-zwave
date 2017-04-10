@@ -40,7 +40,7 @@ function subscription(RED, node) {
 			msg.payload = payload;
 		}
 
-		publishStatusOut(node, msg.payload /* sceneID ??? */);
+		//publishStatusOut(node, msg.payload /* sceneID ??? */);
 		
 		node.send(msg);
 			

@@ -86,13 +86,14 @@ function subscription(RED, node, zwave) {
 				msg.intent = 0;
 				msg.message = "Sensor Off";
 			}
-					
+			/*
 			if (node.mqtt !== null) node.mqtt.publish({
 				'payload': msg,
 				'qos': 0,
 				'retain': true,
 				'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
 			});
+			*/
 			node.send(msg);
 		}, node.id);
 	}
