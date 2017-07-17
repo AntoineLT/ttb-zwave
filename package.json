@@ -1,9 +1,9 @@
 {
   "name": "ttb-zwave3",
   "version": "1.0.4",
-  "description": "A Zwave Node-RED package for TheThingBox and TimeSquAir.",
+  "description": "ZWave support for the Thingbox (http://TheThingbox.io) and TimeSquAir (http://TimeSquAir.io)",
   "node-red": {
-    "nodes": {
+  "nodes": {
       "zwave": "zwave.js",
       "zwave-generic": "zwave-generic.js",
       "zwave-inclusion-node": "zwave-inclusion-node.js",
@@ -28,8 +28,9 @@
   "author": {
     "name": "thethingbox",
     "email": "thethingbox@gmail.com",
-    "url": "http://thethingbox.io/"
+    "url": "http://digitalairways.com/"
   },
+  "license": "http://www.wtfpl.net",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheThingBox/ttb-zwave.git"
