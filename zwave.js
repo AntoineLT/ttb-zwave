@@ -102,4 +102,14 @@ module.exports = function (RED) {
 	}
 
 	RED.nodes.registerType("zwave", zwaveController);
+	
+	
+	RED.httpAdmin.get("/zwave/nodesArray", function (req, res) {
+		var nodes = require('./js/handler').nodes;
+		if (!nodes) {
+			return res.status(400).json({err: "ERROR"});
+		}
+		res.status(200).json(nodes);
+	});
+	
 };
