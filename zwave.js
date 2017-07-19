@@ -2,7 +2,7 @@
 
 module.exports = function (RED) {
 
-	var path = require('path');
+	var path = require("path");
 	var mqtt = require("mqtt"); // https://www.npmjs.com/package/mqtt
 
 
@@ -13,7 +13,7 @@ module.exports = function (RED) {
 	var mqttConnected = false;
 	var mqtt = null;
 
-	function zwaveController(config) { // copied from MQTTOutNode
+	function main(config) { // copied from MQTTOutNode
 		RED.nodes.createNode(this, config);
 		this.topic = config.topic;
 		this.broker = config.broker;
@@ -88,7 +88,9 @@ module.exports = function (RED) {
 					text: 'node-red:common.status.connected'
 				});
 			}
+			
 			node.brokerConn.register(node);
+			
 			this.on('close', function (done) {
 				node.brokerConn.deregister(node,done);
 				if (zwave && zwaveConnected) {
@@ -101,7 +103,7 @@ module.exports = function (RED) {
 		}
 	}
 
-	RED.nodes.registerType("zwave", zwaveController);
+	RED.nodes.registerType("zwave", main);
 	
 	
 	RED.httpAdmin.get("/zwave/nodesArray", function (req, res) {

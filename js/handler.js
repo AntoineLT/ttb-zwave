@@ -75,13 +75,13 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
 		var productInfo = nodeinfo.product.replace(/ /g, '');
 
 		if (nodeid !== 1 && check.isNotInFlow(nodeid, null, null, productInfo)) {
-			if (client) {
-				deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
-			} else {
+//			if (client) {
+//				deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
+//			} else {
 				deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
 				// Internal creation without any additional flows
 				// deviceNode.withoutClient(zwave, nodeid, nodeinfo);
-			}
+//			}
 		}
 
 		for (var comclass in nodes[nodeid]['classes']) {
