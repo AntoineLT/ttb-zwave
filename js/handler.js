@@ -51,7 +51,7 @@ function nodeAdded(nodeid) {
 	};
 }
 
-function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
+function nodeReady(node, RED, zwave, mqtt, client /*unused*/, nodeid, nodeinfo) {
 	//node.log('node ready: nodeid:'+ nodeid + ", nodeinfo:");
 	//nisutil.dumpPropsHex("nodeinfo:", nodeinfo, 1, false);
 
@@ -95,7 +95,19 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
 			}
 		}
 
-		// Log
+		dumpNodes(node) // Log
+
+		}
+	var zwaveTopic = flows.checkZwaveNodeTopic();
+	if (mqtt !== null) mqtt.publish({
+		'qos': 0,
+		'retain': false,
+		'topic': zwaveTopic + '/nodeready/' + nodeid,
+		'payload': true
+	});
+}
+
+function dumpNodes(node) {
 		node.log("--- ZWave Dongle ---------------------");
 		for (var i = 1; i < nodes.length; i++) {
 			if (nodes[i] === null || typeof nodes[i] === 'undefined') {
@@ -106,23 +118,13 @@ function nodeReady(node, RED, zwave, mqtt, client, nodeid, nodeinfo) {
 				node.log("node: [" + i + "] " + (nodes[i].manufacturer == "" ? nodes[i].manufacturer + ", " : "") + nodes[i].product + " (" + nodes[i].type + ")");
 			} else {
 				var alive=" ";
-				//nisutil.dumpPropsHex("nodes[nodeid].classes):", nodes[nodeid].classes, 1, false);
-				if(Object.keys(nodes[nodeid].classes).length > 1) //!!! don't know why : the commandclass 32 is temporarily present...
+				//nisutil.dumpPropsHex("nodes[i].classes):", nodes[i].classes, 1, false);
+				if(Object.keys(nodes[i].classes).length > 1) //!!! don't know why : the commandclass 32 is temporarily present...
 					alive = "alive but ";
 				node.log("node: [" + i + "] "+alive+"no infos yet");
 			}
 		}
 		node.log("--------------------------------------");
-
-
-		}
-	var zwaveTopic = flows.checkZwaveNodeTopic();
-	if (mqtt !== null) mqtt.publish({
-		'qos': 0,
-		'retain': false,
-		'topic': zwaveTopic + '/nodeready/' + nodeid,
-		'payload': true
-	});
 }
 
 function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
@@ -193,8 +195,7 @@ function valueChanged(node, mqtt, nodeid, comclass, value) {
 function valueRemoved(node, nodeid, comclass, index) {
 	node.log('value removed: nodeid:' + nodeid + " comclass:" + comclass);
 
-	if (nodes[nodeid].classes[comclass] &&
-		nodes[nodeid].classes[comclass][index]) {
+	if (nodes[nodeid].classes[comclass] &&	nodes[nodeid].classes[comclass][index]) {
 		delete nodes[nodeid].classes[comclass][index];
 	}
 }
