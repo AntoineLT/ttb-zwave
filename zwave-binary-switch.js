@@ -131,6 +131,11 @@ function subscription(RED, node, zwave) {
 
 function SwitchFunc(node, zwave, msg) {
 	var handler = require('./js/handler');
+		
+	if(msg.intent===undefined) {
+		msg.intent = msg.payload; // try to use the payload if no intents
+	}
+	//console.log("msg.intent:"+ msg.intent);
 
 	if (handler.nodes[node.config.nodeid].classes[37] !== undefined) {
 		if (msg.status && msg.status === "toggle") {
@@ -141,13 +146,16 @@ function SwitchFunc(node, zwave, msg) {
 				zwave.setValue(node.config.nodeid, 37, 1, 0, false);
 			}
 		} else {
+			
 			if (msg.intent || msg.intent == 0) {
 				switch (msg.intent) {
 					case 0: // close
+          case "0":
 						zwave.setValue(node.config.nodeid, 37, 1, 0, false);
 						break;
 
 					case 1: // open
+          case "1":
 						zwave.setValue(node.config.nodeid, 37, 1, 0, true);
 						break;
 				}
@@ -156,6 +164,7 @@ function SwitchFunc(node, zwave, msg) {
 	}
 	
 	if (handler.nodes[node.config.nodeid].classes[38] !== undefined) {
+			
 			if (msg.intent || msg.intent == 0) {
 				switch (msg.intent) {
 					case 0: // close

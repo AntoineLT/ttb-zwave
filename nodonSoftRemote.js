@@ -1,10 +1,6 @@
 'use strict';
-	var nisutil = null
-	try {
-	    nisutil = require(process.env.NODE_RED_HOME+"/node_modules/nisutil");
-	} catch(e){
-	    nisutil = require(process.env.NODE_RED_HOME+"/node_modules/ttb-util");
-	}
+
+	var nisutil = require(process.env.NODE_RED_HOME+"/node_modules/nisutil");
 
 module.exports = function (RED) {
 
@@ -12,7 +8,7 @@ module.exports = function (RED) {
 		RED.nodes.createNode(this, config);
 		this.config = config;
 		
-		this.status({fill:"red",shape:"ring",text:"youpi"});
+		this.status({fill:"red",shape:"ring",text:""+Date.now() });
 		console.log("setStatus");
 
 		subscription(RED, this);
