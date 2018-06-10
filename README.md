@@ -15,18 +15,10 @@ Install
 
 If you want to install it : 
 
-* Use the menu "import / node" and type "ttb-zwave3" in the dialog box. 
+* Use the menu "manage / palette" and type "ttb-zwave3" in the dialog box. 
 * Wait for the install (about 10 minutes! on Pi3, desesperately long on Pi2...)
 * Then reboot.
 
-Use
-----
-
-Look at the Youtube video below:
-
-[![ ](images/zwave/Youtube1.png)](https://www.youtube.com/watch?v=o81MNexwJo8 "Click to open in YouTube")
-
-The documentation is [here](http://thethingbox.io/docs/ZwaveUI.html).
 
 
 Credits
