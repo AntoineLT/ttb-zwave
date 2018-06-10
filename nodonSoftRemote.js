@@ -1,6 +1,5 @@
 'use strict';
 
-	var nisutil = require(process.env.NODE_RED_HOME+"/node_modules/nisutil");
 
 module.exports = function (RED) {
 
