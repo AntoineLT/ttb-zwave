@@ -116,7 +116,7 @@ function subscription(RED, node, zwave) {
 function SwitchFunc(node, zwave, msg) {
 	var handler = require('./js/handler');
 
-	if (handler.nodes[node.config.nodeid].classes[38] !== undefined) {
+	if (handler.nodes[node.config.nodeid].ready && handler.nodes[node.config.nodeid].classes[38] !== undefined) {
 		if (msg.status && msg.status === "toggle") {
 			var currentValue = handler.nodes[node.config.nodeid].classes[38][0].value;
 			if (currentValue <= 50) {

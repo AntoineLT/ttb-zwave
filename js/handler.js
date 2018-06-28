@@ -136,7 +136,7 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
 	// comclass : Zwave command class (int)
 	// value : callback result of listener (object)
 
-	//node.log('value added: nodeid:'+ nodeid + " comclass:" + comclass + ", value[" + value.index + "] " + value.label +"  = " + value.value);
+	node.log('value added: nodeid:'+ nodeid + " comclass:" + comclass + ", value[" + value.index + "] " + value.label +"  = " + value.value);
 	//nisutil.dumpPropsHex("value:", value, 1, false);
 
 	if (client) {
