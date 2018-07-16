@@ -14,8 +14,8 @@
   },
   "installation-duration": 420,
   "dependencies": {
-    "is-utf8": "^0.2.1",
-    "mqtt": "2.2.1",
+    "is-utf8": "0.2.1",
+    "mqtt": "2.18.2",
     "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git"
   },
   "keywords": [
