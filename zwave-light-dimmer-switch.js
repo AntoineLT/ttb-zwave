@@ -151,11 +151,12 @@ function SwitchFunc(node, zwave, msg) {
 					default:
 						break;
 				}
-			}
-			var intensity = parseInt((typeof msg.payload !== 'object') ? msg.intensity : msg.payload.intensity);
-			if (intensity || intensity === 0) {
-				if (intensity === 100) intensity = 99;
-				zwave.setValue(node.config.nodeid, 38, 1, 0, intensity);
+			} else {
+				var intensity = parseInt((typeof msg.payload !== 'object') ? msg.intensity : msg.payload.intensity);
+				if (intensity || intensity === 0) {
+					if (intensity === 100) intensity = 99;
+					zwave.setValue(node.config.nodeid, 38, 1, 0, intensity);
+				}
 			}
 			if (msg.color) zwave.setValue(node.config.nodeid, 51, 1, 0, msg.color + "0000");
 		}
