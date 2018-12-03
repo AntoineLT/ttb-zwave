@@ -7,8 +7,8 @@ module.exports = function (RED) {
 		RED.nodes.createNode(this, config);
 		this.config = config;
 		
-		this.status({fill:"red",shape:"ring",text:""+Date.now() });
-		console.log("setStatus");
+		//this.status({fill:"red",shape:"ring",text:""+Date.now() });
+		//console.log("setStatus");
 
 		subscription(RED, this);
 	}
@@ -31,66 +31,70 @@ function subscription(RED, node) {
 
 		node.brokerConn.register(node);
 		node.brokerConn.subscribe(topicpub, 2, function (topic, payload, packet) {
+			
+			//console.log("payload[0]:", payload[0]);
+			//console.log("payload[1]:", payload[1]);
 
-		var msg = {payload:payload};
+			var msg = {payload:payload}; // let the device outpout unchanged
 
-		switch (payload.toString()) {
-		case "10":
-			msg.intent = 1; // close
-			break;
+			switch (payload[0]) {
+			case 49:
+				msg.intent = 1; // open
+				break;
 
-		case "20":
-			msg.intent = 2; // more
-			break;
+			case 51:
+				msg.intent = 0; // close
+				break;
 
-		case "30":
-			msg.intent = 0; // open
-			break;
-
-		case "40":
-			msg.intent = 3; // less
-			break;
-/*
-
-		case "21":
-		case "41":
-			clearTimeout(timer);
-			count = 0;
-			break;
-		case "22":
-			if (node.config.push === true) {
-				count++;
-				if (count >= 20) break;
+			case 50:
 				msg.intent = 2; // more
-				msgMQTT.payload = {
-					'payload': msg.payload,
-					'intent': msg.intent
-				};
-				timer = setTimeout(function () {
-					if (mqtt != null)  
-						mqtt.publish(msgMQTT);
-					publishStatusOut(node, sceneID);
-				}, 1000);
-			}
-			break;
+				break;
 
-		case "42":
-			if (node.config.push === true) {
-				count++;
-				if (count >= 20) break;
+			case 52:
 				msg.intent = 3; // less
-				msgMQTT.payload = {
-					'payload': msg.payload,
-					'intent': msg.intent
-				};
-				timer = setTimeout(function () {
-					if (mqtt != null) mqtt.publish(msgMQTT);
-					publishStatusOut(node, sceneID);
-				}, 1000);
-			}
-			break;
-*/
+				break;
+	/*
+
+			case "21":
+			case "41":
+				clearTimeout(timer);
+				count = 0;
+				break;
+			case "22":
+				if (node.config.push === true) {
+					count++;
+					if (count >= 20) break;
+					msg.intent = 2; // more
+					msgMQTT.payload = {
+						'payload': msg.payload,
+						'intent': msg.intent
+					};
+					timer = setTimeout(function () {
+						if (mqtt != null)  
+							mqtt.publish(msgMQTT);
+						publishStatusOut(node, sceneID);
+					}, 1000);
+				}
+				break;
+
+			case "42":
+				if (node.config.push === true) {
+					count++;
+					if (count >= 20) break;
+					msg.intent = 3; // less
+					msgMQTT.payload = {
+						'payload': msg.payload,
+						'intent': msg.intent
+					};
+					timer = setTimeout(function () {
+						if (mqtt != null) mqtt.publish(msgMQTT);
+						publishStatusOut(node, sceneID);
+					}, 1000);
+				}
+				break;
+	*/
 		default:
+			node.warn("no intent");
 			break;
 	}
 

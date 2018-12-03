@@ -68,7 +68,12 @@ function subscription(RED, node, zwave) {
 				msg.payload = payload;
 				console.log("#Exception '" + e + "' in zwave-light-dimmer-switch/subscription for Node " + node.config.nodeid + " received value: '" + msg.payload + "'");
 			}
-			(msg.payload >= 50) ? msg.intent = 1 : msg.intent = 0;
+			/* ???
+			if (msg.payload >= 50) 
+				msg.intent = 1;
+			else
+				msg.intent = 0;
+			*/
 			/*
 			if (node.mqtt !== null) 
 				node.mqtt.publish({
@@ -113,52 +118,79 @@ function subscription(RED, node, zwave) {
 	});
 }
 
+
 function SwitchFunc(node, zwave, msg) {
 	var handler = require('./js/handler');
 
-	if (handler.nodes[node.config.nodeid].ready && handler.nodes[node.config.nodeid].classes[38] !== undefined) {
+	if (handler.nodes[node.config.nodeid] && handler.nodes[node.config.nodeid].ready && handler.nodes[node.config.nodeid].classes[38] !== undefined) {
+		
+		var currentValue = handler.nodes[node.config.nodeid].classes[38][0].value;
+		
+		// ---- toggle ----------------------------------------------------------------
+		/*
 		if (msg.status && msg.status === "toggle") {
-			var currentValue = handler.nodes[node.config.nodeid].classes[38][0].value;
 			if (currentValue <= 50) {
 				zwave.setValue(node.config.nodeid, 38, 1, 0, 99);
 			} else if (currentValue > 50) {
 				zwave.setValue(node.config.nodeid, 38, 1, 0, 0);
 			}
-		} else {
-			var intent = (typeof msg.payload !== 'object' && (msg.intent || msg.intent == 0)) ? msg.intent : msg.payload.intent;
-			if (intent || intent == 0) {
-				switch (intent) {
-					case 0: // close
-						zwave.setValue(node.config.nodeid, 38, 1, 0, 0);
-						break;
+		} 
+		*/
+		// ---- intents  ----------------------------------------------------------------
+		
+		var intent = (msg.intent ? msg.intent : msg.payload);
 
-					case 1: // open
-						zwave.setValue(node.config.nodeid, 38, 1, 0, 99);
-						break;
+		switch (intent) {
+			case 0: // close
+				zwave.setValue(node.config.nodeid, 38, 1, 0, 0);
+				break;
 
-					case 2: // more
-						if (currentValue <= 99) currentValue = currentValue + 10;
-						if (currentValue > 99) currentValue = 99;
-						zwave.setValue(node.config.nodeid, 38, 1, 0, currentValue);
-						break;
+			case 1: // open
+				zwave.setValue(node.config.nodeid, 38, 1, 0, 99);
+				break;
 
-					case 3: // less
-						if (currentValue >= 0) currentValue = currentValue - 10;
-						if (currentValue < 0) currentValue = 0;
-						zwave.setValue(node.config.nodeid, 38, 1, 0, currentValue);
-						break;
+			case 2: // more
+				if (currentValue <= 99)
+					currentValue = currentValue + 10;
+				if (currentValue > 99)
+					currentValue = 99;
+				
+				setIntensity(node.config.nodeid, currentValue);
+				break;
 
-					default:
-						break;
-				}
-			} else {
-				var intensity = parseInt((typeof msg.payload !== 'object') ? msg.intensity : msg.payload.intensity);
-				if (intensity || intensity === 0) {
-					if (intensity === 100) intensity = 99;
-					zwave.setValue(node.config.nodeid, 38, 1, 0, intensity);
-				}
-			}
-			if (msg.color) zwave.setValue(node.config.nodeid, 51, 1, 0, msg.color + "0000");
+			case 3: // less
+				if (currentValue >= 0) 
+					currentValue = currentValue - 10;
+				if (currentValue < 0) 
+					currentValue = 0;
+				setIntensity(node.config.nodeid, currentValue);
+				break;
+
+			default:
+				break;
+		}
+		
+		// ---- intensity  ----------------------------------------------------------------
+		
+
+		var intensity = msg.intensity;
+		if (intensity) {
+			if (intensity === 100) intensity = 99;
+			setIntensity(node.config.nodeid, intensity);
+		}
+
+		
+		// ---- color  ----------------------------------------------------------------
+		
+		if (msg.color) {
+			zwave.setValue(node.config.nodeid, 51, 1, 0, msg.color + "0000");
 		}
 	}
+	
+	function setIntensity (nodeid, intensity) {
+		node.warn("intensity: " + intensity);
+		zwave.setValue(nodeid, 38, 1, 0, intensity);
+	}
+	
 }
+

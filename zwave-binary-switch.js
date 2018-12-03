@@ -3,8 +3,8 @@
 module.exports = function (RED) {
 	var homeDir = process.env.NODE_RED_HOME;
 
-	var path = require('path'),
-		mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
+	var path = require('path');
+	var mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
 	var flows = require('./js/flows');
 
@@ -50,8 +50,8 @@ module.exports = function (RED) {
 };
 
 function subscription(RED, node, zwave) {
-	var isUtf8 = require('is-utf8'),
-		flows = require('./js/flows');
+	var isUtf8 = require('is-utf8');
+	var flows = require('./js/flows');
 
 	var msg = {},
 		zwaveTopic = flows.checkZwaveNodeTopic();
@@ -137,7 +137,7 @@ function SwitchFunc(node, zwave, msg) {
 	}
 	//console.log("msg.intent:"+ msg.intent);
 
-	if (handler.nodes[node.config.nodeid].classes[37] !== undefined) {
+	if (handler.nodes[node.config.nodeid] && handler.nodes[node.config.nodeid].ready && handler.nodes[node.config.nodeid].classes[37] !== undefined) {
 		if (msg.status && msg.status === "toggle") {
 			var currentValue = handler.nodes[node.config.nodeid].classes[37][0].value;
 			if (currentValue === false) {
