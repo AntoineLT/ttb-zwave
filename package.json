@@ -1,6 +1,6 @@
 {
   "name": "ttb-zwave3",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "ZWave support for the Thingbox (http://TheThingbox.io) and TimeSquAir (http://TimeSquAir.io)",
   "node-red": {
   "nodes": {
