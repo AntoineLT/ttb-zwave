@@ -1,6 +1,6 @@
 {
   "name": "ttb-zwave3",
-  "version": "1.1.10",
+  "version": "1.2.0",
   "description": "ZWave support for the Thingbox (http://TheThingbox.io) and TimeSquAir (http://TimeSquAir.io)",
   "node-red": {
   "nodes": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "is-utf8": "0.2.1",
     "mqtt": "2.18.2",
-    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git"
+    "openzwave-shared": "git://github.com/TheThingBox/node-openzwave-shared.git#6ec6bc86f2576120aaa9312e139c6faa3d6b1ff1"
   },
   "keywords": [
     "thingbox",
