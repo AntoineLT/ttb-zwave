@@ -138,7 +138,7 @@ function SwitchFunc(node, zwave, msg) {
 		*/
 		// ---- intents  ----------------------------------------------------------------
 		
-		var intent = (msg.intent ? msg.intent : msg.payload);
+		var intent = (msg.intent!==undefined ? msg.intent : msg.payload);
 
 		switch (intent) {
 			case 0: // close
@@ -188,7 +188,6 @@ function SwitchFunc(node, zwave, msg) {
 	}
 	
 	function setIntensity (nodeid, intensity) {
-		node.warn("intensity: " + intensity);
 		zwave.setValue(nodeid, 38, 1, 0, intensity);
 	}
 	

@@ -29,7 +29,7 @@ module.exports = function (RED) {
 			zwave.lastY = [];
 
 			zwave.on('driver ready', function (homeid) {
-				handler.driverReady(node, RED, false, homeid);
+				handler.driverReady(node, RED, homeid);
 			});
 
 			zwave.on('driver failed', function () {
@@ -41,12 +41,12 @@ module.exports = function (RED) {
 			});
 
 			zwave.on('node ready', function (nodeid, nodeinfo) {
-				handler.nodeReady(node, RED, zwave, mqtt, false, nodeid, nodeinfo);
+				handler.nodeReady(node, RED, zwave, mqtt, nodeid, nodeinfo);
 			});
 
 			// first time device detected
 			zwave.on('value added', function (nodeid, comclass, value) {
-				handler.valueAdded(node, RED, zwave, mqtt, false, nodeid, comclass, value);
+				handler.valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value);
 			});
 
 			// changed device's state

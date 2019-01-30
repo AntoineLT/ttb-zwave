@@ -1,13 +1,12 @@
 'use strict';
 
-var check = require('./check.js'),
-	deviceNode = require('./deviceNode'),
-	flows = require('./flows');
+var	deviceNode = require('./deviceNode');
+var	flows = require('./flows');
 
 //var nisutil = require(process.env.NODE_RED_HOME+"/node_modules/nisutil");
 var nodes = [];
 
-function driverReady(node, RED, client, homeid) {
+function driverReady(node, RED, homeid) {
 	node.log('Driver ready');
 	node.log('Scanning homeid=0x' + homeid.toString(16) + '...');
 	node.status({
@@ -15,16 +14,6 @@ function driverReady(node, RED, client, homeid) {
 		shape: 'dot',
 		text: 'node-red:common.status.connecting'
 	});
-	if (client) {
-		var missing = check.isNotInFlow('zwave', null, null, null);
-		if (missing === true) {
-			RED.nodes.addNodeToClients({
-				"type": "tab",
-				"id": "zwave",
-				"label": "Z-wave"
-			});
-		}
-	}
 }
 
 function driverFailed(node) {
@@ -51,7 +40,7 @@ function nodeAdded(nodeid) {
 	};
 }
 
-function nodeReady(node, RED, zwave, mqtt, client /*unused*/, nodeid, nodeinfo) {
+function nodeReady(node, RED, zwave, mqtt, nodeid, nodeinfo) {
 	//node.log('node ready: nodeid:'+ nodeid + ", nodeinfo:");
 	//nisutil.dumpPropsHex("nodeinfo:", nodeinfo, 1, false);
 
@@ -74,14 +63,8 @@ function nodeReady(node, RED, zwave, mqtt, client /*unused*/, nodeid, nodeinfo) 
 	if (nodeinfo.manufacturer && nodeinfo.product) {
 		var productInfo = nodeinfo.product.replace(/ /g, '');
 
-		if (nodeid !== 1 && check.isNotInFlow(nodeid, null, null, productInfo)) {
-//			if (client) {
-//				deviceNode.withClient(RED, zwave, nodeid, nodeinfo);
-//			} else {
-				deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
-				// Internal creation without any additional flows
-				// deviceNode.withoutClient(zwave, nodeid, nodeinfo);
-//			}
+		if (nodeid !== 1) {
+			deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
 		}
 
 		for (var comclass in nodes[nodeid]['classes']) {
@@ -127,7 +110,7 @@ function dumpNodes(node) {
 		node.log("--------------------------------------");
 }
 
-function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
+function valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value) {
 	// node : node object from Node-RED (object)
 	// RED : RED global object (object)
 	// zwave : openzwave object (object)
@@ -139,38 +122,19 @@ function valueAdded(node, RED, zwave, mqtt, client, nodeid, comclass, value) {
 	node.log('value added: nodeid:'+ nodeid + " comclass:" + comclass + ", value[" + value.index + "] " + value.label +"  = " + value.value);
 	//nisutil.dumpPropsHex("value:", value, 1, false);
 
-	if (client) {
-		if (!zwave.lastY[nodeid - 2]) zwave.lastY[nodeid - 2] = 40;
-		if (nodeid !== 1 && value.label !== ""
-			&& check.isNotInFlow(nodeid, comclass, value, null)) {
-			if (check.comclassToShow(comclass)) {
-				RED.nodes.addNodeToClients({
-					"id": "zwave-in-" + nodeid + "-" + comclass + ":" + value.index,
-					"type": "zwave-in",
-					"name": "Node" + nodeid + " : " + value.label,
-					"topic": node.topic + nodeid + "/" + comclass + "/" + value.index + "/",
-					"nodeid": nodeid,
-					"broker": node.broker,
-					"x": 250 + ((nodeid - 2) * 300),
-					"y": zwave.lastY[nodeid - 2],
-					"z": "zwave"
-				});
-				zwave.lastY[nodeid - 2] += 60;
-			}
-		}
-	}
-
 	if (!nodes[nodeid].classes[comclass])
 		nodes[nodeid].classes[comclass] = {};
 
 	nodes[nodeid].classes[comclass][value.index] = value;
 
-	if (mqtt != null) mqtt.publish({
-		'qos': 0,
-		'retain': false,
-		'topic': node.topic + '/' + nodeid + '/' + comclass + '/' + value.index,
-		'payload': value.value
-	});
+	if (mqtt != null) {
+		mqtt.publish({
+			'qos': 0,
+			'retain': false,
+			'topic': node.topic + '/' + nodeid + '/' + comclass + '/' + value.index,
+			'payload': value.value
+		});
+	}
 }
 
 function valueChanged(node, mqtt, nodeid, comclass, value) {
