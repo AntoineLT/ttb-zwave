@@ -14,6 +14,7 @@ module.exports = function (RED) {
 	var mqtt = null;
 
 	function main(config) { // copied from MQTTOutNode
+	
 		RED.nodes.createNode(this, config);
 		this.topic = config.topic;
 		this.broker = config.broker;

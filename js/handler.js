@@ -45,8 +45,11 @@ function nodeReady(node, RED, zwave, mqtt, nodeid, nodeinfo) {
 	//nisutil.dumpPropsHex("nodeinfo:", nodeinfo, 1, false);
 
 	var productIDTotal = nodeinfo.manufacturerid + "-" + nodeinfo.producttype + "-" + nodeinfo.productid;
-	node.log('node ready: nodeid:' + nodeid + ", " + nodeinfo.manufacturer + " " + nodeinfo.product + " (" + nodeinfo.type + " '" + productIDTotal + "')");
-
+	node.log("node ready: nodeid:" + nodeid + ", " + nodeinfo.manufacturer + " " + nodeinfo.product + " (" + nodeinfo.type + " '" + productIDTotal + "')");
+	/*
+	node.log("nodeinfo.product:" + nodeinfo.product);
+	node.log("nodeinfo.type:" + nodeinfo.type);
+	*/
 	nodes[nodeid].manufacturer = nodeinfo.manufacturer;
 	nodes[nodeid].manufacturerid = nodeinfo.manufacturerid;
 	nodes[nodeid].product = nodeinfo.product;

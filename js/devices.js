@@ -2,6 +2,30 @@
 
 // productIDTotal refers to '../../node_modules/openzwave-shared/deps/open-zwave/config/manufacturer_specific.xml'
 
+/*
+
+bool Manager::SetConfigParam	(	
+uint32 const 	_homeId,
+uint8 const 	_nodeId,
+uint8 const 	_param,
+int32			_value,
+uint8 const 	_size = 2 
+)		
+
+Set the value of a configurable parameter in a device. Some devices have various parameters that can be configured to control the device behavior. These are not reported by the device over the Z-Wave network, but can usually be found in the device's user manual. This method returns immediately, without waiting for confirmation from the device that the change has been made.
+
+Parameters
+_homeId	The Home ID of the Z-Wave controller that manages the node.
+_nodeId	The ID of the node to configure.
+_param	The index of the parameter.
+_value	The value to which the parameter should be set.
+_size	Is an optional number of bytes to be sent for the parameter _value. Defaults to 2.
+Returns
+true if the a message setting the value was sent to the device.
+
+*/
+
+// called for each node ready
 function fillDevices(node, productIDTotal, nodes, zwave) {
     switch (productIDTotal) {
         case "0086-0003-0062": // Aeotec, ZW098 LED Bulb
@@ -60,8 +84,8 @@ function fillDevices(node, productIDTotal, nodes, zwave) {
             node.commandclass = "48";
             node.classindex = "0";
             zwave.setConfigParam(node.senderID, 3, 30, 2); // Set the time(sec) that the PIR stay ON before sending OFF
-            zwave.setConfigParam(node.senderID, 4, 1, 1);  // Enable PIR sensor
-            zwave.setConfigParam(node.senderID, 5, 1, 1);  // Send PIR detection on binary sensor command class
+            zwave.setConfigParam(node.senderID, 4, 1, 1);  // PIR sensitivity
+            zwave.setConfigParam(node.senderID, 5, 1, 1);  // send PIR detection on binary sensor command class
             break;
 
         default:
