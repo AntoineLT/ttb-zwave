@@ -63,7 +63,7 @@ function nodeReady(node, RED, zwave, mqtt, nodeid, nodeinfo) {
 	if (nodeinfo.manufacturer && nodeinfo.product) {
 		var productInfo = nodeinfo.product.replace(/ /g, '');
 
-		if (nodeid !== 1) {
+		if (nodeid !== 1) { // the 1 is the ZWave stick
 			deviceNode.newdeviceMQTT(zwave, mqtt, nodeid, nodeinfo);
 		}
 

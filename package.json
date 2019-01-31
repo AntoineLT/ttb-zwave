@@ -3,7 +3,7 @@
   "version": "1.2.3",
   "description": "ZWave support for the Thingbox (http://TheThingbox.io) and TimeSquAir (http://TimeSquAir.io)",
   "node-red": {
-    "nodes": {
+  "nodes": {
       "zwave": "zwave.js",
       "zwave-generic": "zwave-generic.js",
       "zwave-inclusion-node": "zwave-inclusion-node.js",
@@ -26,7 +26,7 @@
     "ZWave"
   ],
   "author": "thethingbox <thethingbox@gmail.com> (http://thethingbox.io/)",
-  "license": "WTFPL",
+  "license": "http://www.wtfpl.net",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheThingBox/ttb-zwave.git"
@@ -34,9 +34,5 @@
   "bugs": {
     "url": "https://github.com/TheThingBox/ttb-zwave/issues"
   },
-  "homepage": "https://github.com/TheThingBox/ttb-zwave#readme",
-  "main": "nodonSoftRemote.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  }
+  "homepage": "https://github.com/TheThingBox/ttb-zwave#readme"
 }

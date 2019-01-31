@@ -74,7 +74,7 @@ function subscription(RED, node, zwave) {
 			else
 				msg.intent = 0;
 			*/
-			/*
+			/*  Homekeeper
 			if (node.mqtt !== null) 
 				node.mqtt.publish({
 				'payload': msg,

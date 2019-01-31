@@ -5,7 +5,7 @@ var flows = require('./js/flows');
 
 module.exports = function (RED) {
 
-	function main(config) {
+	function main(config) { // from MQTTInNode
 		RED.nodes.createNode(this, config);
 		var node = this;
 		node.config = config;
@@ -64,8 +64,7 @@ module.exports = function (RED) {
 			});
 			*/
 			node.send(msg);
-		}
-	, node.id);
+		}, node.id);
 
 		node.on('close', function (done) {
 			if (brokerConn) {
