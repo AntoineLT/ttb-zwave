@@ -87,6 +87,12 @@ function fillDevices(node, productIDTotal, nodes, zwave) {
             zwave.setConfigParam(node.senderID, 4, 1, 1);  // PIR sensitivity
             zwave.setConfigParam(node.senderID, 5, 1, 1);  // send PIR detection on binary sensor command class
             break;
+/*
+		case "013c-0002-000c": // ZWave Zipato MultiSensor Quad	
+			(node.senderID !== undefined)? node.typeNode = "zwave-generic" : node.type = "zwave-generic";
+			// console.log("device.js - ZWave Zipato MultiSensor Quad " + node.senderID);
+	        break;
+*/
 
         default:
 			console.log("Node " + node.senderID + " handled as generic. (productID:" +productIDTotal + ")");

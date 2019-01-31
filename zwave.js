@@ -38,16 +38,36 @@ module.exports = function (RED) {
 			});
 
 			zwave.on('node added', function (nodeid) {
+      //.log('Node added: nodeid:'+ nodeid);
 				handler.nodeAdded(nodeid);
+				var mess = "Node " + nodeid + " is added";
+				var msg = {
+					payload: mess,
+					message: mess,
+					ready: false,
+					topic: nodeid
+				};
+				node.send(msg);
 			});
 
 			zwave.on('node ready', function (nodeid, nodeinfo) {
 				handler.nodeReady(node, RED, zwave, mqtt, nodeid, nodeinfo);
+				var device = nodeinfo.type + " (" + nodeinfo.product + ")";
+				var mess = "Node " + nodeid + " - " + device + " is ready";
+				var msg = {
+					payload: mess,
+					message: mess,
+					device: device,
+					ready: true,
+					topic: nodeid
+				};
+				node.send(msg);
 			});
 
 			// first time device detected
 			zwave.on('value added', function (nodeid, comclass, value) {
 				handler.valueAdded(node, RED, zwave, mqtt, nodeid, comclass, value);
+				//node.send({payload:"value added!" + comclass + " / " + value});
 			});
 
 			// changed device's state
