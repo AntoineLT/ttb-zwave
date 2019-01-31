@@ -36,6 +36,10 @@ module.exports = function (RED) {
 			if (typeof msg.payload === 'number') {
 				msg.intensity = msg.payload;
 			}
+			
+			msg.topic = node.config.nodeid;
+			msg.commandclass = node.config.commandclass;
+			msg.classindexname = node.config.classindexname;
 
 			if(msg.payload === true) {
 				msg.payload = 1;
