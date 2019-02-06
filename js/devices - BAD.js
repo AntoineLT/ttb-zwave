@@ -25,6 +25,7 @@ true if the a message setting the value was sent to the device.
 
 */
 
+// called for each node ready
 function fillDevices(node, productIDTotal, nodes, zwave) {
     switch (productIDTotal) {
         case "0086-0003-0062": // Aeotec, ZW098 LED Bulb

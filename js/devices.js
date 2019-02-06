@@ -93,6 +93,12 @@ function fillDevices(node, productIDTotal, nodes, zwave) {
 			// console.log("device.js - ZWave Zipato MultiSensor Quad " + node.senderID);
 	        break;
 */
+		case "0159-0002-0051": // ZWave Qubino Flush 2 Relay
+		// NOT tested
+			(node.senderID !== undefined)? node.typeNode = "zwave-binary-switch" : node.type = "zwave-binary-switch";
+			node.commandclass = Object.keys(nodes[node.senderID].classes)[0]; // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/keys
+			node.classindex = Object.keys(nodes[node.senderID].classes[node.commandclass])[0];
+			break;
 
         default:
 			console.log("Node " + node.senderID + " handled as generic. (productID:" +productIDTotal + ")");
