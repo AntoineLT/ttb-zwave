@@ -1,12 +1,10 @@
-'use strict';
+<'use strict';
 
 module.exports = function (RED) {
 	var homeDir = process.env.NODE_RED_HOME;
 
 	var path = require('path'),
 		mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
-
-	var flows = require('./js/flows');
 
 	function main(config) {
 		RED.nodes.createNode(this, config);
@@ -18,8 +16,7 @@ module.exports = function (RED) {
 			return;
 		}
 
-		var zwaveTopic = flows.checkZwaveNodeTopic();
-		this.topic = zwaveTopic + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
+		this.topic = "zwave" + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
 
 		// console.log("Node " + config.nodeid + " subscribed to '" + this.topic + "'");
 		
@@ -43,11 +40,9 @@ module.exports = function (RED) {
 };
 
 function subscription(RED, node) {
-	var isUtf8 = require('is-utf8'),
-		flows = require('./js/flows');
+	var isUtf8 = require('is-utf8');
 
-	var msg = {},
-		zwaveTopic = flows.checkZwaveNodeTopic();
+	var msg = {};
 
 	if (node.topic) {
 		node.brokerConn.register(node);
@@ -78,13 +73,14 @@ function subscription(RED, node) {
 				msg.intent = 0;
 				msg.message = "Sensor Off";
 			}
-					
+			/*
 			if (node.mqtt !== null) node.mqtt.publish({
 				'payload': msg,
 				'qos': 0,
 				'retain': true,
-				'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
+				'topic': "zwave" + '/' + node.config.nodeid + '/out'
 			});
+			*/
 			node.send(msg);
 		}, node.id);
 	}

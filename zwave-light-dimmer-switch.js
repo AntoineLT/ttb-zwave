@@ -6,8 +6,6 @@ module.exports = function (RED) {
 	var path = require('path');
 	var mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-	var flows = require('./js/flows');
-
 	function main(config) { // from MQTTInNode
 		RED.nodes.createNode(this, config);
 		this.config = config;
@@ -18,9 +16,8 @@ module.exports = function (RED) {
 			return;
 		}
 
-		var zwaveTopic = flows.checkZwaveNodeTopic();
-		this.topic = zwaveTopic + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
-		this.topicIn = zwaveTopic + '/' + config.nodeid + '/in';
+		this.topic = "zwave" + '/' + config.nodeid + '/' + config.commandclass + '/' + config.classindex;
+		this.topicIn = "zwave" + '/' + config.nodeid + '/in';
 
 		this.mqtt = mqttCP.get(
 			this.brokerConn.broker,
@@ -51,10 +48,8 @@ module.exports = function (RED) {
 
 function subscription(RED, node, zwave) {
 	var isUtf8 = require('is-utf8');
-	var flows = require('./js/flows');
 
-	var msg = {},
-		zwaveTopic = flows.checkZwaveNodeTopic();
+	var msg = {};
 
 	if (node.topic) {
 		node.brokerConn.register(node);
@@ -80,7 +75,7 @@ function subscription(RED, node, zwave) {
 				'payload': msg,
 				'qos': 0,
 				'retain': true,
-				'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
+				'topic': "zwave" + '/' + node.config.nodeid + '/out'
 			});
 			*/
 			node.send(msg);

@@ -1,7 +1,6 @@
 'use strict';
 
 var isUtf8 = require('is-utf8');
-var flows = require('./js/flows');
 
 module.exports = function (RED) {
 
@@ -17,8 +16,7 @@ module.exports = function (RED) {
 			return;
 		}
 
-		var zwaveTopic = flows.checkZwaveNodeTopic();
-		var topicpub = zwaveTopic + '/' + node.config.nodeid + '/' + node.config.commandclass + '/' + node.config.classindex;
+		var topicpub = "zwave" + '/' + node.config.nodeid + '/' + node.config.commandclass + '/' + node.config.classindex;
 		//console.log("zwave-generic.js: topicpub " + topicpub);
 
 		brokerConn.register(node);
@@ -64,7 +62,7 @@ module.exports = function (RED) {
 				'payload': msg,
 				'qos': 0,
 				'retain': true,
-				'topic': zwaveTopic + '/' + node.config.nodeid + '/out'
+				'topic': "zwave" + '/' + node.config.nodeid + '/out'
 			});
 			*/
 			node.send(msg);

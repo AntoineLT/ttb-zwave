@@ -6,8 +6,6 @@ module.exports = function (RED) {
 	var path = require('path'),
 		mqttCP = require(path.resolve(homeDir, './nodes/core/io/lib/mqttConnectionPool.js'));
 
-	var flows = require('./js/flows');
-
 	function main(config) {
 		RED.nodes.createNode(this, config);
 		this.config = config;
@@ -18,8 +16,7 @@ module.exports = function (RED) {
 			return;
 		}
 
-		var zwaveTopic = flows.checkZwaveNodeTopic();
-		this.topic = zwaveTopic + '/' + config.nodeid + '/scene';
+		this.topic = "zwave" + '/' + config.nodeid + '/scene';
 
 		this.mqtt = mqttCP.get(
 			this.brokerConn.broker,
@@ -67,15 +64,17 @@ var timer = undefined,
     count = 0;
 
 function softRemote(node, sceneID) {
-	var topic = require('./js/flows').checkZwaveNodeTopic();
+	/*
 	var msgMQTT = {
 			qos: 0,
 			retain: true,
-			topic: topic + '/' + node.config.nodeid + '/out'
-		},
-		msg = {
+			topic: "zwave" + '/' + node.config.nodeid + '/out'
+		};
+		*/
+	var msg = {
 			payload: sceneID
 		};
+		
 	switch (sceneID) {
 		case 10:
 			msg.intent = 1; // close
@@ -104,6 +103,7 @@ function softRemote(node, sceneID) {
 				count++;
 				if (count >= 20) break;
 				msg.intent = 2; // more
+				/*
 				msgMQTT.payload = {
 					'payload': msg.payload,
 					'intent': msg.intent
@@ -113,6 +113,7 @@ function softRemote(node, sceneID) {
 					node.send(msg);
 					softRemote(node, sceneID);
 				}, 1000);
+				*/
 			}
 			break;
 
@@ -121,6 +122,7 @@ function softRemote(node, sceneID) {
 				count++;
 				if (count >= 20) break;
 				msg.intent = 3; // less
+				/*
 				msgMQTT.payload = {
 					'payload': msg.payload,
 					'intent': msg.intent
@@ -130,17 +132,19 @@ function softRemote(node, sceneID) {
 					node.send(msg);
 					softRemote(node, sceneID);
 				}, 1000);
+				*/
 			}
 			break;
 
 		default:
 			break;
 	}
-
+	/*
 	msgMQTT.payload = {
 		'payload': msg.payload,
 		'intent': msg.intent
 	};
 	if (node.mqtt != null)  node.mqtt.publish(msgMQTT);
+	*/
 	node.send(msg);
 }

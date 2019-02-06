@@ -25,34 +25,32 @@ function subscription(RED, node) {
 		return;
 	}
 
-	var flows = require('./js/flows'),
-		zwaveTopic = flows.checkZwaveNodeTopic(),
-		topicpub = zwaveTopic + '/' + node.config.nodeid + '/scene';
+	var topicpub = "zwave" + '/' + node.config.nodeid + '/scene';
 
-		node.brokerConn.register(node);
-		node.brokerConn.subscribe(topicpub, 2, function (topic, payload, packet) {
-			
-			//console.log("payload[0]:", payload[0]);
-			//console.log("payload[1]:", payload[1]);
+	node.brokerConn.register(node);
+	node.brokerConn.subscribe(topicpub, 2, function (topic, payload, packet) {
+		
+	//console.log("payload[0]:", payload[0]);
+	//console.log("payload[1]:", payload[1]);
 
-			var msg = {payload:payload}; // let the device outpout unchanged
+	var msg = {payload:payload}; // let the device outpout unchanged
 
-			switch (payload[0]) {
-			case 49:
-				msg.intent = 1; // open
-				break;
+	switch (payload[0]) {
+	case 49:
+		msg.intent = 1; // open
+		break;
 
-			case 51:
-				msg.intent = 0; // close
-				break;
+	case 51:
+		msg.intent = 0; // close
+		break;
 
-			case 50:
-				msg.intent = 2; // more
-				break;
+	case 50:
+		msg.intent = 2; // more
+		break;
 
-			case 52:
-				msg.intent = 3; // less
-				break;
+	case 52:
+		msg.intent = 3; // less
+		break;
 	/*
 
 			case "21":
@@ -117,12 +115,11 @@ var timer = undefined,
     count = 0;
 
 function publishStatusOut(node, sceneID) {
-	var topic = require('./js/flows').checkZwaveNodeTopic();
 	
 	var msgMQTT = {
 			qos: 0,
 			retain: true,
-			topic: topic + '/' + node.config.nodeid + '/out'
+			topic: "zwave" + '/' + node.config.nodeid + '/out'
 		};
 		
 	var msg = {

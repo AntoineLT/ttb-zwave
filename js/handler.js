@@ -1,7 +1,6 @@
 'use strict';
 
 var	deviceNode = require('./deviceNode');
-var	flows = require('./flows');
 
 //var nisutil = require(process.env.NODE_RED_HOME+"/node_modules/nisutil");
 var nodes = [];
@@ -84,11 +83,10 @@ function nodeReady(node, RED, zwave, mqtt, nodeid, nodeinfo) {
 		dumpNodes(node) // Log
 
 		}
-	var zwaveTopic = flows.checkZwaveNodeTopic();
 	if (mqtt !== null) mqtt.publish({
 		'qos': 0,
 		'retain': false,
-		'topic': zwaveTopic + '/nodeready/' + nodeid,
+		'topic': "zwave" + '/nodeready/' + nodeid,
 		'payload': true
 	});
 }
