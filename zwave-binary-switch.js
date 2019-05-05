@@ -158,7 +158,7 @@ function SwitchFunc(node, zwave, msg) {
 		}
 	}
 	
-	if (handler.nodes[node.config.nodeid].classes[38] !== undefined) {
+	if (handler.nodes[node.config.nodeid] && handler.nodes[node.config.nodeid].ready && handler.nodes[node.config.nodeid].classes[38] !== undefined) {
 			
 			if (msg.intent || msg.intent == 0) {
 				switch (msg.intent) {
